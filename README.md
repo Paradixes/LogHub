@@ -1,12 +1,16 @@
 # ResearchHub
 
+## Cloud Deployment
+
+[Index (researchhub20230620180506.azurewebsites.net)](https://researchhub20230620180506.azurewebsites.net/)
+
 ## Technology Stack
 
 ### Deployment
 
--   [x] Docker: [Docker Docs: How to build, share, and run applications | Docker Documentation](https://docs.docker.com/?_gl=1*1j599gd*_ga*MTY3NTQwNzMyMy4xNjg3MDk4Mjc3*_ga_XJWPQMJYHQ*MTY4NzA5ODI3Ny4xLjEuMTY4NzA5ODMwNi4zMS4wLjA.)
--   [x] Git & GitHub
--   [ ] Linux
+-   [x] Docker: [Docker Docs](https://docs.docker.com/?_gl=1*1j599gd*_ga*MTY3NTQwNzMyMy4xNjg3MDk4Mjc3*_ga_XJWPQMJYHQ*MTY4NzA5ODI3Ny4xLjEuMTY4NzA5ODMwNi4zMS4wLjA.)
+-   [x] Git & GitHub: [Git - Documentation (git-scm.com)](https://git-scm.com/doc)
+-   [x] Azure: [Create Your Azure Free Account Today | Microsoft Azure](https://azure.microsoft.com/en-gb/free/search/?ef_id=_k_Cj0KCQjwnMWkBhDLARIsAHBOftr5t_dmE2EQ4wQNg_MMh7HZypFviT4P3G39H4-WKofyQZ4231OFMg8aAue_EALw_wcB_k_&OCID=AIDcmm3bvqzxp1_SEM__k_Cj0KCQjwnMWkBhDLARIsAHBOftr5t_dmE2EQ4wQNg_MMh7HZypFviT4P3G39H4-WKofyQZ4231OFMg8aAue_EALw_wcB_k_&gad=1&gclid=Cj0KCQjwnMWkBhDLARIsAHBOftr5t_dmE2EQ4wQNg_MMh7HZypFviT4P3G39H4-WKofyQZ4231OFMg8aAue_EALw_wcB)
 
 ### Back-end
 

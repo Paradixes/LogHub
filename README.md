@@ -15,7 +15,7 @@
 ### Back-end
 
 -   [x] [C# & .NET 6.0](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/)
--   [x] [SQLite]([SQLite Home Page](https://www.sqlite.org/index.html))
+-   [x] [SQLite](https://www.sqlite.org/index.html)
 
 ### Front-end
 
@@ -27,13 +27,13 @@
 
 ### Note-taking Software
 
--   Notion: [Movies Top250 | Year Gallery (notion.so)](https://www.notion.so/df291df754f341c4bfc368367ba774e0?v=a3811af76ce443b499fde831704ecd3c)
--   AFFiNE: [AFFiNE - All In One KnowledgeOS](https://affine.pro/)
--   Linear: [MSc Project › Active issues (linear.app)](https://linear.app/msc-project/team/MSC/active)
+-   [Notion](https://www.notion.so/)
+-   [AFFiNE](https://affine.pro/)
+-   [Linear](https://linear.app/)
 
 ### Data Management Software
 
--   DMPOnline (Data Management Plan): [My Dashboard (dcc.ac.uk)](https://dmponline.dcc.ac.uk/plans)
+-   [DMPOnline (Data Management Plan)](https://dmponline.dcc.ac.uk/)
 
 ## Reference
 

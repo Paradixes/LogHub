@@ -1,0 +1,18 @@
+﻿@page "/login"
+@layout EmptyLayout
+@using System.ComponentModel.DataAnnotations
+
+<div class="page-background-class">
+	<MudContainer MaxWidth="MaxWidth.ExtraSmall">
+		<MudText Typo="Typo.h4" Align="Align.Center" Class="py-10"><b>Sign in to LogHub</b></MudText>
+		<MudPaper Elevation="5" Class="container d-flex flex-column py-8 px-10">
+			<MudForm Model="@Model" @ref="@Form" ValidationDelay="0">
+				<MudTextField T="string" Label="Email" @bind-Value="Model.Email" For="@(() => Model.Email)" HelperText="Enter your email" HelperTextOnFocus="true" OnlyValidateIfDirty="true" />
+
+				<MudTextField T="string" Label="Password" @bind-Value="Model.Password" For="@(() => Model.Password)" Immediate="true" HelperText="Enter your password" HelperTextOnFocus="true" InputType="PasswordInputType" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="PasswordStatusChanged" AdornmentAriaLabel="Show Password" OnlyValidateIfDirty="true" />
+
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SubmitAsync())" Size="Size.Large" FullWidth="true" Class="mt-3" >Login</MudButton>
+			</MudForm>
+		</MudPaper>
+	</MudContainer>
+</div>

@@ -1,4 +1,4 @@
-# ResearchHub
+#  LogHub
 
 ## Cloud Deployment
 

@@ -1,4 +1,4 @@
-name: Create .NET Core application and deploy it to the web application LogHubServer
+name: 生成 .NET Core 应用程序并将其部署到 Web 应用 LogHubServer
 on:
   pull_request:
     branches:

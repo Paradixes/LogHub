@@ -1,3 +1,4 @@
+using LogHub.Server.Data;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddMvc();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5196") });
+builder.Services.AddSqlServer<LogHubContext>(builder.Configuration.GetConnectionString("Azure_SQL_CONNECTIONSTRING"));
 
 var app = builder.Build();
 
@@ -35,5 +37,16 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+//app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = scopeFactory.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LogHubContext>();
+    if (db.Database.EnsureCreated())
+    {
+        SeedData.Initialize(db);
+    }
+}
 
 app.Run();

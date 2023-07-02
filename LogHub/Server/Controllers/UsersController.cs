@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LogHub.Server.Controllers;
 
 [ApiController]
-[Route("user")]
+[Route("API/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly LogHubContext _db;

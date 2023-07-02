@@ -5,9 +5,6 @@ using System.Security.Claims;
 
 namespace LogHub.Client.Providers.Auth;
 
-/// <summary>
-/// 
-/// </summary>
 public class ApiAuthStateProvider : AuthenticationStateProvider
 {
     private readonly HttpClient _client;

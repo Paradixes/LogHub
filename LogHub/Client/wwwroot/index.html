@@ -10,13 +10,25 @@
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link href="manifest.json" rel="manifest" />
     <link href="css/frosted-glass.css" rel="stylesheet" />
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="shortcut icon" sizes="256x256" href="logo.ico" />
 </head>
 
 <body>
     <div id="app">
-        Loading...
+        loading...
     </div>
+
+    <style>
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.

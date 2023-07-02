@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @using LogHub.Shared
 @using LogHub.Shared.Model;
+@attribute [Authorize]
 
 <PageTitle>User List</PageTitle>
 
@@ -38,6 +39,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        users = await Http.GetFromJsonAsync<User[]>("user");
+        users = await Http.GetFromJsonAsync<User[]>("API/Users");
     }
 }

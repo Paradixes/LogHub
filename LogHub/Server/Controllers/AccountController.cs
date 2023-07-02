@@ -8,7 +8,7 @@ using System.Text;
 namespace LogHub.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("API/[controller]")]
 public class AccountController : ControllerBase
 {
     public AccountController() { }

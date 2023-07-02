@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
 using LogHub.Shared;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LogHub.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("API/[controller]")]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]

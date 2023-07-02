@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using LogHub.Client.Services.Auth;
+﻿using LogHub.Client.Services.Auth;
 using LogHub.Shared.ViewModel;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace LogHub.Client.Pages;
 
@@ -22,7 +22,7 @@ public partial class Login
             try
             {
                 await AuthService.SignInAsync(Model);
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/", true);
             }
             catch (InvalidOperationException ex)
             {

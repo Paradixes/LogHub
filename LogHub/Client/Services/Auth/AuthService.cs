@@ -22,7 +22,7 @@ public class AuthService : IAuthService
     public virtual async Task SignInAsync(LoginViewModel model)
     {
         // query account info from the server
-        var response = await _client.PostAsJsonAsync("Account", model);
+        var response = await _client.PostAsJsonAsync("API/Account", model);
         response.EnsureSuccessStatusCode();
         var token = await response.Content.ReadAsStringAsync();
 

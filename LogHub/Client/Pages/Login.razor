@@ -3,8 +3,8 @@
 @using System.ComponentModel.DataAnnotations
 
 <div class="page-background-class">
-	<MudContainer MaxWidth="MaxWidth.ExtraSmall">
-		<MudText Typo="Typo.h4" Align="Align.Center" Class="py-10"><b>Sign in to LogHub</b></MudText>
+	<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-block" Style="text-align: center">
+		<MudImage Src="/img/logo-total.jpg" Width="300" Class="py-3 justify-center" />
 		<MudPaper Elevation="5" Class="container d-flex flex-column py-8 px-10">
 			<MudForm Model="@Model" @ref="@Form" ValidationDelay="0">
 				<MudTextField T="string" Label="Email" @bind-Value="Model.Email" For="@(() => Model.Email)" HelperText="Enter your email" HelperTextOnFocus="true" OnlyValidateIfDirty="true" />

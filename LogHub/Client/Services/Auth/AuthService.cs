@@ -1,7 +1,7 @@
 ﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 using LogHub.Client.Providers.Auth;
 using LogHub.Shared.ViewModel;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
 
 namespace LogHub.Client.Services.Auth;

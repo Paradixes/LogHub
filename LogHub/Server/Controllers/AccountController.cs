@@ -20,6 +20,7 @@ public class AccountController : ControllerBase
         // TODO: Password Cryptor
         UserInfo user = new()
         {
+            Name = "Admin",
             Email = "admin@admin.com",
             Role = "Administrator",
             Password = "12345",
@@ -30,9 +31,12 @@ public class AccountController : ControllerBase
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var header = new JwtHeader(new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256));
 
-        var userClaim = new List<Claim>();
-        userClaim.Add(new(ClaimTypes.Email, user.Email));
-        userClaim.Add(new(ClaimTypes.Role, user.Role));
+        var userClaim = new List<Claim>
+        {
+            new(ClaimTypes.Name, user.Name),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.Role),
+        };
 
         var payload = new JwtPayload(userClaim);
 
@@ -47,6 +51,7 @@ public class AccountController : ControllerBase
 
 class UserInfo
 {
+    public string Name { get; set; }
     public string Email { get; set; }
     public string Role { get; set; }
     public string Password { get; set; }

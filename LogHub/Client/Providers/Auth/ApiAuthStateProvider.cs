@@ -16,17 +16,16 @@ public class ApiAuthStateProvider : AuthenticationStateProvider
         _localStorage = localStorage;
     }
 
-    public void MarkUserAsLoggedOut()
+    private static IEnumerable<Claim> GetClaimsFromToken(string token)
     {
-        ClaimsPrincipal principal = new();
-        var authState = Task.FromResult(new AuthenticationState(principal));
-        NotifyAuthenticationStateChanged(authState);
+        JwtSecurityTokenHandler handler = new();
+        var jwtToken = handler.ReadJwtToken(token);
+        return jwtToken.Claims;
     }
 
-    public void MarkUserAsAuthenticated(string token)
+    public async Task NotifyAuthenticationStateChangedAsync()
     {
-        ClaimsPrincipal principal = new();
-
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -37,12 +36,7 @@ public class ApiAuthStateProvider : AuthenticationStateProvider
         {
             return new(principal);
         }
-
-        // get jwt token
-        JwtSecurityTokenHandler handler = new();
-        var jwtToken = handler.ReadJwtToken(token);
-
-        var claims = jwtToken.Claims;
+        var claims = GetClaimsFromToken(token);
         var identity = new ClaimsIdentity(claims, "api");
         principal.AddIdentity(identity);
         return new(principal);

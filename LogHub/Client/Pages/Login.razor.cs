@@ -21,8 +21,8 @@ public partial class Login
         {
             try
             {
-                await AuthService.SignInAsync(Model);
-                NavigationManager.NavigateTo("/", true);
+                await AuthService.LogInAsync(Model);
+                NavigationManager.NavigateTo("/");
             }
             catch (InvalidOperationException ex)
             {

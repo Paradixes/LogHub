@@ -26,9 +26,16 @@
 
 ### Note-taking Software
 
--   [Notion](https://www.notion.so/)
+-   [Notion](https://www.notion.so/): Component-based note-taking software with basic authentication management
 -   [AFFiNE](https://affine.pro/)
+
+### Project Management Software
+
 -   [Linear](https://linear.app/)
+
+### Logbook Software
+
+-   [JotForm](https://eu.jotform.com/)
 
 ### Data Management Software
 

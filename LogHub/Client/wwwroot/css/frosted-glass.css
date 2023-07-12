@@ -3,7 +3,7 @@
     backdrop-filter: blur(10px);
 }
 .page-background-class {
-    background-image: url(/img/nasa.png);
+    background-image: url(/img/blue-sky.jpg);
     background-size: cover;
     height: 100vh;
     width: 100vw;

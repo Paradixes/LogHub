@@ -19,21 +19,22 @@ public class AuthService : IAuthService
         _localStorage = localStorage;
     }
 
-    public virtual async Task SignInAsync(LoginViewModel model)
+    public virtual async Task LogInAsync(LoginViewModel model)
     {
         // query account info from the server
-        var response = await _client.PostAsJsonAsync("Account", model);
+        var response = await _client.PostAsJsonAsync("API/Account", model);
         response.EnsureSuccessStatusCode();
         var token = await response.Content.ReadAsStringAsync();
 
         // store token
         await _localStorage.SetItemAsStringAsync("token", token);
+
+        ((ApiAuthStateProvider)_provider).NotifyAuthenticationStateChangedAsync();
     }
 
-    public virtual async Task SignOutAsync()
+    public virtual async Task LogOutAsync()
     {
         await _localStorage.RemoveItemAsync("token");
-        ((ApiAuthStateProvider)_provider).MarkUserAsLoggedOut();
-        _client.DefaultRequestHeaders.Authorization = null;
+        ((ApiAuthStateProvider)_provider).NotifyAuthenticationStateChangedAsync();
     }
 }

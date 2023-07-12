@@ -4,8 +4,8 @@ namespace LogHub.Client.Services.Auth
 {
     public interface IAuthService
     {
-        Task SignInAsync(LoginViewModel model);
+        Task LogInAsync(LoginViewModel model);
 
-        Task SignOutAsync();
+        Task LogOutAsync();
     }
 }

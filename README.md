@@ -2,20 +2,19 @@
 
 ## Cloud Deployment
 
-[User List (reshub.azurewebsites.net)](https://reshub.azurewebsites.net/fetchdata)
+[Index (loghubserver.azurewebsites.net)](https://loghubserver.azurewebsites.net/)
 
 ## Technology Stack
 
 ### Deployment
 
 -   [x] [GitHub Actions](https://docs.github.com/en/actions)
--   [x] [Git](https://git-scm.com/doc)
 -   [x] [Azure](https://azure.microsoft.com/en-gb/free/search/?ef_id=_k_Cj0KCQjwnMWkBhDLARIsAHBOftr5t_dmE2EQ4wQNg_MMh7HZypFviT4P3G39H4-WKofyQZ4231OFMg8aAue_EALw_wcB_k_&OCID=AIDcmm3bvqzxp1_SEM__k_Cj0KCQjwnMWkBhDLARIsAHBOftr5t_dmE2EQ4wQNg_MMh7HZypFviT4P3G39H4-WKofyQZ4231OFMg8aAue_EALw_wcB_k_&gad=1&gclid=Cj0KCQjwnMWkBhDLARIsAHBOftr5t_dmE2EQ4wQNg_MMh7HZypFviT4P3G39H4-WKofyQZ4231OFMg8aAue_EALw_wcB)
 
 ### Back-end
 
--   [x] [C# & .NET 6.0](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/)
--   [x] [SQLite](https://www.sqlite.org/index.html)
+-   [x] [C# & .NET 7.0](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/)
+-   [x] [Azure SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
 
 ### Front-end
 
@@ -27,9 +26,16 @@
 
 ### Note-taking Software
 
--   [Notion](https://www.notion.so/)
+-   [Notion](https://www.notion.so/): Component-based note-taking software with basic authentication management
 -   [AFFiNE](https://affine.pro/)
+
+### Project Management Software
+
 -   [Linear](https://linear.app/)
+
+### Logbook Software
+
+-   [JotForm](https://eu.jotform.com/)
 
 ### Data Management Software
 

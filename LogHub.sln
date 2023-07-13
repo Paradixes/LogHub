@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Client", "LogHub\Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Shared", "LogHub\Shared\LogHub.Shared.csproj", "{74546B6D-2F1F-4F2E-B9E0-52DFD8488BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Domain", "LogHub.Domain\LogHub.Domain.csproj", "{D019968F-CD22-45C0-A3EA-EE150126E057}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Domain", "LogHub\Domain\LogHub.Domain.csproj", "{D019968F-CD22-45C0-A3EA-EE150126E057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Application", "LogHub.Application\LogHub.Application.csproj", "{FBE8CD0A-280C-4765-9D46-6C5F62F4DFB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Application", "LogHub\Application\LogHub.Application.csproj", "{FBE8CD0A-280C-4765-9D46-6C5F62F4DFB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Infrastructure", "LogHub.Infrastructure\LogHub.Infrastructure.csproj", "{3F2C4D0F-F4C4-4953-BFF3-31CD4516E735}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Infrastructure", "LogHub\Infrastructure\LogHub.Infrastructure.csproj", "{3F2C4D0F-F4C4-4953-BFF3-31CD4516E735}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Web.API", "LogHub.Web.API\LogHub.Web.API.csproj", "{320A4D77-8C7B-4726-BB90-73A379C92399}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Web.API", "LogHub\Web.API\LogHub.Web.API.csproj", "{320A4D77-8C7B-4726-BB90-73A379C92399}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D7E19420-E8E2-4A62-8534-4C8589DEB636}"
 EndProject

@@ -1,4 +1,4 @@
-﻿using LogHub.Domain.Entities.User;
+﻿using LogHub.Domain.Entities.Users;
 
 namespace LogHub.Domain.Primitives;
 

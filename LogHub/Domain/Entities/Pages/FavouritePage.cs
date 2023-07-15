@@ -1,3 +1,19 @@
-﻿namespace LogHub.Domain.Entities.Pages;
+﻿using LogHub.Domain.Entities.Users;
+using LogHub.Domain.Primitives;
 
-public class FavouritePage { }
+namespace LogHub.Domain.Entities.Pages;
+
+public class FavouritePage : Entity<FavouritePageId>
+{
+    internal FavouritePage(UserId userId, PageId pageId)
+    {
+        UserId = userId;
+        PageId = pageId;
+    }
+
+    private FavouritePage() { }
+
+    public UserId UserId { get; set; }
+
+    public PageId PageId { get; set; }
+}

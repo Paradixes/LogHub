@@ -9,17 +9,21 @@ public class Permission : Entity<PermissionId>
 {
     private Permission() { }
 
-    public Permission(UserId userId, RecordId recordId, RecordType recordType, Permission type)
-    {
-        UserId = userId;
-        RecordId = recordId;
-        RecordType = recordType;
-        Type = type;
-    }
+    // internal Permission(UserId userId, RecordId recordId, RecordType recordType, Permission type)
+    // {
+    //     Id = new PermissionId(Guid.NewGuid());
+    //     UserId = userId;
+    //     RecordId = recordId;
+    //     RecordType = recordType;
+    //     Type = type;
+    // }
 
     public UserId UserId { get; private set; }
+
     public RecordId RecordId { get; private set; }
+
     public RecordType RecordType { get; private set; }
+
     public Permission Type { get; private set; }
 
     public static Permission Create(UserId userId, RecordId recordId, RecordType recordType, Permission type)

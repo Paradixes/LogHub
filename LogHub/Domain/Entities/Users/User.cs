@@ -13,6 +13,7 @@ public class User : Entity<UserId>, IAuditableEntity
 
     public string Email { get; private set; }
 
+    // TODO: Email Verify Flag
     // public bool EmailConfirmed { get; private set; }
 
     public byte[]? Avatar { get; private set; }

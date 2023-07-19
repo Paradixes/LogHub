@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LogHub.Application\LogHub.Application.csproj" />
+        <ProjectReference Include="..\Application\LogHub.Application.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace LogHub.Domain.Enums;
 
-public enum Permission
+public enum PermissionLevel
 {
     NotAuthorized = 0,
     ReadOnly = 1,

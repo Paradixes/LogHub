@@ -32,5 +32,3 @@ public class Label : Entity<LabelId>
         Color = color;
     }
 }
-
-public record LabelId(Guid Value) : EntityId(Value);

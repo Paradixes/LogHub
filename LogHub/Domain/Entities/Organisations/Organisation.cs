@@ -1,4 +1,4 @@
-﻿using LogHub.Domain.DomainEvents.Organisations;
+﻿using LogHub.Domain.Entities.DataManagementPlans;
 using LogHub.Domain.Entities.Users;
 using LogHub.Domain.Primitives;
 
@@ -6,65 +6,103 @@ namespace LogHub.Domain.Entities.Organisations;
 
 public class Organisation : Entity<OrganisationId>
 {
+    private readonly List<DataManagementPlan> _dataManagementPlans = new();
+
+    private readonly List<Department> _departments = new();
+
     private Organisation() { }
 
-    public UserId CreatorId { get; private set; }
+    public IEnumerable<Department> Departments => _departments.ToList();
 
-    public string Name { get; private set; }
+    public IEnumerable<DataManagementPlan> DataManagementPlans => _dataManagementPlans.ToList();
+
+    public UserId ManagerId { get; private set; } = null!;
+
+    public string InvitationCode { get; private set; } = null!;
+
+    public string Name { get; private set; } = null!;
 
     public string? Icon { get; private set; }
 
-    public OrganisationId ParentId { get; private set; }
+    public string? Description { get; private set; }
 
-    public static Organisation Create(string name, string? icon, UserId creatorId, Organisation parent)
+    private static string GenerateRandomString(int length)
+    {
+        var random = new Random();
+        const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return new string(Enumerable.Repeat(characters, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    public static Organisation Create(
+        string name,
+        string? icon,
+        UserId creatorId)
     {
         var organisation = new Organisation
         {
-            Id = new OrganisationId(Guid.NewGuid()),
-            CreatorId = creatorId,
+            ManagerId = creatorId,
             Name = name,
             Icon = icon,
-            ParentId = parent.Id
+            InvitationCode = GenerateRandomString(8)
         };
-
-        organisation.Raise(new OrganisationCreatedDomainEvent(
-            Guid.NewGuid(),
-            organisation.Id,
-            organisation.ParentId));
-
-        parent.Raise(new OrganisationAddedDomainEvent(
-            Guid.NewGuid(),
-            parent.Id,
-            organisation.Id));
 
         return organisation;
     }
 
-    public void Update(string name, string? icon)
+    public void AddDepartment(
+        string name,
+        string? icon,
+        string? description,
+        UserId managerId)
     {
-        if (Name != name || Icon != icon)
-        {
-            Raise(new OrganisationUpdatedDomainEvent(
-                Guid.NewGuid(),
-                Id,
-                ParentId));
-        }
-
-        Name = name;
-        Icon = icon;
+        var department = Department.Create(name, icon, description, managerId, Id);
+        _departments.Add(department);
     }
 
-    public void TransferOwnership(UserId newOwnerId)
+    public void RemoveDepartment(OrganisationId childOrganisationId)
     {
-        if (CreatorId != newOwnerId)
+        var department = _departments.SingleOrDefault(x => x.Id == childOrganisationId);
+        if (department is null)
         {
-            Raise(new OrganisationOwnershipTransferredDomainEvent(
-                Guid.NewGuid(),
-                Id,
-                CreatorId,
-                newOwnerId));
+            return;
         }
 
-        CreatorId = newOwnerId;
+        _departments.Remove(department);
+    }
+
+    public void AddDataManagementPlan(
+        UserId? managerId,
+        string title,
+        string? icon,
+        string? description)
+    {
+        managerId ??= ManagerId;
+
+        var dataManagementPlan = new DataManagementPlan(Id, managerId, title, icon, description);
+        _dataManagementPlans.Add(dataManagementPlan);
+    }
+
+    public void RemoveDataManagementPlan(RecordId recordId)
+    {
+        var dataManagementPlan = _dataManagementPlans.SingleOrDefault(x => x.Id == recordId);
+        if (dataManagementPlan is null)
+        {
+            return;
+        }
+
+        _dataManagementPlans.Remove(dataManagementPlan);
+    }
+
+    public void UpdateDetails(string name, string? icon, string? description)
+    {
+        Name = name;
+        Icon = icon;
+        Description = description;
+    }
+
+    public void UpdateManager(UserId managerId)
+    {
+        ManagerId = managerId;
     }
 }

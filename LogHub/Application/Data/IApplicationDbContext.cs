@@ -1,10 +1,13 @@
-﻿using LogHub.Domain.Entities.DataManagementPlans;
+﻿using LogHub.Domain.Entities.Actions;
+using LogHub.Domain.Entities.Bases;
+using LogHub.Domain.Entities.DataManagementPlans;
+using LogHub.Domain.Entities.Docs;
 using LogHub.Domain.Entities.Logbooks;
 using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Pages;
 using LogHub.Domain.Entities.Permissions;
-using LogHub.Domain.Entities.Projects;
+using LogHub.Domain.Entities.Requests;
 using LogHub.Domain.Entities.Users;
+using LogHub.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -14,6 +17,8 @@ namespace LogHub.Application.Data;
 public interface IApplicationDbContext
 {
     DbSet<User> Users { get; set; }
+
+    DbSet<RecordEntity> Records { get; set; }
 
     DbSet<Organisation> Organisations { get; set; }
 
@@ -25,23 +30,21 @@ public interface IApplicationDbContext
 
     DbSet<Label> Labels { get; set; }
 
-    DbSet<Project> Projects { get; set; }
+    DbSet<Base> Bases { get; set; }
 
-    DbSet<ProjectAction> ProjectActions { get; set; }
+    DbSet<RecordAction> RecordActions { get; set; }
 
-    DbSet<ProjectRequest> ProjectRequests { get; set; }
+    DbSet<RecordRequest> RecordRequests { get; set; }
 
     DbSet<Logbook> Logbooks { get; set; }
 
-    DbSet<Page> Pages { get; set; }
+    DbSet<Document> Docs { get; set; }
 
-    DbSet<PageEditor> PageEditors { get; set; }
+    DbSet<DocEditor> DocEditors { get; set; }
 
-    DbSet<PageEditor> PageViewers { get; set; }
+    DbSet<FavouriteDoc> FavouriteDocs { get; set; }
 
-    DbSet<FavouritePage> FavouritePages { get; set; }
-
-    DbSet<PageLabel> PageLabels { get; set; }
+    DbSet<DocLabel> DocLabels { get; set; }
 
     DatabaseFacade Database { get; }
 

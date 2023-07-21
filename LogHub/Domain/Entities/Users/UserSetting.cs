@@ -4,9 +4,9 @@ namespace LogHub.Domain.Entities.Users;
 
 public class UserSetting
 {
-    public UserSetting() { }
+    internal UserSetting() { }
 
-    public UserSetting(
+    internal UserSetting(
         Theme theme,
         bool emailNotification,
         bool autoSave,

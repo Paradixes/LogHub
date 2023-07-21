@@ -1,4 +1,5 @@
-﻿using LogHub.Domain.DomainEvents.Users;
+﻿using LogHub.Domain.Entities.Docs;
+using LogHub.Domain.Entities.Organisations;
 using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
 
@@ -6,33 +7,41 @@ namespace LogHub.Domain.Entities.Users;
 
 public class User : Entity<UserId>, IAuditableEntity
 {
-    // For EF Core
+    private readonly List<FavouriteDoc> _favouritePages = new();
+
     private User() { }
 
-    public string Name { get; private set; }
+    public IReadOnlyCollection<FavouriteDoc> FavouritePages => _favouritePages.ToList();
 
-    public string Email { get; private set; }
+    public string Name { get; private set; } = null!;
+
+    public string Email { get; private set; } = null!;
 
     // TODO: Email Verify Flag
     // public bool EmailConfirmed { get; private set; }
 
     public byte[]? Avatar { get; private set; }
 
-    public string Profession { get; private set; }
+    public OrganisationId OrganisationId { get; private set; } = null!;
+
+    public DepartmentId? DepartmentId { get; private set; }
+
+    public string Profession { get; private set; } = null!;
 
     public string? Orcid { get; private set; }
 
-    public string PasswordHash { get; private set; }
+    public string PasswordHash { get; private set; } = null!;
 
-    public string Salt { get; private set; }
+    public string PasswordSalt { get; private set; } = null!;
 
     public UserRole Role { get; private set; }
 
-    public UserSetting UserSetting { get; private set; }
+    public UserSetting UserSetting { get; private set; } = null!;
 
     public DateTime CreatedOnUtc { get; set; }
 
     public DateTime? ModifiedOnUtc { get; set; }
+
 
     /// <summary>
     ///     Register a new User and initialise the User's settings
@@ -42,27 +51,26 @@ public class User : Entity<UserId>, IAuditableEntity
         string name,
         string email,
         byte[]? avatar,
+        OrganisationId organisationId,
         string profession,
         string? orcid,
         string passwordHash,
-        string salt,
+        string passwordSalt,
         UserRole role)
     {
         var user = new User
         {
-            Id = new UserId(Guid.NewGuid()),
             Name = name,
             Email = email,
             Avatar = avatar,
+            OrganisationId = organisationId,
             Profession = profession,
             Orcid = orcid,
             PasswordHash = passwordHash,
-            Salt = salt,
+            PasswordSalt = passwordSalt,
             Role = role,
             UserSetting = new UserSetting()
         };
-
-        user.Raise(new UserRegisteredDomainEvent(Guid.NewGuid(), user.Id));
 
         return user;
     }
@@ -76,14 +84,6 @@ public class User : Entity<UserId>, IAuditableEntity
         string profession,
         string? orcid)
     {
-        if (name != Name
-            || avatar != Avatar
-            || profession != Profession
-            || orcid != Orcid)
-        {
-            Raise(new UserNameChangedDomainEvent(Guid.NewGuid(), Id, name));
-        }
-
         Name = name;
         Avatar = avatar;
         Profession = profession;
@@ -96,14 +96,6 @@ public class User : Entity<UserId>, IAuditableEntity
         bool autoSave,
         int fontSize)
     {
-        if (UserSetting.Theme != theme
-            || UserSetting.EmailNotification != emailNotification
-            || UserSetting.AutoSave != autoSave
-            || UserSetting.FontSize != fontSize)
-        {
-            Raise(new UserSettingUpdatedDomainEvent(Guid.NewGuid(), Id));
-        }
-
         UserSetting.Update(theme, emailNotification, autoSave, fontSize);
     }
 
@@ -114,6 +106,28 @@ public class User : Entity<UserId>, IAuditableEntity
     public void ResetPassword(string passwordHash, string salt)
     {
         PasswordHash = passwordHash;
-        Salt = salt;
+        PasswordSalt = salt;
+    }
+
+    public void AddFavouritePage(RecordId docId)
+    {
+        if (_favouritePages.Any(x => x.DocId == docId))
+        {
+            return;
+        }
+
+        _favouritePages.Add(new FavouriteDoc(Id, docId));
+    }
+
+    public void RemoveFavouritePage(RecordId docId)
+    {
+        var favouritePage = _favouritePages.SingleOrDefault(x => x.DocId == docId);
+
+        if (favouritePage is null)
+        {
+            return;
+        }
+
+        _favouritePages.Remove(favouritePage);
     }
 }

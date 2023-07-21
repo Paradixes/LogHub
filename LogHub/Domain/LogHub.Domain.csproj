@@ -7,11 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Errors\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="MediatR" Version="12.1.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.9" />
     </ItemGroup>
 
 </Project>

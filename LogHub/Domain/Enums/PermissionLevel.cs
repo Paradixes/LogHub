@@ -5,5 +5,6 @@ public enum PermissionLevel
     NotAuthorized = 0,
     ReadOnly = 1,
     ReadWrite = 2,
-    FullControl = 3
+    FullControl = 3,
+    Owner = 4
 }

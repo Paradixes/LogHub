@@ -3,7 +3,7 @@
 public enum RecordType
 {
     DataManagementPlan = 0,
-    Project = 1,
+    Base = 1,
     Logbook = 2,
-    Page = 3
+    Document = 3
 }

@@ -1,5 +1,4 @@
-﻿using LogHub.Domain.DomainEvents.Permissions;
-using LogHub.Domain.Entities.Users;
+﻿using LogHub.Domain.Entities.Users;
 using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
 
@@ -9,37 +8,28 @@ public class Permission : Entity<PermissionId>
 {
     private Permission() { }
 
-    internal Permission(UserId userId, RecordId recordId, RecordType recordType, Permission type)
+    internal Permission(
+        UserId userId,
+        RecordId recordId,
+        RecordType recordType,
+        PermissionLevel level)
     {
-        Id = new PermissionId(Guid.NewGuid());
         UserId = userId;
         RecordId = recordId;
         RecordType = recordType;
-        Type = type;
+        Level = level;
     }
 
-    public UserId UserId { get; }
+    public UserId UserId { get; set; } = null!;
 
-    public RecordId RecordId { get; }
+    public RecordId RecordId { get; private init; } = null!;
 
-    public RecordType RecordType { get; }
+    public RecordType RecordType { get; private init; }
 
-    public Permission Type { get; private set; }
+    public PermissionLevel Level { get; set; }
 
-    public void UpdatePermission(Permission type)
+    public void UpdateLevel(PermissionLevel level)
     {
-        if (Type == type)
-        {
-            return;
-        }
-
-        Type = type;
-        Raise(new PermissionUpdatedDomainEvent(
-            Guid.NewGuid(),
-            Id,
-            UserId,
-            RecordId,
-            RecordType,
-            Type));
+        Level = level;
     }
 }

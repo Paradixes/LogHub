@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LogHub.Persistence.Configurations;
 
-public class RecordConfiguration : IEntityTypeConfiguration<RecordEntity>
+public class RecordConfiguration : IEntityTypeConfiguration<RecordEntity<RecordId>>
 {
-    public void Configure(EntityTypeBuilder<RecordEntity> builder)
+    public void Configure(EntityTypeBuilder<RecordEntity<RecordId>> builder)
     {
         builder.HasKey(r => r.Id);
 

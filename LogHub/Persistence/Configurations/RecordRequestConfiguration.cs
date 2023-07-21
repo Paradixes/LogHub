@@ -16,7 +16,7 @@ public class RecordRequestConfiguration : IEntityTypeConfiguration<RecordRequest
             projectId => projectId.Value,
             value => new RecordRequestId(value));
 
-        builder.HasOne<RecordEntity>()
+        builder.HasOne<RecordEntity<RecordId>>()
             .WithMany(r => r.Requests)
             .HasForeignKey(p => p.RecordId);
 

@@ -6,7 +6,8 @@ using LogHub.Domain.Enums;
 
 namespace LogHub.Domain.Primitives;
 
-public abstract class RecordEntity : Entity<RecordId>, IAuditableEntity
+public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
+    where TId : RecordId
 {
     private readonly List<RecordAction> _actions = new();
 

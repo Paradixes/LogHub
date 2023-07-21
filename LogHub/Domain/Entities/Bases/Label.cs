@@ -6,14 +6,14 @@ public class Label : Entity<LabelId>
 {
     private Label() { }
 
-    internal Label(RecordId recordId, string name, string color)
+    internal Label(BaseId baseId, string name, string color)
     {
-        RecordId = recordId;
+        BaseId = baseId;
         Name = name;
         Color = color;
     }
 
-    public RecordId RecordId { get; private set; } = null!;
+    public BaseId BaseId { get; private set; } = null!;
 
     public string Name { get; private set; } = null!;
 

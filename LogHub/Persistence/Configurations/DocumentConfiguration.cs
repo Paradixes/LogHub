@@ -9,6 +9,12 @@ public class DocumentConfiguration : IEntityTypeConfiguration<Document>
 {
     public void Configure(EntityTypeBuilder<Document> builder)
     {
+        builder.HasKey(d => d.Id);
+
+        builder.Property(d => d.Id).HasConversion(
+            documentId => documentId.Value,
+            value => new DocumentId(value));
+
         builder.ToTable("Documents");
 
         builder.HasOne<Logbook>()

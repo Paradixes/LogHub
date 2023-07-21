@@ -18,6 +18,6 @@ public class LabelConfiguration : IEntityTypeConfiguration<Label>
 
         builder.HasOne<Base>()
             .WithMany(p => p.Labels)
-            .HasForeignKey(l => l.RecordId);
+            .HasForeignKey(l => l.BaseId);
     }
 }

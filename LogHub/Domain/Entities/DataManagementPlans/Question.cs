@@ -6,7 +6,7 @@ public class Question : Entity<QuestionId>
 {
     private Question() { }
 
-    public RecordId DataManagementPlanId { get; private init; } = null!;
+    public DataManagementPlanId DataManagementPlanId { get; private init; } = null!;
 
     public string Title { get; private init; } = null!;
 
@@ -15,7 +15,7 @@ public class Question : Entity<QuestionId>
     public string? Answer { get; private set; }
 
     public static Question Create(
-        RecordId dataManagementPlanId,
+        DataManagementPlanId dataManagementPlanId,
         string title,
         string? description)
     {

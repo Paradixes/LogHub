@@ -9,6 +9,12 @@ public class LogbookConfiguration : IEntityTypeConfiguration<Logbook>
 {
     public void Configure(EntityTypeBuilder<Logbook> builder)
     {
+        builder.HasKey(l => l.Id);
+
+        builder.Property(l => l.Id).HasConversion(
+            logbookId => logbookId.Value,
+            value => new LogbookId(value));
+
         builder.ToTable("Logbooks");
 
         builder.HasOne<Base>()

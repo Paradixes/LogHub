@@ -5,7 +5,7 @@ using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Bases;
 
-public class Base : RecordEntity
+public class Base : RecordEntity<BaseId>
 {
     private readonly List<Label> _labels = new();
 

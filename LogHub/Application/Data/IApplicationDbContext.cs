@@ -18,7 +18,7 @@ public interface IApplicationDbContext
 {
     DbSet<User> Users { get; set; }
 
-    DbSet<RecordEntity> Records { get; set; }
+    DbSet<RecordEntity<RecordId>> Records { get; set; }
 
     DbSet<Organisation> Organisations { get; set; }
 

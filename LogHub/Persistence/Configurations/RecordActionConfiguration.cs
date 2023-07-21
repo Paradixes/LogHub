@@ -16,7 +16,7 @@ public class RecordActionConfiguration : IEntityTypeConfiguration<RecordAction>
             actionId => actionId.Value,
             value => new RecordActionId(value));
 
-        builder.HasOne<RecordEntity>()
+        builder.HasOne<RecordEntity<RecordId>>()
             .WithMany(r => r.Actions)
             .HasForeignKey(a => a.RecordId);
 

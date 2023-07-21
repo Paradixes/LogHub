@@ -109,7 +109,7 @@ public class User : Entity<UserId>, IAuditableEntity
         PasswordSalt = salt;
     }
 
-    public void AddFavouritePage(RecordId docId)
+    public void AddFavouritePage(DocumentId docId)
     {
         if (_favouritePages.Any(x => x.DocId == docId))
         {

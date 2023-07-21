@@ -1,11 +1,12 @@
 ﻿using LogHub.Domain.Entities.Bases;
+using LogHub.Domain.Entities.Logbooks;
 using LogHub.Domain.Entities.Users;
 using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Docs;
 
-public class Document : RecordEntity
+public class Document : RecordEntity<DocumentId>
 {
     private readonly List<DocEditor> _editors = new();
 
@@ -14,7 +15,7 @@ public class Document : RecordEntity
     private Document() { }
 
     internal Document(
-        RecordId logbookId,
+        LogbookId logbookId,
         string title,
         string? icon,
         string? description,
@@ -32,7 +33,7 @@ public class Document : RecordEntity
 
     public IReadOnlyCollection<DocLabel> Labels => _labels.AsReadOnly();
 
-    public RecordId LogbookId { get; private set; } = null!;
+    public LogbookId LogbookId { get; private set; } = null!;
 
     public string? Content { get; private set; }
 

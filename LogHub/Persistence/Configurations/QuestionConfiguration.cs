@@ -14,6 +14,10 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
             questionId => questionId.Value,
             value => new QuestionId(value));
 
+        builder.HasOne<DataManagementPlan>()
+            .WithMany()
+            .HasForeignKey(q => q.DataManagementPlanId);
+
         builder.Property(q => q.Title).IsRequired();
     }
 }

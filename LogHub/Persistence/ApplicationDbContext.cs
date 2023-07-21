@@ -24,7 +24,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
         _publisher = publisher;
     }
 
-    public DbSet<RecordEntity> Records { get; set; }
+    public DbSet<RecordEntity<RecordId>> Records { get; set; } = null!;
 
     public DbSet<Organisation> Organisations { get; set; } = null!;
 

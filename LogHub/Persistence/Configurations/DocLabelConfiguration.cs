@@ -1,6 +1,5 @@
 ﻿using LogHub.Domain.Entities.Bases;
 using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,7 +13,7 @@ public class DocLabelConfiguration : IEntityTypeConfiguration<DocLabel>
 
         builder.Property(x => x.DocId).HasConversion(
             docId => docId.Value,
-            value => new RecordId(value));
+            value => new DocumentId(value));
 
         builder.Property(x => x.LabelId).HasConversion(
             labelId => labelId.Value,

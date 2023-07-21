@@ -9,6 +9,12 @@ public class DataManagementPlanConfiguration : IEntityTypeConfiguration<DataMana
 {
     public void Configure(EntityTypeBuilder<DataManagementPlan> builder)
     {
+        builder.HasKey(dmp => dmp.Id);
+
+        builder.Property(dmp => dmp.Id).HasConversion(
+            dmpId => dmpId.Value,
+            value => new DataManagementPlanId(value));
+
         builder.ToTable("DataManagementPlans");
 
         builder.Property(dmp => dmp.Title).IsRequired();

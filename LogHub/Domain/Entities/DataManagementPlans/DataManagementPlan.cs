@@ -5,7 +5,7 @@ using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.DataManagementPlans;
 
-public class DataManagementPlan : RecordEntity
+public class DataManagementPlan : RecordEntity<DataManagementPlanId>
 {
     private readonly List<Question> _questions = new();
 

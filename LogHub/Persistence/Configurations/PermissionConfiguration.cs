@@ -22,7 +22,7 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
             .WithMany()
             .HasForeignKey(p => p.UserId);
 
-        builder.HasOne<RecordEntity>()
+        builder.HasOne<RecordEntity<RecordId>>()
             .WithMany()
             .HasForeignKey(p => p.RecordId);
 

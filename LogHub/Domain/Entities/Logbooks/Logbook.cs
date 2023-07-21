@@ -1,16 +1,17 @@
-﻿using LogHub.Domain.Entities.Users;
+﻿using LogHub.Domain.Entities.Bases;
+using LogHub.Domain.Entities.Users;
 using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Logbooks;
 
-public class Logbook : RecordEntity
+public class Logbook : RecordEntity<LogbookId>
 {
     private Logbook() { }
 
     internal Logbook(
         UserId ownerId,
-        RecordId baseId,
+        BaseId baseId,
         string title,
         string? icon,
         string? description,
@@ -23,7 +24,7 @@ public class Logbook : RecordEntity
         Importance = importance;
     }
 
-    public RecordId BaseId { get; private set; } = null!;
+    public BaseId BaseId { get; private set; } = null!;
 
     public string? CoverImage { get; private set; }
 

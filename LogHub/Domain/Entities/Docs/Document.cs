@@ -29,9 +29,9 @@ public class Document : RecordEntity<DocumentId, DocActionId, DocPermissionId, D
         Status = status;
     }
 
-    public IReadOnlyCollection<DocEditor> Editors => _editors.AsReadOnly();
+    public IEnumerable<DocEditor> Editors => _editors.AsReadOnly();
 
-    public IReadOnlyCollection<DocLabel> Labels => _labels.AsReadOnly();
+    public IEnumerable<DocLabel> Labels => _labels.AsReadOnly();
 
     public LogbookId LogbookId { get; private set; } = null!;
 

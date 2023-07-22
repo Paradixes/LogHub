@@ -50,10 +50,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
     {
         var domainEvents = ChangeTracker.Entries<Entity>()
             .Select(e => e.Entity)
-            .Where(e => e.GetDomainEvents().Any())
+            .Where(e => e.DomainEvents.Any())
             .SelectMany(e =>
             {
-                var domainEvents = e.GetDomainEvents();
+                var domainEvents = e.DomainEvents;
 
                 e.ClearDomainEvents();
 

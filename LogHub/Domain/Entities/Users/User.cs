@@ -11,7 +11,7 @@ public class User : Entity<UserId>, IAuditableEntity
 
     private User() { }
 
-    public IReadOnlyCollection<FavouriteDoc> FavouriteDocs => _favouriteDocs.ToList();
+    public IEnumerable<FavouriteDoc> FavouriteDocs => _favouriteDocs.ToList();
 
     public string Name { get; private set; } = null!;
 

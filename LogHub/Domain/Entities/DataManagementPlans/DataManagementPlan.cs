@@ -1,46 +1,27 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿namespace LogHub.Domain.Entities.DataManagementPlans;
 
-namespace LogHub.Domain.Entities.DataManagementPlans;
-
-public class DataManagementPlan : RecordEntity<DmpId, DmpActionId, DmpPermissionId, DmpRequestId>
+public class DataManagementPlan : DataManagementPlanTemplate
 {
-    private readonly List<Question> _questions = new();
-
     private DataManagementPlan() { }
 
-    public DataManagementPlan(
-        OrganisationId organisationId,
-        UserId creatorId,
-        string title,
-        string? icon,
-        string? description)
-        : base(creatorId, title, icon, description)
+    public DataManagementPlan(DataManagementPlanTemplate template)
+        : base(template.OrganisationId, template.CreatorId, template.Title, template.Description)
     {
-        OrganisationId = organisationId;
+        foreach (var question in template.Questions)
+        {
+            AddQuestion(question.Title, question.Description);
+        }
     }
 
-    public IEnumerable<Question> Questions => _questions;
-
-    public OrganisationId OrganisationId { get; private set; } = null!;
-
-    public void AddQuestion(string title, string? description)
+    public void UpdateAnswerById(QuestionId questionId, string answer)
     {
-        var question = Question.Create(Id, title, description);
-
-        _questions.Add(question);
-    }
-
-    public void RemoveQuestion(QuestionId questionId)
-    {
-        var question = _questions.FirstOrDefault(q => q.Id == questionId);
+        var question = Questions.FirstOrDefault(q => q.Id == questionId);
 
         if (question is null)
         {
             return;
         }
 
-        _questions.Remove(question);
+        question.UpdateAnswer(answer);
     }
 }

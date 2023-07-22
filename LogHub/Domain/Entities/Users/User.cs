@@ -7,11 +7,11 @@ namespace LogHub.Domain.Entities.Users;
 
 public class User : Entity<UserId>, IAuditableEntity
 {
-    private readonly List<FavouriteDoc> _favouritePages = new();
+    private readonly List<FavouriteDoc> _favouriteDocs = new();
 
     private User() { }
 
-    public IReadOnlyCollection<FavouriteDoc> FavouritePages => _favouritePages.ToList();
+    public IReadOnlyCollection<FavouriteDoc> FavouriteDocs => _favouriteDocs.ToList();
 
     public string Name { get; private set; } = null!;
 
@@ -111,23 +111,23 @@ public class User : Entity<UserId>, IAuditableEntity
 
     public void AddFavouritePage(DocumentId docId)
     {
-        if (_favouritePages.Any(x => x.DocId == docId))
+        if (_favouriteDocs.Any(x => x.DocId == docId))
         {
             return;
         }
 
-        _favouritePages.Add(new FavouriteDoc(Id, docId));
+        _favouriteDocs.Add(new FavouriteDoc(Id, docId));
     }
 
     public void RemoveFavouritePage(RecordId docId)
     {
-        var favouritePage = _favouritePages.SingleOrDefault(x => x.DocId == docId);
+        var favouritePage = _favouriteDocs.SingleOrDefault(x => x.DocId == docId);
 
         if (favouritePage is null)
         {
             return;
         }
 
-        _favouritePages.Remove(favouritePage);
+        _favouriteDocs.Remove(favouritePage);
     }
 }

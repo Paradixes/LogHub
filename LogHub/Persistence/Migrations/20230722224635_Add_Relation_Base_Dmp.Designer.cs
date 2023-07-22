@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogHub.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230722001153_Initial")]
-    partial class Initial
+    [Migration("20230722224635_Add_Relation_Base_Dmp")]
+    partial class Add_Relation_Base_Dmp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,36 +53,6 @@ namespace LogHub.Persistence.Migrations
                     b.HasIndex("RecordId");
 
                     b.ToTable("BaseActions");
-                });
-
-            modelBuilder.Entity("LogHub.Domain.Entities.Actions.RecordAction<LogHub.Domain.Entities.DataManagementPlans.DmpActionId, LogHub.Domain.Entities.DataManagementPlans.DmpId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InitiatorId");
-
-                    b.HasIndex("RecordId");
-
-                    b.ToTable("DataManagementPlanActions");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Actions.RecordAction<LogHub.Domain.Entities.Docs.DocActionId, LogHub.Domain.Entities.Docs.DocumentId>", b =>
@@ -156,8 +126,14 @@ namespace LogHub.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("DmpId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime2");
@@ -171,9 +147,11 @@ namespace LogHub.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DmpId");
+
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("Bases", (string)null);
+                    b.ToTable("Bases");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Bases.Label", b =>
@@ -199,7 +177,7 @@ namespace LogHub.Persistence.Migrations
                     b.ToTable("Labels");
                 });
 
-            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", b =>
+            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -207,16 +185,20 @@ namespace LogHub.Persistence.Migrations
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Icon")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrganisationId")
+                    b.Property<Guid?>("OrganisationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
@@ -225,9 +207,15 @@ namespace LogHub.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatorId");
+
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("DataManagementPlans", (string)null);
+                    b.ToTable("DataManagementPlanTemplates");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("DataManagementPlanTemplate");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.Question", b =>
@@ -238,7 +226,7 @@ namespace LogHub.Persistence.Migrations
                     b.Property<string>("Answer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("DataManagementPlanId")
+                    b.Property<Guid?>("DataManagementPlanTemplateId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -253,7 +241,7 @@ namespace LogHub.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DataManagementPlanId");
+                    b.HasIndex("DataManagementPlanTemplateId");
 
                     b.HasIndex("DmpId");
 
@@ -270,6 +258,8 @@ namespace LogHub.Persistence.Migrations
 
                     b.HasKey("DocId", "UserId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("DocEditors");
                 });
 
@@ -281,7 +271,14 @@ namespace LogHub.Persistence.Migrations
                     b.Property<Guid>("LabelId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("DocumentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("DocId", "LabelId");
+
+                    b.HasIndex("DocumentId");
+
+                    b.HasIndex("LabelId");
 
                     b.ToTable("DocLabels");
                 });
@@ -320,7 +317,7 @@ namespace LogHub.Persistence.Migrations
 
                     b.HasIndex("LogbookId");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Docs");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Docs.FavouriteDoc", b =>
@@ -462,34 +459,6 @@ namespace LogHub.Persistence.Migrations
                     b.ToTable("BasePermissions");
                 });
 
-            modelBuilder.Entity("LogHub.Domain.Entities.Permissions.RecordPermission<LogHub.Domain.Entities.DataManagementPlans.DmpPermissionId, LogHub.Domain.Entities.DataManagementPlans.DmpId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("DataManagementPlanId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DataManagementPlanId");
-
-                    b.HasIndex("RecordId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DataManagementPlanPermissions");
-                });
-
             modelBuilder.Entity("LogHub.Domain.Entities.Permissions.RecordPermission<LogHub.Domain.Entities.Docs.DocPermissionId, LogHub.Domain.Entities.Docs.DocumentId>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -582,44 +551,6 @@ namespace LogHub.Persistence.Migrations
                     b.HasIndex("RecordId");
 
                     b.ToTable("BaseRequests");
-                });
-
-            modelBuilder.Entity("LogHub.Domain.Entities.Requests.RecordRequest<LogHub.Domain.Entities.DataManagementPlans.DmpRequestId, LogHub.Domain.Entities.DataManagementPlans.DmpId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("HandlerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HandlerId");
-
-                    b.HasIndex("InitiatorId");
-
-                    b.HasIndex("RecordId");
-
-                    b.ToTable("DataManagementPlanRequests");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Requests.RecordRequest<LogHub.Domain.Entities.Docs.DocRequestId, LogHub.Domain.Entities.Docs.DocumentId>", b =>
@@ -756,6 +687,13 @@ namespace LogHub.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", b =>
+                {
+                    b.HasBaseType("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlanTemplate");
+
+                    b.HasDiscriminator().HasValue("DataManagementPlan");
+                });
+
             modelBuilder.Entity("LogHub.Domain.Entities.Actions.RecordAction<LogHub.Domain.Entities.Bases.BaseActionId, LogHub.Domain.Entities.Bases.BaseId>", b =>
                 {
                     b.HasOne("LogHub.Domain.Entities.Users.User", null)
@@ -765,19 +703,6 @@ namespace LogHub.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("LogHub.Domain.Entities.Bases.Base", null)
-                        .WithMany("Actions")
-                        .HasForeignKey("RecordId");
-                });
-
-            modelBuilder.Entity("LogHub.Domain.Entities.Actions.RecordAction<LogHub.Domain.Entities.DataManagementPlans.DmpActionId, LogHub.Domain.Entities.DataManagementPlans.DmpId>", b =>
-                {
-                    b.HasOne("LogHub.Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
                         .WithMany("Actions")
                         .HasForeignKey("RecordId");
                 });
@@ -810,6 +735,12 @@ namespace LogHub.Persistence.Migrations
 
             modelBuilder.Entity("LogHub.Domain.Entities.Bases.Base", b =>
                 {
+                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
+                        .WithMany()
+                        .HasForeignKey("DmpId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LogHub.Domain.Entities.Organisations.Organisation", null)
                         .WithMany()
                         .HasForeignKey("OrganisationId")
@@ -826,22 +757,24 @@ namespace LogHub.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", b =>
+            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", b =>
                 {
+                    b.HasOne("LogHub.Domain.Entities.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+
                     b.HasOne("LogHub.Domain.Entities.Organisations.Organisation", null)
-                        .WithMany("DataManagementPlans")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("DataManagementPlanTemplates")
+                        .HasForeignKey("OrganisationId");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.Question", b =>
                 {
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
+                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", null)
                         .WithMany("Questions")
-                        .HasForeignKey("DataManagementPlanId");
+                        .HasForeignKey("DataManagementPlanTemplateId");
 
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
+                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", null)
                         .WithMany()
                         .HasForeignKey("DmpId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -855,14 +788,24 @@ namespace LogHub.Persistence.Migrations
                         .HasForeignKey("DocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("LogHub.Domain.Entities.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Docs.DocLabel", b =>
                 {
                     b.HasOne("LogHub.Domain.Entities.Docs.Document", null)
                         .WithMany("Labels")
-                        .HasForeignKey("DocId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DocumentId");
+
+                    b.HasOne("LogHub.Domain.Entities.Bases.Label", null)
+                        .WithMany()
+                        .HasForeignKey("LabelId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -877,8 +820,14 @@ namespace LogHub.Persistence.Migrations
 
             modelBuilder.Entity("LogHub.Domain.Entities.Docs.FavouriteDoc", b =>
                 {
+                    b.HasOne("LogHub.Domain.Entities.Docs.Document", null)
+                        .WithMany()
+                        .HasForeignKey("DocId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("LogHub.Domain.Entities.Users.User", null)
-                        .WithMany("FavouritePages")
+                        .WithMany("FavouriteDocs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -924,23 +873,6 @@ namespace LogHub.Persistence.Migrations
                         .HasForeignKey("BaseId");
 
                     b.HasOne("LogHub.Domain.Entities.Bases.Base", null)
-                        .WithMany()
-                        .HasForeignKey("RecordId");
-
-                    b.HasOne("LogHub.Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LogHub.Domain.Entities.Permissions.RecordPermission<LogHub.Domain.Entities.DataManagementPlans.DmpPermissionId, LogHub.Domain.Entities.DataManagementPlans.DmpId>", b =>
-                {
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
-                        .WithMany("Permissions")
-                        .HasForeignKey("DataManagementPlanId");
-
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
                         .WithMany()
                         .HasForeignKey("RecordId");
 
@@ -1000,25 +932,6 @@ namespace LogHub.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("LogHub.Domain.Entities.Bases.Base", null)
-                        .WithMany("Requests")
-                        .HasForeignKey("RecordId");
-                });
-
-            modelBuilder.Entity("LogHub.Domain.Entities.Requests.RecordRequest<LogHub.Domain.Entities.DataManagementPlans.DmpRequestId, LogHub.Domain.Entities.DataManagementPlans.DmpId>", b =>
-                {
-                    b.HasOne("LogHub.Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("HandlerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("LogHub.Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
                         .WithMany("Requests")
                         .HasForeignKey("RecordId");
                 });
@@ -1113,15 +1026,9 @@ namespace LogHub.Persistence.Migrations
                     b.Navigation("Requests");
                 });
 
-            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", b =>
+            modelBuilder.Entity("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", b =>
                 {
-                    b.Navigation("Actions");
-
-                    b.Navigation("Permissions");
-
                     b.Navigation("Questions");
-
-                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Docs.Document", b =>
@@ -1148,14 +1055,14 @@ namespace LogHub.Persistence.Migrations
 
             modelBuilder.Entity("LogHub.Domain.Entities.Organisations.Organisation", b =>
                 {
-                    b.Navigation("DataManagementPlans");
+                    b.Navigation("DataManagementPlanTemplates");
 
                     b.Navigation("Departments");
                 });
 
             modelBuilder.Entity("LogHub.Domain.Entities.Users.User", b =>
                 {
-                    b.Navigation("FavouritePages");
+                    b.Navigation("FavouriteDocs");
                 });
 #pragma warning restore 612, 618
         }

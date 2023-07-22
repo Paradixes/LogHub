@@ -28,9 +28,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired(false);
 
         builder.OwnsOne(u => u.UserSetting);
-
-        builder.HasMany(u => u.FavouritePages)
-            .WithOne()
-            .HasForeignKey(fp => fp.UserId);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using LogHub.Persistence;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LogHub.Web.API.Extensions;
 

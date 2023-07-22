@@ -21,13 +21,5 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
             .WithMany()
             .HasForeignKey(o => o.ManagerId)
             .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasMany(o => o.Departments)
-            .WithOne()
-            .HasForeignKey(d => d.OrganisationId);
-
-        builder.HasMany(o => o.DataManagementPlans)
-            .WithOne()
-            .HasForeignKey(dmp => dmp.OrganisationId);
     }
 }

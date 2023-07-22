@@ -15,19 +15,9 @@ public class DocumentConfiguration : IEntityTypeConfiguration<Document>
             documentId => documentId.Value,
             value => new DocumentId(value));
 
-        builder.ToTable("Documents");
-
         builder.HasOne<Logbook>()
             .WithMany()
             .HasForeignKey(d => d.LogbookId);
-
-        builder.HasMany(d => d.Labels)
-            .WithOne()
-            .HasForeignKey(l => l.DocId);
-
-        builder.HasMany(d => d.Editors)
-            .WithOne()
-            .HasForeignKey(e => e.DocId);
 
         builder.Property(d => d.Status).IsRequired();
 

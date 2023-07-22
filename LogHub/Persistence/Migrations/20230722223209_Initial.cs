@@ -123,7 +123,7 @@ namespace LogHub.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Documents",
+                name: "Docs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -138,29 +138,11 @@ namespace LogHub.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Documents", x => x.Id);
+                    table.PrimaryKey("PK_Docs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Documents_Logbooks_LogbookId",
+                        name: "FK_Docs_Logbooks_LogbookId",
                         column: x => x.LogbookId,
                         principalTable: "Logbooks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DocEditors",
-                columns: table => new
-                {
-                    DocId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DocEditors", x => new { x.DocId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_DocEditors_Documents_DocId",
-                        column: x => x.DocId,
-                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -170,83 +152,40 @@ namespace LogHub.Persistence.Migrations
                 columns: table => new
                 {
                     DocId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LabelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    LabelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DocumentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DocLabels", x => new { x.DocId, x.LabelId });
                     table.ForeignKey(
-                        name: "FK_DocLabels_Documents_DocId",
-                        column: x => x.DocId,
-                        principalTable: "Documents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_DocLabels_Docs_DocumentId",
+                        column: x => x.DocumentId,
+                        principalTable: "Docs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DocLabels_Labels_LabelId",
+                        column: x => x.LabelId,
+                        principalTable: "Labels",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "DataManagementPlanActions",
+                name: "DataManagementPlanTemplates",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RecordId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    InitiatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataManagementPlanActions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DataManagementPlanPermissions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RecordId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Level = table.Column<int>(type: "int", nullable: false),
-                    DataManagementPlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataManagementPlanPermissions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DataManagementPlanRequests",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HandlerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    RecordId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    InitiatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataManagementPlanRequests", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DataManagementPlans",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DataManagementPlans", x => x.Id);
+                    table.PrimaryKey("PK_DataManagementPlanTemplates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -258,20 +197,20 @@ namespace LogHub.Persistence.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataManagementPlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    DataManagementPlanTemplateId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questions_DataManagementPlans_DataManagementPlanId",
-                        column: x => x.DataManagementPlanId,
-                        principalTable: "DataManagementPlans",
+                        name: "FK_Questions_DataManagementPlanTemplates_DataManagementPlanTemplateId",
+                        column: x => x.DataManagementPlanTemplateId,
+                        principalTable: "DataManagementPlanTemplates",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Questions_DataManagementPlans_DmpId",
+                        name: "FK_Questions_DataManagementPlanTemplates_DmpId",
                         column: x => x.DmpId,
-                        principalTable: "DataManagementPlans",
+                        principalTable: "DataManagementPlanTemplates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -307,10 +246,28 @@ namespace LogHub.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_DocActions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DocActions_Documents_RecordId",
+                        name: "FK_DocActions_Docs_RecordId",
                         column: x => x.RecordId,
-                        principalTable: "Documents",
+                        principalTable: "Docs",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DocEditors",
+                columns: table => new
+                {
+                    DocId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocEditors", x => new { x.DocId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_DocEditors_Docs_DocId",
+                        column: x => x.DocId,
+                        principalTable: "Docs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -327,14 +284,14 @@ namespace LogHub.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_DocPermissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DocPermissions_Documents_DocumentId",
+                        name: "FK_DocPermissions_Docs_DocumentId",
                         column: x => x.DocumentId,
-                        principalTable: "Documents",
+                        principalTable: "Docs",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_DocPermissions_Documents_RecordId",
+                        name: "FK_DocPermissions_Docs_RecordId",
                         column: x => x.RecordId,
-                        principalTable: "Documents",
+                        principalTable: "Docs",
                         principalColumn: "Id");
                 });
 
@@ -355,9 +312,9 @@ namespace LogHub.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_DocRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DocRequests_Documents_RecordId",
+                        name: "FK_DocRequests_Docs_RecordId",
                         column: x => x.RecordId,
-                        principalTable: "Documents",
+                        principalTable: "Docs",
                         principalColumn: "Id");
                 });
 
@@ -371,6 +328,11 @@ namespace LogHub.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FavouriteDocs", x => new { x.DocId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_FavouriteDocs_Docs_DocId",
+                        column: x => x.DocId,
+                        principalTable: "Docs",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -542,48 +504,13 @@ namespace LogHub.Persistence.Migrations
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanActions_InitiatorId",
-                table: "DataManagementPlanActions",
-                column: "InitiatorId");
+                name: "IX_DataManagementPlanTemplates_CreatorId",
+                table: "DataManagementPlanTemplates",
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanActions_RecordId",
-                table: "DataManagementPlanActions",
-                column: "RecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanPermissions_DataManagementPlanId",
-                table: "DataManagementPlanPermissions",
-                column: "DataManagementPlanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanPermissions_RecordId",
-                table: "DataManagementPlanPermissions",
-                column: "RecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanPermissions_UserId",
-                table: "DataManagementPlanPermissions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanRequests_HandlerId",
-                table: "DataManagementPlanRequests",
-                column: "HandlerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanRequests_InitiatorId",
-                table: "DataManagementPlanRequests",
-                column: "InitiatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlanRequests_RecordId",
-                table: "DataManagementPlanRequests",
-                column: "RecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataManagementPlans_OrganisationId",
-                table: "DataManagementPlans",
+                name: "IX_DataManagementPlanTemplates_OrganisationId",
+                table: "DataManagementPlanTemplates",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
@@ -605,6 +532,21 @@ namespace LogHub.Persistence.Migrations
                 name: "IX_DocActions_RecordId",
                 table: "DocActions",
                 column: "RecordId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocEditors_UserId",
+                table: "DocEditors",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocLabels_DocumentId",
+                table: "DocLabels",
+                column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocLabels_LabelId",
+                table: "DocLabels",
+                column: "LabelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocPermissions_DocumentId",
@@ -637,8 +579,8 @@ namespace LogHub.Persistence.Migrations
                 column: "RecordId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_LogbookId",
-                table: "Documents",
+                name: "IX_Docs_LogbookId",
+                table: "Docs",
                 column: "LogbookId");
 
             migrationBuilder.CreateIndex(
@@ -702,9 +644,9 @@ namespace LogHub.Persistence.Migrations
                 column: "ManagerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_DataManagementPlanId",
+                name: "IX_Questions_DataManagementPlanTemplateId",
                 table: "Questions",
-                column: "DataManagementPlanId");
+                column: "DataManagementPlanTemplateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_DmpId",
@@ -794,70 +736,18 @@ namespace LogHub.Persistence.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanActions_DataManagementPlans_RecordId",
-                table: "DataManagementPlanActions",
-                column: "RecordId",
-                principalTable: "DataManagementPlans",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanActions_Users_InitiatorId",
-                table: "DataManagementPlanActions",
-                column: "InitiatorId",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanPermissions_DataManagementPlans_DataManagementPlanId",
-                table: "DataManagementPlanPermissions",
-                column: "DataManagementPlanId",
-                principalTable: "DataManagementPlans",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanPermissions_DataManagementPlans_RecordId",
-                table: "DataManagementPlanPermissions",
-                column: "RecordId",
-                principalTable: "DataManagementPlans",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanPermissions_Users_UserId",
-                table: "DataManagementPlanPermissions",
-                column: "UserId",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanRequests_DataManagementPlans_RecordId",
-                table: "DataManagementPlanRequests",
-                column: "RecordId",
-                principalTable: "DataManagementPlans",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanRequests_Users_HandlerId",
-                table: "DataManagementPlanRequests",
-                column: "HandlerId",
-                principalTable: "Users",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlanRequests_Users_InitiatorId",
-                table: "DataManagementPlanRequests",
-                column: "InitiatorId",
-                principalTable: "Users",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DataManagementPlans_Organisations_OrganisationId",
-                table: "DataManagementPlans",
+                name: "FK_DataManagementPlanTemplates_Organisations_OrganisationId",
+                table: "DataManagementPlanTemplates",
                 column: "OrganisationId",
                 principalTable: "Organisations",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DataManagementPlanTemplates_Users_CreatorId",
+                table: "DataManagementPlanTemplates",
+                column: "CreatorId",
+                principalTable: "Users",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Department_Organisations_OrganisationId",
@@ -881,6 +771,13 @@ namespace LogHub.Persistence.Migrations
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DocEditors_Users_UserId",
+                table: "DocEditors",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DocPermissions_Users_UserId",
@@ -971,15 +868,6 @@ namespace LogHub.Persistence.Migrations
                 name: "BaseRequests");
 
             migrationBuilder.DropTable(
-                name: "DataManagementPlanActions");
-
-            migrationBuilder.DropTable(
-                name: "DataManagementPlanPermissions");
-
-            migrationBuilder.DropTable(
-                name: "DataManagementPlanRequests");
-
-            migrationBuilder.DropTable(
                 name: "DocActions");
 
             migrationBuilder.DropTable(
@@ -998,9 +886,6 @@ namespace LogHub.Persistence.Migrations
                 name: "FavouriteDocs");
 
             migrationBuilder.DropTable(
-                name: "Labels");
-
-            migrationBuilder.DropTable(
                 name: "LogbookActions");
 
             migrationBuilder.DropTable(
@@ -1013,10 +898,13 @@ namespace LogHub.Persistence.Migrations
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Documents");
+                name: "Labels");
 
             migrationBuilder.DropTable(
-                name: "DataManagementPlans");
+                name: "Docs");
+
+            migrationBuilder.DropTable(
+                name: "DataManagementPlanTemplates");
 
             migrationBuilder.DropTable(
                 name: "Logbooks");

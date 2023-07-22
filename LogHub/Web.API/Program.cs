@@ -1,34 +1,32 @@
-using Carter;
 using LogHub.Application;
 using LogHub.Persistence;
 using LogHub.Web.API.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMvc();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5196") });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+// Add project services.
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
-builder.Services.AddCarter();
+
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.ApplyMigrations();
     app.UseWebAssemblyDebugging();
+    // app.UseSwagger();
+    // app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 else
 {
@@ -41,14 +39,11 @@ app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
+app.UseAuthorization();
 app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
-app.UseRateLimiter();
-
-app.UseAuthorization();
 
 app.Run();

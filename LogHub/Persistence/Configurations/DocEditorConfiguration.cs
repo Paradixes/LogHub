@@ -18,5 +18,14 @@ public class DocEditorConfiguration : IEntityTypeConfiguration<DocEditor>
         builder.Property(x => x.UserId).HasConversion(
             userId => userId.Value,
             value => new UserId(value));
+
+        builder.HasOne<Document>()
+            .WithMany(d => d.Editors)
+            .HasForeignKey(x => x.DocId);
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

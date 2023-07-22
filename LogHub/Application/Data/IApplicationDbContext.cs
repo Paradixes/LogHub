@@ -21,11 +21,7 @@ public interface IApplicationDbContext
 
     DbSet<Question> Questions { get; set; }
 
-    DbSet<RecordAction<DmpActionId, DmpId>> DataManagementPlanActions { get; set; }
-
-    DbSet<RecordPermission<DmpPermissionId, DmpId>> DataManagementPlanPermissions { get; set; }
-
-    DbSet<RecordRequest<DmpRequestId, DmpId>> DataManagementPlanRequests { get; set; }
+    DbSet<DataManagementPlanTemplate> DataManagementPlanTemplates { get; set; }
 
     DbSet<DataManagementPlan> DataManagementPlans { get; set; }
 

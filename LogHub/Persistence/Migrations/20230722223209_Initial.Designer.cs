@@ -4,6 +4,7 @@ using LogHub.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogHub.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230722223209_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,14 +126,8 @@ namespace LogHub.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("DmpId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime2");
@@ -143,8 +140,6 @@ namespace LogHub.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DmpId");
 
                     b.HasIndex("OrganisationId");
 
@@ -732,12 +727,6 @@ namespace LogHub.Persistence.Migrations
 
             modelBuilder.Entity("LogHub.Domain.Entities.Bases.Base", b =>
                 {
-                    b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
-                        .WithMany()
-                        .HasForeignKey("DmpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LogHub.Domain.Entities.Organisations.Organisation", null)
                         .WithMany()
                         .HasForeignKey("OrganisationId")

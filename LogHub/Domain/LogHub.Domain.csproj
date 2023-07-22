@@ -11,8 +11,4 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.9" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Entities\Records\" />
-    </ItemGroup>
-
 </Project>

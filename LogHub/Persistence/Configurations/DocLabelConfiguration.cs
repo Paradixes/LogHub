@@ -18,5 +18,10 @@ public class DocLabelConfiguration : IEntityTypeConfiguration<DocLabel>
         builder.Property(x => x.LabelId).HasConversion(
             labelId => labelId.Value,
             value => new LabelId(value));
+
+        builder.HasOne<Label>()
+            .WithMany()
+            .HasForeignKey(x => x.LabelId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

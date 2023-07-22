@@ -1,6 +1,5 @@
 ﻿using LogHub.Domain.Entities.Actions;
 using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.DataManagementPlans;
 using LogHub.Domain.Entities.Docs;
 using LogHub.Domain.Entities.Logbooks;
 using LogHub.Domain.Entities.Users;
@@ -8,32 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LogHub.Persistence.Configurations;
-
-public class DmpActionConfiguration : IEntityTypeConfiguration<RecordAction<DmpActionId, DmpId>>
-{
-    public void Configure(EntityTypeBuilder<RecordAction<DmpActionId, DmpId>> builder)
-    {
-        builder.HasKey(a => a.Id);
-
-        builder.Property(a => a.Id).HasConversion(
-            actionId => actionId.Value,
-            value => new DmpActionId(value));
-
-        builder.HasOne<DataManagementPlan>()
-            .WithMany(r => r.Actions)
-            .HasForeignKey(a => a.RecordId);
-
-        builder.Property(a => a.RecordId).HasConversion(
-            recordId => recordId.Value,
-            value => new DmpId(value));
-
-        builder.HasOne<User>()
-            .WithMany()
-            .HasForeignKey(a => a.InitiatorId);
-
-        builder.Property(a => a.Message).IsRequired();
-    }
-}
 
 public class BaseActionConfiguration : IEntityTypeConfiguration<RecordAction<BaseActionId, BaseId>>
 {

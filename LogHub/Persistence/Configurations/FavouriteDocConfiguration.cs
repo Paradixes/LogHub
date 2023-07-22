@@ -18,5 +18,10 @@ public class FavouriteDocConfiguration : IEntityTypeConfiguration<FavouriteDoc>
         builder.Property(x => x.UserId).HasConversion(
             userId => userId.Value,
             value => new UserId(value));
+
+        builder.HasOne<Document>()
+            .WithMany()
+            .HasForeignKey(x => x.DocId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

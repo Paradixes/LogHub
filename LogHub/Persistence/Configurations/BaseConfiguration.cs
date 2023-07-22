@@ -1,4 +1,5 @@
 ﻿using LogHub.Domain.Entities.Bases;
+using LogHub.Domain.Entities.DataManagementPlans;
 using LogHub.Domain.Entities.Organisations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -15,15 +16,13 @@ public class BaseConfiguration : IEntityTypeConfiguration<Base>
             baseId => baseId.Value,
             value => new BaseId(value));
 
-        builder.ToTable("Bases");
-
-        builder.HasMany(b => b.Labels)
-            .WithOne()
-            .HasForeignKey(l => l.BaseId);
-
         builder.HasOne<Organisation>()
             .WithMany()
             .HasForeignKey(b => b.OrganisationId);
+
+        builder.HasOne<DataManagementPlan>()
+            .WithMany()
+            .HasForeignKey(b => b.DmpId);
 
         builder.Property(b => b.Title).IsRequired();
 

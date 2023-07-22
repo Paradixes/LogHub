@@ -18,13 +18,9 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
         builder.Property(d => d.Name).IsRequired();
 
         builder.HasOne<Organisation>()
-            .WithMany()
+            .WithMany(o => o.Departments)
             .HasForeignKey(d => d.OrganisationId)
             .IsRequired();
-
-        builder.HasMany<User>()
-            .WithOne()
-            .HasForeignKey(u => u.DepartmentId);
 
         builder.HasOne<User>()
             .WithMany()

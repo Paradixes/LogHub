@@ -1,4 +1,5 @@
-﻿using LogHub.Domain.Entities.Organisations;
+﻿using LogHub.Domain.Entities.DataManagementPlans;
+using LogHub.Domain.Entities.Organisations;
 using LogHub.Domain.Entities.Users;
 using LogHub.Domain.Primitives;
 
@@ -24,6 +25,10 @@ public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseReq
     public IEnumerable<Label> Labels => _labels.AsReadOnly();
 
     public OrganisationId OrganisationId { get; private set; } = null!;
+
+    public bool IsFinished { get; private set; }
+
+    public DmpId DmpId { get; private set; } = null!;
 
     public void AddLabel(string name, string color)
     {
@@ -51,5 +56,10 @@ public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseReq
         }
 
         _labels.Remove(label);
+    }
+
+    public void Finish()
+    {
+        IsFinished = true;
     }
 }

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application\LogHub.Application.csproj" />
     <ProjectReference Include="..\Shared\LogHub.Shared.csproj" />
   </ItemGroup>
 

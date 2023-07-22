@@ -6,7 +6,7 @@ namespace LogHub.Domain.Entities.Organisations;
 
 public class Organisation : Entity<OrganisationId>
 {
-    private readonly List<DataManagementPlan> _dataManagementPlans = new();
+    private readonly List<DataManagementPlanTemplate> _dataManagementPlanTemplates = new();
 
     private readonly List<Department> _departments = new();
 
@@ -14,7 +14,7 @@ public class Organisation : Entity<OrganisationId>
 
     public IEnumerable<Department> Departments => _departments.ToList();
 
-    public IEnumerable<DataManagementPlan> DataManagementPlans => _dataManagementPlans.ToList();
+    public IEnumerable<DataManagementPlanTemplate> DataManagementPlanTemplates => _dataManagementPlanTemplates.ToList();
 
     public UserId ManagerId { get; private set; } = null!;
 
@@ -71,7 +71,7 @@ public class Organisation : Entity<OrganisationId>
         _departments.Remove(department);
     }
 
-    public void AddDataManagementPlan(
+    public void AddDataManagementPlanTemplate(
         UserId? managerId,
         string title,
         string? icon,
@@ -79,19 +79,19 @@ public class Organisation : Entity<OrganisationId>
     {
         managerId ??= ManagerId;
 
-        var dataManagementPlan = new DataManagementPlan(Id, managerId, title, icon, description);
-        _dataManagementPlans.Add(dataManagementPlan);
+        var dataManagementPlanTemplate = new DataManagementPlanTemplate(Id, managerId, title, description);
+        _dataManagementPlanTemplates.Add(dataManagementPlanTemplate);
     }
 
-    public void RemoveDataManagementPlan(RecordId recordId)
+    public void RemoveDataManagementPlanTemplate(RecordId recordId)
     {
-        var dataManagementPlan = _dataManagementPlans.SingleOrDefault(x => x.Id == recordId);
+        var dataManagementPlan = _dataManagementPlanTemplates.SingleOrDefault(x => x.Id == recordId);
         if (dataManagementPlan is null)
         {
             return;
         }
 
-        _dataManagementPlans.Remove(dataManagementPlan);
+        _dataManagementPlanTemplates.Remove(dataManagementPlan);
     }
 
     public void UpdateDetails(string name, string? icon, string? description)

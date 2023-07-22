@@ -27,9 +27,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
     public DbSet<User> Users { get; set; }
     public DbSet<Organisation> Organisations { get; set; }
     public DbSet<Question> Questions { get; set; }
-    public DbSet<RecordAction<DmpActionId, DmpId>> DataManagementPlanActions { get; set; }
-    public DbSet<RecordPermission<DmpPermissionId, DmpId>> DataManagementPlanPermissions { get; set; }
-    public DbSet<RecordRequest<DmpRequestId, DmpId>> DataManagementPlanRequests { get; set; }
+    public DbSet<DataManagementPlanTemplate> DataManagementPlanTemplates { get; set; }
     public DbSet<DataManagementPlan> DataManagementPlans { get; set; }
     public DbSet<Label> Labels { get; set; }
     public DbSet<RecordAction<BaseActionId, BaseId>> BaseActions { get; set; }

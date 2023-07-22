@@ -1,3 +1,5 @@
+using System;
+
 namespace LogHub.Web.API;
 
 public class WeatherForecast

@@ -19,7 +19,8 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
 
         builder.HasOne<User>()
             .WithMany()
-            .HasForeignKey(o => o.ManagerId);
+            .HasForeignKey(o => o.ManagerId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(o => o.Departments)
             .WithOne()

@@ -16,7 +16,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
 
         builder.HasOne<DataManagementPlan>()
             .WithMany()
-            .HasForeignKey(q => q.DataManagementPlanId);
+            .HasForeignKey(q => q.DmpId);
 
         builder.Property(q => q.Title).IsRequired();
     }

@@ -6,7 +6,7 @@ using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Docs;
 
-public class Document : RecordEntity<DocumentId>
+public class Document : RecordEntity<DocumentId, DocActionId, DocPermissionId, DocRequestId>
 {
     private readonly List<DocEditor> _editors = new();
 
@@ -38,8 +38,6 @@ public class Document : RecordEntity<DocumentId>
     public string? Content { get; private set; }
 
     public DocStatus Status { get; private set; }
-
-    public override RecordType RecordType { get; protected init; } = RecordType.Document;
 
     public void UpdateContent(string content)
     {

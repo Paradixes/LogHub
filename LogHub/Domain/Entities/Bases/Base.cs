@@ -1,11 +1,10 @@
 ﻿using LogHub.Domain.Entities.Organisations;
 using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Bases;
 
-public class Base : RecordEntity<BaseId>
+public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseRequestId>
 {
     private readonly List<Label> _labels = new();
 
@@ -25,8 +24,6 @@ public class Base : RecordEntity<BaseId>
     public IEnumerable<Label> Labels => _labels.AsReadOnly();
 
     public OrganisationId OrganisationId { get; private set; } = null!;
-
-    public override RecordType RecordType { get; protected init; } = RecordType.Base;
 
     public void AddLabel(string name, string color)
     {

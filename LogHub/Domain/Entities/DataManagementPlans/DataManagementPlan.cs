@@ -1,11 +1,10 @@
 ﻿using LogHub.Domain.Entities.Organisations;
 using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.DataManagementPlans;
 
-public class DataManagementPlan : RecordEntity<DataManagementPlanId>
+public class DataManagementPlan : RecordEntity<DmpId, DmpActionId, DmpPermissionId, DmpRequestId>
 {
     private readonly List<Question> _questions = new();
 
@@ -25,8 +24,6 @@ public class DataManagementPlan : RecordEntity<DataManagementPlanId>
     public IEnumerable<Question> Questions => _questions;
 
     public OrganisationId OrganisationId { get; private set; } = null!;
-
-    public override RecordType RecordType { get; protected init; } = RecordType.DataManagementPlan;
 
     public void AddQuestion(string title, string? description)
     {

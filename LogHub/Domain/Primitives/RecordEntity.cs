@@ -6,14 +6,17 @@ using LogHub.Domain.Enums;
 
 namespace LogHub.Domain.Primitives;
 
-public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
+public abstract class RecordEntity<TId, TActionId, TPermissionId, TRequestId> : Entity<TId>, IAuditableEntity
     where TId : RecordId
+    where TActionId : RecordActionId
+    where TPermissionId : RecordPermissionId
+    where TRequestId : RecordRequestId
 {
-    private readonly List<RecordAction> _actions = new();
+    private readonly List<RecordAction<TActionId, TId>> _actions = new();
 
-    private readonly List<Permission> _permissions = new();
+    private readonly List<RecordPermission<TPermissionId, TId>> _permissions = new();
 
-    private readonly List<RecordRequest> _requests = new();
+    private readonly List<RecordRequest<TRequestId, TId>> _requests = new();
 
     protected RecordEntity() { }
 
@@ -26,19 +29,17 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
         AddPermission(ownerId, PermissionLevel.Owner);
     }
 
-    public IEnumerable<RecordRequest> Requests => _requests.AsReadOnly();
+    public IEnumerable<RecordRequest<TRequestId, TId>> Requests => _requests.AsReadOnly();
 
-    public IEnumerable<RecordAction> Actions => _actions.AsReadOnly();
+    public IEnumerable<RecordAction<TActionId, TId>> Actions => _actions.AsReadOnly();
 
-    public IEnumerable<Permission> Permissions => _permissions.AsReadOnly();
+    public IEnumerable<RecordPermission<TPermissionId, TId>> Permissions => _permissions.AsReadOnly();
 
     public string Title { get; protected set; } = null!;
 
     public string? Icon { get; protected set; }
 
     public string? Description { get; protected set; }
-
-    public abstract RecordType RecordType { get; protected init; }
 
     public DateTime CreatedOnUtc { get; set; }
 
@@ -58,7 +59,7 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
             return;
         }
 
-        var permission = new Permission(userId, Id, RecordType.Base, level);
+        var permission = new RecordPermission<TPermissionId, TId>(userId, Id, level);
         _permissions.Add(permission);
     }
 
@@ -67,7 +68,7 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
         var permission = _permissions.FirstOrDefault(p => p.UserId == userId);
         if (permission is null)
         {
-            throw new InvalidOperationException($"Permission for user {userId} does not exist");
+            throw new InvalidOperationException($"RecordPermission for user {userId} does not exist");
         }
 
         permission.UpdateLevel(level);
@@ -78,7 +79,7 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
         var permission = _permissions.FirstOrDefault(p => p.UserId == userId);
         if (permission is null)
         {
-            throw new InvalidOperationException($"Permission for user {userId} does not exist");
+            throw new InvalidOperationException($"RecordPermission for user {userId} does not exist");
         }
 
         _permissions.Remove(permission);
@@ -86,7 +87,7 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
 
     public void AddRequest(UserId initiatorId, UserId handlerId, string message)
     {
-        var request = new RecordRequest(Id, initiatorId, handlerId, RecordType, message);
+        var request = new RecordRequest<TRequestId, TId>(Id, initiatorId, handlerId, message);
         _requests.Add(request);
     }
 
@@ -125,7 +126,7 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
 
     public void AddAction(UserId initiatorId, string message)
     {
-        var action = new RecordAction(Id, initiatorId, RecordType, message);
+        var action = new RecordAction<TActionId, TId>(Id, initiatorId, message);
         _actions.Add(action);
     }
 
@@ -142,7 +143,7 @@ public abstract class RecordEntity<TId> : Entity<TId>, IAuditableEntity
 
     public bool HasPermission(UserId userId, PermissionLevel level, RecordType recordType)
     {
-        var permission = _permissions.FirstOrDefault(p => p.UserId == userId && p.RecordType == recordType);
+        var permission = _permissions.FirstOrDefault(p => p.UserId == userId);
         if (permission is null)
         {
             return false;

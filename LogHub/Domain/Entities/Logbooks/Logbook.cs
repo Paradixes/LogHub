@@ -5,7 +5,7 @@ using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Logbooks;
 
-public class Logbook : RecordEntity<LogbookId>
+public class Logbook : RecordEntity<LogbookId, LogbookActionId, LogbookPermissionId, LogbookRequestId>
 {
     private Logbook() { }
 
@@ -29,8 +29,6 @@ public class Logbook : RecordEntity<LogbookId>
     public string? CoverImage { get; private set; }
 
     public Importance Importance { get; private set; }
-
-    public override RecordType RecordType { get; protected init; } = RecordType.Logbook;
 
     public void UpdateCoverImage(string coverImage)
     {

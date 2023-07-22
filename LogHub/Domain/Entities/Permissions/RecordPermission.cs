@@ -4,27 +4,25 @@ using LogHub.Domain.Primitives;
 
 namespace LogHub.Domain.Entities.Permissions;
 
-public class Permission : Entity<PermissionId>
+public class RecordPermission<TId, TRecordId> : Entity<TId>
+    where TId : RecordPermissionId
+    where TRecordId : RecordId
 {
-    private Permission() { }
+    private RecordPermission() { }
 
-    internal Permission(
+    internal RecordPermission(
         UserId userId,
-        RecordId recordId,
-        RecordType recordType,
+        TRecordId recordId,
         PermissionLevel level)
     {
         UserId = userId;
         RecordId = recordId;
-        RecordType = recordType;
         Level = level;
     }
 
     public UserId UserId { get; set; } = null!;
 
-    public RecordId RecordId { get; private init; } = null!;
-
-    public RecordType RecordType { get; private init; }
+    public TRecordId RecordId { get; private init; } = null!;
 
     public PermissionLevel Level { get; set; }
 

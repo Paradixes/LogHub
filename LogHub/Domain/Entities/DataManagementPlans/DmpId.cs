@@ -2,4 +2,4 @@
 
 namespace LogHub.Domain.Entities.DataManagementPlans;
 
-public record DataManagementPlanId(Guid Value) : RecordId(Value);
+public record DmpId(Guid Value) : RecordId(Value);

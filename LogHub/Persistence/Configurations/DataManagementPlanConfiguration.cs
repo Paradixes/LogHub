@@ -13,7 +13,7 @@ public class DataManagementPlanConfiguration : IEntityTypeConfiguration<DataMana
 
         builder.Property(dmp => dmp.Id).HasConversion(
             dmpId => dmpId.Value,
-            value => new DataManagementPlanId(value));
+            value => new DmpId(value));
 
         builder.ToTable("DataManagementPlans");
 
@@ -21,7 +21,7 @@ public class DataManagementPlanConfiguration : IEntityTypeConfiguration<DataMana
 
         builder.HasMany(dmp => dmp.Questions)
             .WithOne()
-            .HasForeignKey(q => q.DataManagementPlanId);
+            .HasForeignKey(q => q.DmpId);
 
         builder.HasOne<Organisation>()
             .WithMany(o => o.DataManagementPlans)

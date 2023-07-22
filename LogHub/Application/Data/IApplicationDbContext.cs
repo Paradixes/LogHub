@@ -7,7 +7,6 @@ using LogHub.Domain.Entities.Organisations;
 using LogHub.Domain.Entities.Permissions;
 using LogHub.Domain.Entities.Requests;
 using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -18,25 +17,41 @@ public interface IApplicationDbContext
 {
     DbSet<User> Users { get; set; }
 
-    DbSet<RecordEntity<RecordId>> Records { get; set; }
-
     DbSet<Organisation> Organisations { get; set; }
 
     DbSet<Question> Questions { get; set; }
 
-    DbSet<DataManagementPlan> DataManagementPlans { get; set; }
+    DbSet<RecordAction<DmpActionId, DmpId>> DataManagementPlanActions { get; set; }
 
-    DbSet<Permission> Permissions { get; set; }
+    DbSet<RecordPermission<DmpPermissionId, DmpId>> DataManagementPlanPermissions { get; set; }
+
+    DbSet<RecordRequest<DmpRequestId, DmpId>> DataManagementPlanRequests { get; set; }
+
+    DbSet<DataManagementPlan> DataManagementPlans { get; set; }
 
     DbSet<Label> Labels { get; set; }
 
+    DbSet<RecordAction<BaseActionId, BaseId>> BaseActions { get; set; }
+
+    DbSet<RecordPermission<BasePermissionId, BaseId>> BasePermissions { get; set; }
+
+    DbSet<RecordRequest<BaseRequestId, BaseId>> BaseRequests { get; set; }
+
     DbSet<Base> Bases { get; set; }
 
-    DbSet<RecordAction> RecordActions { get; set; }
+    DbSet<RecordAction<LogbookActionId, LogbookId>> LogbookActions { get; set; }
 
-    DbSet<RecordRequest> RecordRequests { get; set; }
+    DbSet<RecordPermission<LogbookPermissionId, LogbookId>> LogbookPermissions { get; set; }
+
+    DbSet<RecordRequest<LogbookRequestId, LogbookId>> LogbookRequests { get; set; }
 
     DbSet<Logbook> Logbooks { get; set; }
+
+    DbSet<RecordAction<DocActionId, DocumentId>> DocActions { get; set; }
+
+    DbSet<RecordPermission<DocPermissionId, DocumentId>> DocPermissions { get; set; }
+
+    DbSet<RecordRequest<DocRequestId, DocumentId>> DocRequests { get; set; }
 
     DbSet<Document> Docs { get; set; }
 

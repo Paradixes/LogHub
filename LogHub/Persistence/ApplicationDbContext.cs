@@ -24,35 +24,29 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
         _publisher = publisher;
     }
 
-    public DbSet<RecordEntity<RecordId>> Records { get; set; } = null!;
-
-    public DbSet<Organisation> Organisations { get; set; } = null!;
-
-    public DbSet<Question> Questions { get; set; } = null!;
-
-    public DbSet<DataManagementPlan> DataManagementPlans { get; set; } = null!;
-
-    public DbSet<Permission> Permissions { get; set; } = null!;
-
-    public DbSet<Label> Labels { get; set; } = null!;
-
-    public DbSet<Base> Bases { get; set; } = null!;
-
-    public DbSet<RecordAction> RecordActions { get; set; } = null!;
-
-    public DbSet<RecordRequest> RecordRequests { get; set; } = null!;
-
-    public DbSet<Logbook> Logbooks { get; set; } = null!;
-
-    public DbSet<Document> Docs { get; set; } = null!;
-
-    public DbSet<DocEditor> DocEditors { get; set; } = null!;
-
-    public DbSet<FavouriteDoc> FavouriteDocs { get; set; } = null!;
-
-    public DbSet<DocLabel> DocLabels { get; set; } = null!;
-
-    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<User> Users { get; set; }
+    public DbSet<Organisation> Organisations { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<RecordAction<DmpActionId, DmpId>> DataManagementPlanActions { get; set; }
+    public DbSet<RecordPermission<DmpPermissionId, DmpId>> DataManagementPlanPermissions { get; set; }
+    public DbSet<RecordRequest<DmpRequestId, DmpId>> DataManagementPlanRequests { get; set; }
+    public DbSet<DataManagementPlan> DataManagementPlans { get; set; }
+    public DbSet<Label> Labels { get; set; }
+    public DbSet<RecordAction<BaseActionId, BaseId>> BaseActions { get; set; }
+    public DbSet<RecordPermission<BasePermissionId, BaseId>> BasePermissions { get; set; }
+    public DbSet<RecordRequest<BaseRequestId, BaseId>> BaseRequests { get; set; }
+    public DbSet<Base> Bases { get; set; }
+    public DbSet<RecordAction<LogbookActionId, LogbookId>> LogbookActions { get; set; }
+    public DbSet<RecordPermission<LogbookPermissionId, LogbookId>> LogbookPermissions { get; set; }
+    public DbSet<RecordRequest<LogbookRequestId, LogbookId>> LogbookRequests { get; set; }
+    public DbSet<Logbook> Logbooks { get; set; }
+    public DbSet<RecordAction<DocActionId, DocumentId>> DocActions { get; set; }
+    public DbSet<RecordPermission<DocPermissionId, DocumentId>> DocPermissions { get; set; }
+    public DbSet<RecordRequest<DocRequestId, DocumentId>> DocRequests { get; set; }
+    public DbSet<Document> Docs { get; set; }
+    public DbSet<DocEditor> DocEditors { get; set; }
+    public DbSet<FavouriteDoc> FavouriteDocs { get; set; }
+    public DbSet<DocLabel> DocLabels { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {

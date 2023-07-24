@@ -14,11 +14,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogHub.Persistence;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWork
+public class LogHubDbContext : DbContext, IApplicationDbContext, IUnitOfWork
 {
     private readonly IPublisher _publisher;
 
-    public ApplicationDbContext(DbContextOptions options, IPublisher publisher)
+    public LogHubDbContext(DbContextOptions options, IPublisher publisher)
         : base(options)
     {
         _publisher = publisher;
@@ -73,6 +73,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWor
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(LogHubDbContext).Assembly);
     }
 }

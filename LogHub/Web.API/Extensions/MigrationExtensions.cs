@@ -1,7 +1,5 @@
 ﻿using LogHub.Persistence;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LogHub.Web.API.Extensions;
 
@@ -11,7 +9,7 @@ public static class MigrationExtensions
     {
         using var scope = app.Services.CreateScope();
 
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<LogHubDbContext>();
 
         dbContext.Database.Migrate();
     }

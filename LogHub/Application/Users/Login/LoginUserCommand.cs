@@ -2,4 +2,4 @@
 
 namespace LogHub.Application.Users.Login;
 
-public record LoginCommand(string Email, string Password) : ICommand<string>;
+public record LoginUserCommand(string Email, string Password) : ICommand<string>;

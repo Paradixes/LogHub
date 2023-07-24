@@ -6,9 +6,9 @@ namespace LogHub.Persistence.Repositories;
 
 public sealed class UserRepository : IUserRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly LogHubDbContext _context;
 
-    public UserRepository(ApplicationDbContext context)
+    public UserRepository(LogHubDbContext context)
     {
         _context = context;
     }

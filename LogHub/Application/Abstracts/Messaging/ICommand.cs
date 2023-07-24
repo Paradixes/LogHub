@@ -1,7 +1,7 @@
 ﻿using LogHub.Domain.Shared;
 using MediatR;
 
-namespace Gatherly.Application.Abstractions.Messaging;
+namespace LogHub.Application.Abstracts.Messaging;
 
 public interface ICommand : IRequest<Result> { }
 

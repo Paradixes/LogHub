@@ -1,21 +1,25 @@
+using Carter;
 using LogHub.Application;
+using LogHub.Infrastructure;
 using LogHub.Persistence;
 using LogHub.Web.API.Extensions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddRazorPages();
+
 builder.Services.AddMvc();
 
 // Add project services.
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
+builder.Services.AddSwaggerGen();
+builder.Services.AddCarter();
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
@@ -24,8 +28,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    // app.UseSwagger();
-    // app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.ApplyMigrations();
 }
 else
@@ -38,12 +42,19 @@ else
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
+
 app.UseStaticFiles();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.UseRouting();
 
 app.MapRazorPages();
-app.MapControllers();
+
+app.MapCarter();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

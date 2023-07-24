@@ -1,5 +1,4 @@
-﻿using Gatherly.Application.Abstractions.Messaging;
-using LogHub.Domain.Shared;
+﻿using LogHub.Domain.Shared;
 using MediatR;
 
 namespace LogHub.Application.Abstracts.Messaging;

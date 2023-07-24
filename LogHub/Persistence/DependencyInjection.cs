@@ -1,4 +1,6 @@
 ﻿using LogHub.Application.Data;
+using LogHub.Domain.Repositories;
+using LogHub.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,7 @@ public static class DependencyInjection
             sp.GetRequiredService<ApplicationDbContext>());
 
         // TODO: Add repositories here
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

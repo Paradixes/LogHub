@@ -1,15 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LogHub.Shared.ViewModel;
+namespace LogHub.Client.ViewModel;
 
 public class LoginViewModel
 {
     [Display(Name = "Email")]
     [Required(ErrorMessage = "Email is required")]
-    [EmailAddress(ErrorMessage = "The email address is invalid")]
+    [EmailAddress(ErrorMessage = "Email is not valid")]
+    [DataType(DataType.EmailAddress)]
     public string? Email { get; set; }
 
     [Display(Name = "Password")]
     [Required(ErrorMessage = "Password is required")]
+    [DataType(DataType.Password)]
     public string? Password { get; set; }
 }

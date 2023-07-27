@@ -1,7 +1,6 @@
 using Blazored.LocalStorage;
 using LogHub.Client;
-using LogHub.Client.Providers.Auth;
-using LogHub.Client.Services.Auth;
+using LogHub.Client.Services.Authentications;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -28,8 +27,9 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthStateProvider>();
+builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<IAuthenticationService>(a => a.GetRequiredService<AuthenticationService>());
+builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<AuthenticationService>());
 
 
 await builder.Build().RunAsync();

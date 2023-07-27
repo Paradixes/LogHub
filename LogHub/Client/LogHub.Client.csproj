@@ -27,18 +27,20 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Components\" />
       <Folder Include="Services\Validations\" />
+      <Folder Include="Shared\" />
     </ItemGroup>
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Features\Layouts\EmptyLayout.razor" />
       <_ContentIncludedByDefault Remove="Features\Layouts\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Layouts\EmptyLayout.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Layouts\MainLayout.razor" />
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Shared\Layouts\EmptyLayout.razor" />
-      <AdditionalFiles Include="Shared\Layouts\MainLayout.razor" />
+      <AdditionalFiles Include="Features\Components\LoadingScreen.razor" />
+      <AdditionalFiles Include="Features\Components\NavMenu.razor" />
     </ItemGroup>
 
 </Project>

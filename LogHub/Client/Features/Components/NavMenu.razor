@@ -1,0 +1,39 @@
+﻿@inject ILogHubAuthenticationService AuthenticationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <MudDrawer @bind-Open="DrawerOpen" Elevation="1">
+            <MudDrawerHeader>
+                <MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" FullWidth="true" Style="width: 100%">
+                    <ActivatorContent>
+                        <MudButton Color="Color.Surface" Style="width: 100%">
+                            <MudAvatar Color="Color.Tertiary" Size="Size.Medium">
+                                @User?.Name?[0]
+                            </MudAvatar>
+                            <MudText Typo="Typo.h6" Class="pl-2">@User?.Name</MudText>
+                            <MudSpacer/>
+                        </MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Href="/profile">
+                            Profile
+                        </MudMenuItem>
+                        <MudMenuItem Href="/settings">
+                            Settings
+                        </MudMenuItem>
+                        <MudMenuItem OnClick="LogOutAsync">
+                            Log out
+                        </MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            </MudDrawerHeader>
+            <MudNavMenu>
+                <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+                <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
+                <MudNavLink Href="userlist" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">User List</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+    </Authorized>
+</AuthorizeView>

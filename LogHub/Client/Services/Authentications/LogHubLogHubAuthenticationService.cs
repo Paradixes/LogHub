@@ -20,10 +20,15 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         _localStorage = localStorage;
     }
 
-    public async Task LogInAsync(LoginViewModel model)
+    public async Task<bool> LogInAsync(LoginViewModel model)
     {
         // query account info from the server
         var response = await _client.PostAsJsonAsync("api/users/login", model);
+        if (!response.IsSuccessStatusCode)
+        {
+            return false;
+        }
+
         response.EnsureSuccessStatusCode();
 
         var token = await response.Content.ReadAsStringAsync();
@@ -33,6 +38,8 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         await _localStorage.SetItemAsStringAsync("token", token);
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+
+        return true;
     }
 
     public async Task LogOutAsync()

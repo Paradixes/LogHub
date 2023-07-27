@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@inject ILogHubAuthenticationService AuthenticationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <AppBar User="User" DrawerOpenChanged="DrawerToggle"/>
+    <NavMenu DrawerOpen="_drawerOpen" User="User"/>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

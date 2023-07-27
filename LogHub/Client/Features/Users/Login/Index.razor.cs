@@ -7,6 +7,8 @@ public partial class Index
 {
     private MudForm _form = new();
 
+    private bool _isInvalidateCredentials;
+
     private bool _isShow;
 
     private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
@@ -18,11 +20,18 @@ public partial class Index
     private async Task SubmitAsync()
     {
         await _form.Validate();
-        if (_form.IsValid)
+        if (!_form.IsValid)
         {
-            await AuthenticationService.LogInAsync(Model);
-            NavigationManager.NavigateTo("/");
+            return;
         }
+
+        if (!await AuthenticationService.LogInAsync(Model))
+        {
+            _isInvalidateCredentials = true;
+            return;
+        }
+
+        NavigationManager.NavigateTo("/");
     }
 
     private void PasswordStatusChanged()

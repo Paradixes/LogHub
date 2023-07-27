@@ -3,7 +3,7 @@
 @layout EmptyLayout
 
 <MudItem xs="12" sm="7">
-    <MudPaper Class="pa-4">
+    <MudPaper Class="frosted-glass-container pa-4">
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!"/>
             <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"

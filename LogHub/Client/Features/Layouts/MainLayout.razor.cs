@@ -1,17 +1,17 @@
 ﻿using LogHub.Client.ViewModel;
-using MudBlazor;
 
-namespace LogHub.Client.Shared.Layouts;
+namespace LogHub.Client.Features.Layouts;
 
 public partial class MainLayout
 {
-    private readonly MudTheme _theme = new();
-
-    private bool _drawerOpen = true;
-
-    private bool _isDarkMode;
+    private bool _drawerOpen;
 
     protected UserViewModel? User { get; private set; }
+
+    private void DrawerToggle(bool isDrawerOpen)
+    {
+        _drawerOpen = isDrawerOpen;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -21,16 +21,5 @@ public partial class MainLayout
         {
             User = UserViewModel.Create(claims);
         }
-    }
-
-    private void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    private async Task LogOutAsync()
-    {
-        await AuthenticationService.LogOutAsync();
-        NavigationManager.NavigateTo("/");
     }
 }

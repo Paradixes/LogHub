@@ -1,17 +1,19 @@
 ﻿@page "/login"
+@using LogHub.Client.Services.Authentications
 @layout EmptyLayout
+@inject ILogHubAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
 
-<div class="page-background-class">
-    <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-block" Style="text-align: center; align-items: center">
-        <MudImage Src="/img/logo-total.jpg" Width="300" Class="py-3 justify-center"/>
-        <MudPaper Elevation="5" Class="container d-flex flex-column py-8 px-10">
-            <MudForm Model="@Model" @ref="@_form" ValidationDelay="0">
-                <MudTextField T="string" Label="Email" @bind-Value="Model.Email" For="@(() => Model.Email)" HelperText="Enter your email" HelperTextOnFocus="true" OnlyValidateIfDirty="true"/>
 
-                <MudTextField T="string" Label="Password" @bind-Value="Model.Password" For="@(() => Model.Password)" Immediate="true" HelperText="Enter your password" HelperTextOnFocus="true" InputType="_passwordInputType" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="PasswordStatusChanged" AdornmentAriaLabel="Show Password" OnlyValidateIfDirty="true"/>
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-block" Style="text-align: center; align-items: center">
+    <MudImage Src="/img/logo.png" Width="300" Class="py-3 justify-center"/>
+    <MudPaper Elevation="5" Class="container d-flex flex-column py-8 px-10">
+        <MudForm Model="@Model" @ref="@_form" ValidationDelay="0">
+            <MudTextField T="string" Label="Email" @bind-Value="Model.Email" For="@(() => Model.Email)" HelperText="Enter your email" HelperTextOnFocus="true" OnlyValidateIfDirty="true"/>
 
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitAsync" Size="Size.Large" FullWidth="true" Class="mt-3">Login</MudButton>
-            </MudForm>
-        </MudPaper>
-    </MudContainer>
-</div>
+            <MudTextField T="string" Label="Password" @bind-Value="Model.Password" For="@(() => Model.Password)" Immediate="true" HelperText="Enter your password" HelperTextOnFocus="true" InputType="_passwordInputType" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="PasswordStatusChanged" AdornmentAriaLabel="Show Password" OnlyValidateIfDirty="true"/>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitAsync" Size="Size.Large" FullWidth="true" Class="mt-3">Login</MudButton>
+        </MudForm>
+    </MudPaper>
+</MudContainer>

@@ -2,7 +2,7 @@
 
 public enum UserRole
 {
-    DataManager, // Can create and manage data sources
-    Recorder, // Can record and manage data
-    Administrator // Can manage users and organisations
+    DataManager = 0, // Can create and manage data sources
+    Recorder = 1, // Can record and manage data
+    Administrator = 2 // Can manage users and organisations
 }

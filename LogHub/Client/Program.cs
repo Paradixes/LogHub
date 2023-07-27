@@ -27,9 +27,10 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<AuthenticationService>();
-builder.Services.AddScoped<IAuthenticationService>(a => a.GetRequiredService<AuthenticationService>());
-builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<AuthenticationService>());
+builder.Services.AddScoped<LogHubLogHubAuthenticationService>();
+builder.Services.AddScoped<ILogHubAuthenticationService>(a =>
+    a.GetRequiredService<LogHubLogHubAuthenticationService>());
+builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<LogHubLogHubAuthenticationService>());
 
 
 await builder.Build().RunAsync();

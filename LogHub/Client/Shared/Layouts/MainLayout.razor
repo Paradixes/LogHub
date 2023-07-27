@@ -1,6 +1,7 @@
 ﻿@using LogHub.Client.Services.Authentications
 @inherits LayoutComponentBase
-@inject IAuthenticationService AuthenticationService
+@inject ILogHubAuthenticationService AuthenticationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
@@ -15,8 +16,9 @@
             <Authorized>
                 <MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopLeft">
                     <ActivatorContent>
+                        @User?.Name
                         <MudAvatar Color="Color.Tertiary">
-                            A
+                            @User?.Name?[0]
                         </MudAvatar>
                     </ActivatorContent>
                     <ChildContent>
@@ -62,21 +64,3 @@
         </MudContainer>
     </MudMainContent>
 </MudLayout>
-
-@code {
-    private bool _drawerOpen = true;
-    private bool _isDarkMode;
-    private readonly MudTheme _theme = new();
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    private async Task LogOutAsync()
-    {
-        await AuthenticationService.LogOutAsync();
-        NavigationManager.NavigateTo("/");
-    }
-
-}

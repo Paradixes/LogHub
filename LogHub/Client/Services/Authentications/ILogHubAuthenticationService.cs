@@ -2,7 +2,7 @@
 
 namespace LogHub.Client.Services.Authentications;
 
-public interface IAuthenticationService
+public interface ILogHubAuthenticationService
 {
     Task LogInAsync(LoginViewModel model);
 

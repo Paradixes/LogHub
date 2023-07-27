@@ -1,6 +1,4 @@
-﻿using LogHub.Client.Services.Authentications;
-using LogHub.Client.ViewModel;
-using Microsoft.AspNetCore.Components;
+﻿using LogHub.Client.ViewModel;
 using MudBlazor;
 
 namespace LogHub.Client.Features.Users.Login;
@@ -15,10 +13,6 @@ public partial class Index
 
     private InputType _passwordInputType = InputType.Password;
 
-    [Inject] private IAuthenticationService _authenticationService { get; set; }
-
-    [Inject] private NavigationManager _navigationManager { get; set; }
-
     private LoginViewModel Model { get; } = new();
 
     private async Task SubmitAsync()
@@ -26,8 +20,8 @@ public partial class Index
         await _form.Validate();
         if (_form.IsValid)
         {
-            await _authenticationService.LogInAsync(Model);
-            _navigationManager.NavigateTo("/");
+            await AuthenticationService.LogInAsync(Model);
+            NavigationManager.NavigateTo("/");
         }
     }
 

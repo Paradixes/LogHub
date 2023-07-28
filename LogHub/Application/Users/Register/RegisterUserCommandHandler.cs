@@ -31,8 +31,8 @@ public class RegisterUserCommandHandler :
         var user = User.Create(
             request.Name,
             request.Email,
-            request.OrganisationId,
-            request.DepartmentId,
+            null,
+            null,
             request.Profession,
             request.Orcid,
             request.Role);

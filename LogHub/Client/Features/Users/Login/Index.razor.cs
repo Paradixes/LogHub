@@ -15,7 +15,7 @@ public partial class Index
 
     private InputType _passwordInputType = InputType.Password;
 
-    private LoginViewModel Model { get; } = new();
+    private LoginModel Model { get; } = new();
 
     private async Task SubmitAsync()
     {

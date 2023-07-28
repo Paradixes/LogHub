@@ -14,7 +14,7 @@ public partial class AppBar
 
     [Parameter] public EventCallback<bool> DrawerOpenChanged { get; set; }
 
-    [Parameter] public UserViewModel? User { get; set; }
+    [Parameter] public UserModel? User { get; set; }
 
     private void DrawerToggle()
     {

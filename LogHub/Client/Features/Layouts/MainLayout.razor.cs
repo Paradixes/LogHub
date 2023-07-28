@@ -6,7 +6,7 @@ public partial class MainLayout
 {
     private bool _drawerOpen;
 
-    protected UserViewModel? User { get; private set; }
+    protected UserModel? User { get; private set; }
 
     private void DrawerToggle(bool isDrawerOpen)
     {
@@ -19,7 +19,7 @@ public partial class MainLayout
         var claims = authState.User.Identities.FirstOrDefault()?.Claims;
         if (claims != null)
         {
-            User = UserViewModel.Create(claims);
+            User = UserModel.Create(claims);
         }
     }
 }

@@ -1,49 +1,39 @@
-﻿using System.Text.RegularExpressions;
+﻿using LogHub.Client.Validations;
+using LogHub.Client.ViewModel;
 using MudBlazor;
 
 namespace LogHub.Client.Features.Users.Register;
 
 public partial class Index
 {
-    private string[] _errors = Array.Empty<string>();
+    private readonly string[] _professions =
+        { "Researcher", "Student", "Engineer", "Data Manager", "Expert Witness", "Other" };
+
+    private readonly RegisterModelValidator _registerModelValidator = new();
 
     private MudForm _form = new();
 
-    private MudTextField<string>? _passwordField = new();
+    private bool _isInvalidateCredentials;
 
     private bool _success;
 
-    private static IEnumerable<string> PasswordStrength(string pw)
+    private RegisterModel Model { get; } = new();
+
+    private async Task SubmitAsync()
     {
-        if (string.IsNullOrWhiteSpace(pw))
+        await _form.Validate();
+        if (!_form.IsValid)
         {
-            yield return "Password is required!";
-            yield break;
+            return;
         }
 
-        if (pw.Length < 8)
+        Model.UpdateRole();
+        if (!await AuthenticationService.RegisterAsync(Model))
         {
-            yield return "Password must be at least of length 8";
+            _isInvalidateCredentials = true;
+            return;
         }
 
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-        {
-            yield return "Password must contain at least one capital letter";
-        }
-
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-        {
-            yield return "Password must contain at least one lowercase letter";
-        }
-
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-        {
-            yield return "Password must contain at least one digit";
-        }
-    }
-
-    private string? PasswordMatch(string arg)
-    {
-        return _passwordField?.Value != arg ? "Passwords don't match" : null;
+        NavigationManager.NavigateTo("/login");
     }
 }

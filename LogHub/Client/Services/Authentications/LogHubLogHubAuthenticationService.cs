@@ -20,7 +20,7 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         _localStorage = localStorage;
     }
 
-    public async Task<bool> LogInAsync(LoginViewModel model)
+    public async Task<bool> LogInAsync(LoginModel model)
     {
         // query account info from the server
         var response = await _client.PostAsJsonAsync("api/users/login", model);
@@ -46,6 +46,12 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
     {
         await _localStorage.RemoveItemAsync("token");
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
+
+    public async Task<bool> RegisterAsync(RegisterModel model)
+    {
+        var response = await _client.PostAsJsonAsync("api/users/register", model);
+        return response.IsSuccessStatusCode;
     }
 
     private IEnumerable<Claim> GetClaimsFromToken(string token)

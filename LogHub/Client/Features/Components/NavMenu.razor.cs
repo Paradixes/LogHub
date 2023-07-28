@@ -7,7 +7,7 @@ public partial class NavMenu
 {
     [Parameter] public bool DrawerOpen { get; set; }
 
-    [Parameter] public UserViewModel? User { get; set; }
+    [Parameter] public UserModel? User { get; set; }
 
     private void DrawerToggle(bool isDrawerOpen)
     {

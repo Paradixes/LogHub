@@ -2,7 +2,7 @@
 
 namespace LogHub.Client.ViewModel;
 
-public class LoginViewModel
+public class LoginModel
 {
     [Display(Name = "Email")]
     [Required(ErrorMessage = "Email is required")]

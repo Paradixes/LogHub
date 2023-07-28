@@ -1,9 +1,7 @@
 ﻿using Carter;
 using LogHub.Application.Users.Login;
 using LogHub.Application.Users.Register;
-using LogHub.Domain.Entities.Organisations;
 using LogHub.Domain.Enums;
-using LogHub.Domain.Primitives;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,8 +19,6 @@ public class Users : ICarterModule
             var command = new RegisterUserCommand(
                 request.Email,
                 request.Name,
-                request.OrganisationId?.Create<OrganisationId>()!,
-                request.DepartmentId?.Create<DepartmentId>()!,
                 request.Profession,
                 request.Orcid,
                 (UserRole)Enum.Parse(typeof(UserRole), request.Role),

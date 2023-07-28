@@ -22,7 +22,7 @@ public class User : Entity<UserId>, IAuditableEntity
 
     public byte[]? Avatar { get; private set; }
 
-    public OrganisationId OrganisationId { get; private set; } = null!;
+    public OrganisationId? OrganisationId { get; private set; }
 
     public DepartmentId? DepartmentId { get; private set; }
 
@@ -30,9 +30,7 @@ public class User : Entity<UserId>, IAuditableEntity
 
     public string? Orcid { get; private set; }
 
-    public string PasswordHash { get; private set; } = null!;
-
-    public string PasswordSalt { get; private set; } = null!;
+    public string HashedPassword { get; private set; } = null!;
 
     public UserRole Role { get; private set; }
 
@@ -42,32 +40,23 @@ public class User : Entity<UserId>, IAuditableEntity
 
     public DateTime? ModifiedOnUtc { get; set; }
 
-
-    /// <summary>
-    ///     Register a new User and initialise the User's settings
-    /// </summary>
-    /// <returns>The New User</returns>
     public static User Create(
         string name,
         string email,
-        byte[]? avatar,
-        OrganisationId organisationId,
+        OrganisationId? organisationId,
+        DepartmentId? departmentId,
         string profession,
         string? orcid,
-        string passwordHash,
-        string passwordSalt,
         UserRole role)
     {
         var user = new User
         {
             Name = name,
             Email = email,
-            Avatar = avatar,
             OrganisationId = organisationId,
+            DepartmentId = departmentId,
             Profession = profession,
             Orcid = orcid,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
             Role = role,
             UserSetting = new UserSetting()
         };
@@ -75,19 +64,19 @@ public class User : Entity<UserId>, IAuditableEntity
         return user;
     }
 
-    /// <summary>
-    ///     Change a current user's name
-    /// </summary>
     public void UpdateProfile(
         string name,
-        byte[]? avatar,
         string profession,
         string? orcid)
     {
         Name = name;
-        Avatar = avatar;
         Profession = profession;
         Orcid = orcid;
+    }
+
+    public void UpdateAvatar(byte[] avatar)
+    {
+        Avatar = avatar;
     }
 
     public void UpdateUserSetting(
@@ -99,14 +88,24 @@ public class User : Entity<UserId>, IAuditableEntity
         UserSetting.Update(theme, emailNotification, autoSave, fontSize);
     }
 
-    /// <summary>
-    /// </summary>
-    /// <param name="passwordHash"></param>
-    /// <param name="salt"></param>
-    public void ResetPassword(string passwordHash, string salt)
+    public void SetOrganisation(OrganisationId organisationId)
     {
-        PasswordHash = passwordHash;
-        PasswordSalt = salt;
+        OrganisationId = organisationId;
+    }
+
+    public void SetDepartment(DepartmentId departmentId)
+    {
+        if (OrganisationId is null)
+        {
+            throw new InvalidOperationException("OrganisationId is null");
+        }
+
+        DepartmentId = departmentId;
+    }
+
+    public void ChangePassword(string hashedPassword)
+    {
+        HashedPassword = hashedPassword;
     }
 
     public void AddFavouritePage(DocumentId docId)

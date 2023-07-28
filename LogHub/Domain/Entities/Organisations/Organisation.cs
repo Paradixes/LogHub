@@ -22,7 +22,7 @@ public class Organisation : Entity<OrganisationId>
 
     public string Name { get; private set; } = null!;
 
-    public string? Icon { get; private set; }
+    public byte[]? Icon { get; private set; }
 
     public string? Description { get; private set; }
 
@@ -36,18 +36,26 @@ public class Organisation : Entity<OrganisationId>
 
     public static Organisation Create(
         string name,
-        string? icon,
         UserId creatorId)
     {
         var organisation = new Organisation
         {
             ManagerId = creatorId,
             Name = name,
-            Icon = icon,
             InvitationCode = GenerateRandomString(8)
         };
 
         return organisation;
+    }
+
+    public void UpdateIcon(byte[] icon)
+    {
+        Icon = icon;
+    }
+
+    public void UpdateInvitationCode()
+    {
+        InvitationCode = GenerateRandomString(8);
     }
 
     public void AddDepartment(
@@ -94,10 +102,9 @@ public class Organisation : Entity<OrganisationId>
         _dataManagementPlanTemplates.Remove(dataManagementPlan);
     }
 
-    public void UpdateDetails(string name, string? icon, string? description)
+    public void UpdateDetails(string name, string? description)
     {
         Name = name;
-        Icon = icon;
         Description = description;
     }
 

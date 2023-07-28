@@ -1,4 +1,6 @@
 ﻿using LogHub.Application.Data;
+using LogHub.Domain.Repositories;
+using LogHub.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,18 +13,21 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<LogHubDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("Database"));
         });
 
         services.AddScoped<IApplicationDbContext>(sp =>
-            sp.GetRequiredService<ApplicationDbContext>());
+            sp.GetRequiredService<LogHubDbContext>());
 
         services.AddScoped<IUnitOfWork>(sp =>
-            sp.GetRequiredService<ApplicationDbContext>());
+            sp.GetRequiredService<LogHubDbContext>());
 
         // TODO: Add repositories here
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IOrganisationRepository, OrganisationRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
         return services;
     }

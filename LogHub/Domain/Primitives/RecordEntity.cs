@@ -35,11 +35,11 @@ public abstract class RecordEntity<TId, TActionId, TPermissionId, TRequestId> : 
 
     public IEnumerable<RecordPermission<TPermissionId, TId>> Permissions => _permissions.AsReadOnly();
 
-    public string Title { get; protected set; } = null!;
+    public string Title { get; private set; } = null!;
 
-    public string? Icon { get; protected set; }
+    public string? Icon { get; private set; }
 
-    public string? Description { get; protected set; }
+    public string? Description { get; private set; }
 
     public DateTime CreatedOnUtc { get; set; }
 

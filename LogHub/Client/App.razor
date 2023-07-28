@@ -1,11 +1,12 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using LogHub.Client.Features.Layouts
+@inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 
 <CascadingAuthenticationState>
     <LoadingScreen>
         <Router AppAssembly="@typeof(App).Assembly">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                     <NotAuthorized>
                         @{
                             NavigationManager.NavigateTo("/");
@@ -14,7 +15,7 @@
                         }
                     </NotAuthorized>
                 </AuthorizeRouteView>
-                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
             </Found>
             <NotFound>
                 <PageTitle>Not found</PageTitle>

@@ -1,7 +1,9 @@
 using Blazored.LocalStorage;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using LogHub.Client;
-using LogHub.Client.Providers.Auth;
-using LogHub.Client.Services.Auth;
+using LogHub.Client.Services.Authentications;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -28,8 +30,14 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthStateProvider>();
+builder.Services.AddScoped<LogHubLogHubAuthenticationService>();
+builder.Services.AddScoped<ILogHubAuthenticationService>(a =>
+    a.GetRequiredService<LogHubLogHubAuthenticationService>());
+builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<LogHubLogHubAuthenticationService>());
 
+builder.Services
+    .AddBlazorise(options => { options.Immediate = true; })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
 
 await builder.Build().RunAsync();

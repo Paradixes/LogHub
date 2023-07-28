@@ -1,7 +1,7 @@
 ﻿using LogHub.Domain.Entities.Docs;
 using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
+using LogHub.Shared.Enums;
 
 namespace LogHub.Domain.Entities.Users;
 
@@ -20,7 +20,7 @@ public class User : Entity<UserId>, IAuditableEntity
     // TODO: Email Verify Flag
     // public bool EmailConfirmed { get; private set; }
 
-    public byte[]? Avatar { get; private set; }
+    public Uri? AvatarUri { get; private set; }
 
     public OrganisationId? OrganisationId { get; private set; }
 
@@ -72,11 +72,6 @@ public class User : Entity<UserId>, IAuditableEntity
         Name = name;
         Profession = profession;
         Orcid = orcid;
-    }
-
-    public void UpdateAvatar(byte[] avatar)
-    {
-        Avatar = avatar;
     }
 
     public void UpdateUserSetting(

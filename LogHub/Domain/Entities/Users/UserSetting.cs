@@ -1,4 +1,4 @@
-﻿using LogHub.Domain.Enums;
+﻿using LogHub.Shared.Enums;
 
 namespace LogHub.Domain.Entities.Users;
 

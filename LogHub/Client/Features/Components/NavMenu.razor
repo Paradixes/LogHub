@@ -10,9 +10,9 @@
                     <ActivatorContent>
                         <MudButton Color="Color.Surface" Style="width: 100%">
                             <MudAvatar Color="Color.Tertiary" Size="Size.Medium">
-                                @User?.Name?[0]
+                                @context.User?.Identity?.Name?[0]
                             </MudAvatar>
-                            <MudText Typo="Typo.h6" Class="pl-2">@User?.Name</MudText>
+                            <MudText Typo="Typo.h6" Class="pl-2">@context.User?.Identity?.Name</MudText>
                             <MudSpacer/>
                         </MudButton>
                     </ActivatorContent>

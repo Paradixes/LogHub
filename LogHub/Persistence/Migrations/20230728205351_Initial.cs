@@ -414,7 +414,7 @@ namespace LogHub.Persistence.Migrations
                     ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     InvitationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Icon = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -429,8 +429,8 @@ namespace LogHub.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Avatar = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AvatarUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DepartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Profession = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Orcid = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -455,8 +455,7 @@ namespace LogHub.Persistence.Migrations
                         name: "FK_Users_Organisations_OrganisationId",
                         column: x => x.OrganisationId,
                         principalTable: "Organisations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,5 +1,4 @@
-﻿using LogHub.Client.ViewModel;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace LogHub.Client.Features.Components;
@@ -13,8 +12,6 @@ public partial class AppBar
     private bool _isDarkMode;
 
     [Parameter] public EventCallback<bool> DrawerOpenChanged { get; set; }
-
-    [Parameter] public UserModel? User { get; set; }
 
     private void DrawerToggle()
     {

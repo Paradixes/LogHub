@@ -7,24 +7,32 @@
 <MudAppBar Elevation="0" Color="Color.Transparent">
     <AuthorizeView>
         <Authorized>
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit"
+                           Edge="Edge.Start"
+                           OnClick="@(e => DrawerToggle())"/>
             <MudSpacer/>
         </Authorized>
         <NotAuthorized>
             <MudSpacer/>
             <MudButtonGroup DisableElevation="true" Variant="Variant.Outlined" Color="Color.Primary">
-                <MudButton Href="/login">
+                <MudButton Href="/users/login">
                     <MudText>
-                        Log in
+                        Sign In
                     </MudText>
                 </MudButton>
-                <MudButton Href="/register">
+                <MudButton Href="/users/register">
                     <MudText>
-                        Register
+                        Sign Up
                     </MudText>
                 </MudButton>
             </MudButtonGroup>
         </NotAuthorized>
     </AuthorizeView>
-    <MudToggleIconButton @bind-Toggled="@_isDarkMode" Icon="@Icons.Material.Filled.LightMode" Title="Change to Dark Mode" ToggledIcon="@Icons.Material.Outlined.DarkMode" ToggledTitle="Change to Light Mode" Class="ml-4"/>
+    <MudToggleIconButton @bind-Toggled="@_isDarkMode"
+                         Icon="@Icons.Material.Filled.LightMode"
+                         Title="Change to Dark Mode"
+                         ToggledIcon="@Icons.Material.Outlined.DarkMode"
+                         ToggledTitle="Change to Light Mode"
+                         Class="ml-4"/>
 </MudAppBar>

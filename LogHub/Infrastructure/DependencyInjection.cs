@@ -1,6 +1,7 @@
 ﻿using LogHub.Application.Abstracts;
 using LogHub.Infrastructure.Authentication;
 using LogHub.Infrastructure.OptionsSetup;
+using LogHub.Infrastructure.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +20,13 @@ public static class DependencyInjection
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
 
+        services.AddScoped<IBlobStorageProvider, BlobStorageProvider>(
+            p => new BlobStorageProvider(configuration.GetConnectionString("Storage"))
+        );
+
         services.AddScoped<IJwtProvider, JwtProvider>();
+
+
         return services;
     }
 }

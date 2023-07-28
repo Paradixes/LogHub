@@ -4,9 +4,9 @@ namespace LogHub.Client.Services.Authentications;
 
 public interface ILogHubAuthenticationService
 {
-    Task<bool> LogInAsync(LoginModel model);
+	Task<bool> LogInAsync(LoginModel model);
 
-    Task LogOutAsync();
+	Task LogOutAsync();
 
-    Task<bool> RegisterAsync(RegisterModel model);
+	Task<bool> RegisterAsync(RegisterModel model);
 }

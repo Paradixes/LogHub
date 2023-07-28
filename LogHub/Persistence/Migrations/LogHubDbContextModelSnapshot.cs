@@ -407,11 +407,11 @@ namespace LogHub.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Icon")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("InvitationCode")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoUri")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ManagerId")
@@ -631,8 +631,8 @@ namespace LogHub.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte[]>("Avatar")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("AvatarUri")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");

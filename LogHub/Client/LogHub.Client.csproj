@@ -12,6 +12,7 @@
         <PackageReference Include="Blazorise.Bootstrap" Version="1.2.4" />
         <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.4" />
         <PackageReference Include="Blazorise.Markdown" Version="1.2.4" />
+        <PackageReference Include="FluentValidation" Version="11.6.0" />
         <PackageReference Include="Markdig" Version="0.31.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.9" />
@@ -22,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Application\LogHub.Application.csproj" />
         <ProjectReference Include="..\Shared\LogHub.Shared.csproj" />
     </ItemGroup>
 

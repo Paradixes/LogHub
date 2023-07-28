@@ -1,7 +1,6 @@
 ﻿using Carter;
 using LogHub.Application.Users.Login;
 using LogHub.Application.Users.Register;
-using LogHub.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +20,7 @@ public class Users : ICarterModule
                 request.Name,
                 request.Profession,
                 request.Orcid,
-                (UserRole)Enum.Parse(typeof(UserRole), request.Role),
+                request.Role,
                 request.Password);
 
             var tokenResult = await sender.Send(

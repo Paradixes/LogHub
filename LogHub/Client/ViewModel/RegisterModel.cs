@@ -1,4 +1,6 @@
-﻿namespace LogHub.Client.ViewModel;
+﻿using LogHub.Shared.Enums;
+
+namespace LogHub.Client.ViewModel;
 
 public class RegisterModel
 {
@@ -10,7 +12,7 @@ public class RegisterModel
 
     public string Name { get; set; } = string.Empty;
 
-    public string Role { get; set; } = string.Empty;
+    public UserRole Role { get; set; }
 
     public string Profession { get; set; } = string.Empty;
 
@@ -20,11 +22,11 @@ public class RegisterModel
     {
         if (Profession == "Data Manager")
         {
-            Role = "Data Manager";
+            Role = UserRole.DataManager;
         }
         else
         {
-            Role = "Recorder";
+            Role = UserRole.Recorder;
         }
     }
 }

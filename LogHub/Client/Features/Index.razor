@@ -1,14 +1,11 @@
 ﻿@page "/"
-@using LogHub.Client.Features.Layouts
 @layout MainLayout
 
-Welcome Page
-
-<AuthorizeView>
-    <Authorized>
-        Hello!
-    </Authorized>
-</AuthorizeView>
+<MudContainer MaxWidth="MaxWidth.Large" Class="d-block" Style="text-align: center; align-items: center">
+    <h1>
+        Hello, Welcome to LogHub!
+    </h1>
+</MudContainer>
 
 @code {
 

@@ -1,0 +1,61 @@
+﻿@page "/organisations/create"
+@using LogHub.Client.ViewModel
+@layout BackgroundLayout
+@attribute [Authorize(Roles = "DataManager")]
+@inject NavigationManager NavigationManager
+@inject HttpClient Client
+
+<MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
+<MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
+    <MudText Align="Align.Center" Typo="Typo.h6">
+        Create Your Organisation
+    </MudText>
+    <MudForm Model="@Model"
+             @ref="@_form"
+             ValidationDelay="0">
+        <MudFileUpload T="Stream" Accept=".png, .jpg" Files="Model.Logo" MaximumFileCount="100" Class="py-4">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context">
+                    Upload Logo
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+
+        <MudTextField Label="Name"
+                      Variant="Variant.Filled"
+                      @bind-Value="@Model.Name"
+                      For="() => Model.Name"
+                      Required="true"/>
+
+        <MudTextField Label="Description"
+                      Variant="Variant.Filled"
+                      @bind-Value="@Model.Description"
+                      For="() => Model.Description"
+                      Lines="7"/>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   OnClick="@(() => _form.Validate())"
+                   Disabled="@(!_form.IsValid)">
+            Create
+        </MudButton>
+    </MudForm>
+</MudPaper>
+
+@code {
+    private MudForm _form = new();
+
+    private OrganisationModel Model { get; } = new();
+
+    private async Task Create()
+    {
+        await Client.PostAsJsonAsync("/api/organisations/create", Model);
+        NavigationManager.NavigateTo("/");
+    }
+
+}

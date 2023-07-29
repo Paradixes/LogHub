@@ -5,6 +5,7 @@ namespace LogHub.Application.Organisations.Create;
 
 public record CreateOrganisationCommand(
     UserId ManagerId,
+    string? Logo,
     string Name,
     string Description
 ) : ICommand<Guid>;

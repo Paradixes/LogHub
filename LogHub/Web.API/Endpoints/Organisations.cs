@@ -17,6 +17,7 @@ public class Organisations : ICarterModule
         {
             var command = new CreateOrganisationCommand(
                 new UserId(request.ManagerId),
+                request.Logo,
                 request.Name,
                 request.Description);
 

@@ -16,6 +16,5 @@ public partial class NavMenu
         await AuthenticationService.LogOutAsync();
         NavigationManager.NavigateTo("/");
         DrawerOpen = false;
-        StateHasChanged();
     }
 }

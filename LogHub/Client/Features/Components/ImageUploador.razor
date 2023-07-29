@@ -1,43 +1,50 @@
-﻿@page "/test/"
-
-<h3>ImageUploador</h3>
-
-<MudFileUpload T="IBrowserFile" Accept=".pdf" OnFilesChanged="@LoadImage" MaximumFileCount="100">
+﻿<MudFileUpload T="IBrowserFile" Accept=".jpg, .png" OnFilesChanged="@UploadImage" MaximumFileCount="100">
     <ButtonTemplate>
-        @if (ImageUri == null)
+        @if (_imageUri == null)
         {
-            <MudIconButton HtmlTag="label"
-                           Color="Color.Info"
-                           Icon="@Icons.Material.Filled.PhotoCamera"
-                           for="@context">
-            </MudIconButton>
+            <MudFab HtmlTag="label"
+                    Color="Color.Info"
+                    Size="Size.Large"
+                    Icon="@Icons.Material.Filled.CloudUpload"
+                    for="@context"
+                    Class="mb-3">
+            </MudFab>
         }
         else
         {
-            <MudAvatar Size="Size.Large">
-                <MudImage src="@ImageUri"/>
-            </MudAvatar>
+            <MudButton HtmlTag="label"
+                       Color="Color.Info"
+                       Size="Size.Large"
+                       for="@context">
+                <MudAvatar Size="Size.Large">
+                    <MudImage src="@_imageUri"/>
+
+                </MudAvatar>
+            </MudButton>
         }
     </ButtonTemplate >
 </MudFileUpload>
 
 
 @code {
-    private string? ImageUri;
+    private string? _imageUri;
 
-    public async Task LoadImage(InputFileChangeEventArgs inputFileChangeEventArgs)
+    private async Task UploadImage(InputFileChangeEventArgs inputFileChangeEventArgs)
     {
         var image = await inputFileChangeEventArgs.File.RequestImageFileAsync("image/png", 600, 600);
 
-        await using var imageStream = image.OpenReadStream(1024 * 1024 * 10);
+        var imageStream = image.OpenReadStream(1024 * 1024 * 10);
 
-        using MemoryStream ms = new();
-    // copy imageStream to Memory stream
-        await imageStream.CopyToAsync(ms);
+        var memoryStream = new MemoryStream();
+        await imageStream.CopyToAsync(memoryStream);
 
-    // convert stream to base64
-        ImageUri = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+        _imageUri = $"data:image/png;base64,{Convert.ToBase64String(memoryStream.ToArray())}";
+
+        await OnImageUpdated.InvokeAsync(_imageUri);
         StateHasChanged();
     }
+
+    [Parameter]
+    public EventCallback<string> OnImageUpdated { get; set; }
 
 }

@@ -1,58 +1,70 @@
-﻿@page "/register"
-@layout EmptyLayout
+﻿@page "/users/register"
+@layout BackgroundLayout
 @inject ILogHubAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 
-<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-block" Style="text-align: center; align-items: center">
-    <MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
-    <MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
-        <MudText Typo="Typo.h6" Align="Align.Center">Welcome to LogHub!</MudText>
-        <MudText Typo="Typo.body2" Align="Align.Center" Class="mb-4">Please register to continue</MudText>
+<MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
+<MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
 
-        <MudForm Model="@Model" @ref="_form" Validation="@(_registerModelValidator.ValidateValue)" @bind-IsValid="@_success">
-            <MudTextField Label="Username"
-                          @bind-Value="Model.Name"
-                          For="@(() => Model.Name)"
-                          Required="true"/>
+    <MudText Typo="Typo.h6" Align="Align.Center">Welcome to LogHub!</MudText>
+    <MudText Typo="Typo.body2" Align="Align.Center" Class="mb-4">Please register to continue</MudText>
 
-            <MudTextField Label="Email"
-                          @bind-Value="Model.Email"
-                          For="@(() => Model.Email)"
-                          Required="true"/>
+    <MudForm Model="@Model"
+             @ref="_form"
+             Validation="@(_validator.ValidateValue)"
+             @bind-IsValid="@_success">
+        <MudTextField Label="Username"
+                      @bind-Value="Model.Name"
+                      For="@(() => Model.Name)"
+                      Required="true"/>
 
-            <MudSelect Label="Profession"
-                       @bind-Value="Model.Profession"
-                       For="@(() => Model.Profession)"
-                       AnchorOrigin="Origin.BottomCenter"
-                       Required="true">
-                @foreach (var profession in _professions)
-                {
-                    <MudSelectItem Value="@profession"/>
-                }
-            </MudSelect>
+        <MudTextField Label="Email"
+                      @bind-Value="Model.Email"
+                      For="@(() => Model.Email)"
+                      Required="true"/>
 
-            <MudTextField Label="ORCID"
-                          @bind-Value="Model.Orcid"
-                          For="@(() => Model.Orcid)"/>
-
-            <MudTextField Label="Password"
-                          @bind-Value="Model.Password"
-                          For="@(() => Model.Password)"
-                          HelperText="Choose a strong password"
-                          InputType="InputType.Password"
-                          Required="true"/>
-
-            <MudTextField Label="Password"
-                          @bind-Value="Model.ConfirmPassword"
-                          For="@(() => Model.ConfirmPassword)"
-                          HelperText="Repeat the password"
-                          InputType="InputType.Password"
-                          Required="true"/>
-            @if (_isInvalidateCredentials)
+        <MudSelect Label="Profession"
+                   @bind-Value="Model.Profession"
+                   For="@(() => Model.Profession)"
+                   AnchorOrigin="Origin.BottomCenter"
+                   Required="true">
+            @foreach (var profession in _professions)
             {
-                <MudAlert Severity="Severity.Error">Email is already in use</MudAlert>
+                <MudSelectItem Value="@profession"/>
             }
-            <MudButton Variant="Variant.Filled" OnClick="SubmitAsync" Color="Color.Primary" Disabled="@(!_success)" Size="Size.Large" FullWidth="true" Class="ml-auto">Register</MudButton>
-        </MudForm>
-    </MudPaper>
-</MudContainer>
+        </MudSelect>
+
+        <MudTextField Label="ORCID"
+                      @bind-Value="Model.Orcid"
+                      For="@(() => Model.Orcid)"/>
+
+        <MudTextField Label="Password"
+                      @bind-Value="Model.Password"
+                      For="@(() => Model.Password)"
+                      HelperText="Choose a strong password"
+                      InputType="InputType.Password"
+                      Required="true"/>
+
+        <MudTextField Label="Password"
+                      @bind-Value="Model.ConfirmPassword"
+                      For="@(() => Model.ConfirmPassword)"
+                      HelperText="Repeat the password"
+                      InputType="InputType.Password"
+                      Required="true"/>
+
+        @if (_isInvalidateCredentials)
+        {
+            <MudAlert Severity="Severity.Error">Email is already in use</MudAlert>
+        }
+
+        <MudButton Variant="Variant.Filled"
+                   OnClick="SubmitAsync"
+                   Color="Color.Primary"
+                   Disabled="@(!_success)"
+                   Size="Size.Large"
+                   FullWidth="true"
+                   Class="ml-auto">
+            Register
+        </MudButton>
+    </MudForm>
+</MudPaper>

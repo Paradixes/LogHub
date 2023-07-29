@@ -22,7 +22,7 @@ public class Organisation : Entity<OrganisationId>
 
     public string Name { get; private set; } = null!;
 
-    public byte[]? Icon { get; private set; }
+    public Uri? LogoUri { get; private set; }
 
     public string? Description { get; private set; }
 
@@ -46,11 +46,6 @@ public class Organisation : Entity<OrganisationId>
         };
 
         return organisation;
-    }
-
-    public void UpdateIcon(byte[] icon)
-    {
-        Icon = icon;
     }
 
     public void UpdateInvitationCode()

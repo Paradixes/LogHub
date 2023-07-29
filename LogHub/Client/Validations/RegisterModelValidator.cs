@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using LogHub.Client.Abstracts;
 using LogHub.Client.ViewModel;
 
 namespace LogHub.Client.Validations;
 
-public class RegisterModelValidator : AbstractValidator<RegisterModel>
+public class RegisterModelValidator : LogHubValidator<RegisterModel>
 {
     public RegisterModelValidator()
     {
@@ -40,12 +41,4 @@ public class RegisterModelValidator : AbstractValidator<RegisterModel>
             .NotEmpty().WithMessage("Confirm password is required")
             .Equal(x => x.Password).WithMessage("Passwords don't match");
     }
-
-    public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
-    {
-        var result =
-            await ValidateAsync(ValidationContext<RegisterModel>.CreateWithOptions((RegisterModel)model,
-                x => x.IncludeProperties(propertyName)));
-        return result.IsValid ? Array.Empty<string>() : result.Errors.Select(e => e.ErrorMessage);
-    };
 }

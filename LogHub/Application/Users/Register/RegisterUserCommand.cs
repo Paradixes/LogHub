@@ -1,5 +1,5 @@
 ﻿using LogHub.Application.Abstracts.Messaging;
-using LogHub.Domain.Enums;
+using LogHub.Shared.Enums;
 
 namespace LogHub.Application.Users.Register;
 

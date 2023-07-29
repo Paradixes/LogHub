@@ -1,6 +1,6 @@
 ﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Enums;
 using LogHub.Domain.Primitives;
+using LogHub.Shared.Enums;
 
 namespace LogHub.Domain.Entities.Permissions;
 

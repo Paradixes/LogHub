@@ -1,10 +1,13 @@
-﻿using LogHub.Client.ViewModel;
+﻿using LogHub.Client.Validations;
+using LogHub.Client.ViewModel;
 using MudBlazor;
 
 namespace LogHub.Client.Features.Users.Login;
 
 public partial class Index
 {
+    private readonly LoginModelValidator _validator = new();
+
     private MudForm _form = new();
 
     private bool _isInvalidateCredentials;

@@ -29,8 +29,6 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
             return false;
         }
 
-        response.EnsureSuccessStatusCode();
-
         var token = await response.Content.ReadAsStringAsync();
         token = token.Trim('"');
 
@@ -51,10 +49,15 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
     public async Task<bool> RegisterAsync(RegisterModel model)
     {
         var response = await _client.PostAsJsonAsync("api/users/register", model);
-        return response.IsSuccessStatusCode;
+        if (!response.IsSuccessStatusCode)
+        {
+            return false;
+        }
+
+        return await LogInAsync(new LoginModel(model.Email, model.Password));
     }
 
-    private IEnumerable<Claim> GetClaimsFromToken(string token)
+    private static IEnumerable<Claim> GetClaimsFromToken(string token)
     {
         JwtSecurityTokenHandler handler = new();
         var jwtToken = handler.ReadJwtToken(token);
@@ -71,7 +74,7 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         }
 
         var claims = GetClaimsFromToken(token);
-        var identity = new ClaimsIdentity(claims, "api");
+        var identity = new ClaimsIdentity(claims, "api", ClaimTypes.Name, ClaimTypes.Role);
         principal.AddIdentity(identity);
         return new AuthenticationState(principal);
     }

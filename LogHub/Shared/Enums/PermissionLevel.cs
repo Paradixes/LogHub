@@ -1,4 +1,4 @@
-﻿namespace LogHub.Domain.Enums;
+﻿namespace LogHub.Shared.Enums;
 
 public enum PermissionLevel
 {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogHub.Persistence.Migrations
 {
     [DbContext(typeof(LogHubDbContext))]
-    [Migration("20230728205351_Initial")]
+    [Migration("20230729010959_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

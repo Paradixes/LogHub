@@ -35,13 +35,15 @@ public class Organisation : Entity<OrganisationId>
     }
 
     public static Organisation Create(
+        UserId creatorId,
         string name,
-        UserId creatorId)
+        string? description)
     {
         var organisation = new Organisation
         {
             ManagerId = creatorId,
             Name = name,
+            Description = description,
             InvitationCode = GenerateRandomString(8)
         };
 
@@ -101,6 +103,11 @@ public class Organisation : Entity<OrganisationId>
     {
         Name = name;
         Description = description;
+    }
+
+    public void SetLogo(Uri logoUri)
+    {
+        LogoUri = logoUri;
     }
 
     public void UpdateManager(UserId managerId)

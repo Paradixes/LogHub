@@ -1,9 +1,12 @@
 ﻿@page "/organisations/create"
 @using LogHub.Client.ViewModel
+@using System.Security.Claims
 @layout BackgroundLayout
 @attribute [Authorize(Roles = "DataManager")]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient Client
+
 
 <MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
 <MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
@@ -13,17 +16,7 @@
     <MudForm Model="@Model"
              @ref="@_form"
              ValidationDelay="0">
-        <MudFileUpload T="Stream" Accept=".png, .jpg" Files="Model.Logo" MaximumFileCount="100" Class="py-4">
-            <ButtonTemplate>
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.CloudUpload"
-                           for="@context">
-                    Upload Logo
-                </MudButton>
-            </ButtonTemplate>
-        </MudFileUpload>
+        <ImageUploador OnImageUpdated="@OnLogoUploaded"/>
 
         <MudTextField Label="Name"
                       Variant="Variant.Filled"
@@ -40,7 +33,7 @@
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    Class="mt-4"
-                   OnClick="@(() => _form.Validate())"
+                   OnClick="SubmitAsync"
                    Disabled="@(!_form.IsValid)">
             Create
         </MudButton>
@@ -52,8 +45,19 @@
 
     private OrganisationModel Model { get; } = new();
 
-    private async Task Create()
+    private void OnLogoUploaded(string logo)
     {
+        Model.Logo = logo;
+    }
+
+    private async Task SubmitAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+        Model.ManagerId = Guid.Parse((await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.Claims.First(c => c.Type == ClaimTypes.Sid).Value);
         await Client.PostAsJsonAsync("/api/organisations/create", Model);
         NavigationManager.NavigateTo("/");
     }

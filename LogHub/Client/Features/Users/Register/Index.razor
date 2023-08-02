@@ -4,30 +4,34 @@
 @inject NavigationManager NavigationManager
 
 <MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
-<MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
 
     <MudText Typo="Typo.h6" Align="Align.Center">Welcome to LogHub!</MudText>
-    <MudText Typo="Typo.body2" Align="Align.Center" Class="mb-4">Please register to continue</MudText>
+    <MudText Typo="Typo.body2" Align="Align.Center" Class="pb-3">Please register to continue</MudText>
 
     <MudForm Model="@Model"
              @ref="_form"
              Validation="@(_validator.ValidateValue)"
              @bind-IsValid="@_success">
+
         <MudTextField Label="Username"
                       @bind-Value="Model.Name"
                       For="@(() => Model.Name)"
-                      Required="true"/>
+                      Required="true"
+                      Class="pb-1"/>
 
         <MudTextField Label="Email"
                       @bind-Value="Model.Email"
                       For="@(() => Model.Email)"
-                      Required="true"/>
+                      Required="true"
+                      Class="pb-1"/>
 
         <MudSelect Label="Profession"
                    @bind-Value="Model.Profession"
                    For="@(() => Model.Profession)"
                    AnchorOrigin="Origin.BottomCenter"
-                   Required="true">
+                   Required="true"
+                   Class="pb-1">
             @foreach (var profession in _professions)
             {
                 <MudSelectItem Value="@profession"/>
@@ -36,21 +40,25 @@
 
         <MudTextField Label="ORCID"
                       @bind-Value="Model.Orcid"
-                      For="@(() => Model.Orcid)"/>
+                      For="@(() => Model.Orcid)"
+                      Class="pb-1"/>
 
         <MudTextField Label="Password"
                       @bind-Value="Model.Password"
                       For="@(() => Model.Password)"
                       HelperText="Choose a strong password"
                       InputType="InputType.Password"
-                      Required="true"/>
+                      Required="true"
+                      Class="pb-1"/>
 
         <MudTextField Label="Password"
                       @bind-Value="Model.ConfirmPassword"
                       For="@(() => Model.ConfirmPassword)"
                       HelperText="Repeat the password"
                       InputType="InputType.Password"
-                      Required="true"/>
+                      Required="true"
+                      Class="pb-1"/>
+
 
         @if (_isInvalidateCredentials)
         {
@@ -67,4 +75,4 @@
             Register
         </MudButton>
     </MudForm>
-</MudPaper>
+</MudContainer>

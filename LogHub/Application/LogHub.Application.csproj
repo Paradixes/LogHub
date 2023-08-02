@@ -15,4 +15,10 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Organisations\AddUser\" />
+      <Folder Include="Organisations\GetOrganisationByInvitationCode\" />
+      <Folder Include="Organisations\Update\" />
+    </ItemGroup>
+
 </Project>

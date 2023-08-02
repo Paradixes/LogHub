@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogHub.Persistence.Migrations
 {
     [DbContext(typeof(LogHubDbContext))]
-    [Migration("20230729010959_Initial")]
+    [Migration("20230801223250_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -123,6 +123,9 @@ namespace LogHub.Persistence.Migrations
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -146,6 +149,8 @@ namespace LogHub.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("DmpId");
 
@@ -187,9 +192,6 @@ namespace LogHub.Persistence.Migrations
 
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -380,7 +382,7 @@ namespace LogHub.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Icon")
+                    b.Property<string>("LogoUri")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ManagerId")
@@ -731,6 +733,10 @@ namespace LogHub.Persistence.Migrations
 
             modelBuilder.Entity("LogHub.Domain.Entities.Bases.Base", b =>
                 {
+                    b.HasOne("LogHub.Domain.Entities.Organisations.Department", null)
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
                     b.HasOne("LogHub.Domain.Entities.DataManagementPlans.DataManagementPlan", null)
                         .WithMany()
                         .HasForeignKey("DmpId")
@@ -980,7 +986,7 @@ namespace LogHub.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("OrganisationId");
 
-                    b.OwnsOne("LogHub.Domain.Entities.Users.UserSetting", "UserSetting", b1 =>
+                    b.OwnsOne("LogHub.Domain.Entities.Users.UserPreference", "UserPreference", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
@@ -1005,7 +1011,7 @@ namespace LogHub.Persistence.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.Navigation("UserSetting")
+                    b.Navigation("UserPreference")
                         .IsRequired();
                 });
 

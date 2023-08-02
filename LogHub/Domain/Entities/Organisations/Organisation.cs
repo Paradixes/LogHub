@@ -57,11 +57,10 @@ public class Organisation : Entity<OrganisationId>
 
     public void AddDepartment(
         string name,
-        string? icon,
         string? description,
         UserId managerId)
     {
-        var department = Department.Create(name, icon, description, managerId, Id);
+        var department = Department.Create(name, description, managerId, Id);
         _departments.Add(department);
     }
 
@@ -79,12 +78,11 @@ public class Organisation : Entity<OrganisationId>
     public void AddDataManagementPlanTemplate(
         UserId? managerId,
         string title,
-        string? icon,
         string? description)
     {
         managerId ??= ManagerId;
 
-        var dataManagementPlanTemplate = new DataManagementPlanTemplate(Id, managerId, title, description);
+        var dataManagementPlanTemplate = new DataManagementPlanTemplate(Id, null, managerId, title, description);
         _dataManagementPlanTemplates.Add(dataManagementPlanTemplate);
     }
 

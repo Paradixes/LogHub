@@ -23,7 +23,7 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
     public async Task<bool> LogInAsync(LoginModel model)
     {
         // query account info from the server
-        var response = await _client.PostAsJsonAsync("api/users/login", model);
+        var response = await _client.PostAsJsonAsync("api/login", model);
         if (!response.IsSuccessStatusCode)
         {
             return false;
@@ -48,7 +48,7 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
 
     public async Task<bool> RegisterAsync(RegisterModel model)
     {
-        var response = await _client.PostAsJsonAsync("api/users/register", model);
+        var response = await _client.PostAsJsonAsync("api/users", model);
         if (!response.IsSuccessStatusCode)
         {
             return false;

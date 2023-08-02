@@ -27,6 +27,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(u => u.DepartmentId)
             .IsRequired(false);
 
-        builder.OwnsOne(u => u.UserSetting);
+        builder.OwnsOne(u => u.UserPreference);
     }
 }

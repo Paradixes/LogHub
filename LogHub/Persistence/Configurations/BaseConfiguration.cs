@@ -20,6 +20,10 @@ public class BaseConfiguration : IEntityTypeConfiguration<Base>
             .WithMany()
             .HasForeignKey(b => b.OrganisationId);
 
+        builder.HasOne<Department>()
+            .WithMany()
+            .HasForeignKey(b => b.DepartmentId);
+
         builder.HasOne<DataManagementPlan>()
             .WithMany()
             .HasForeignKey(b => b.DmpId);

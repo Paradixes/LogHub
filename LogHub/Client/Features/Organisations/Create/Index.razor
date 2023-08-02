@@ -9,13 +9,14 @@
 
 
 <MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
-<MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
+<MudContainer MaxWidth="MaxWidth.Small" Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
     <MudText Align="Align.Center" Typo="Typo.h6">
         Create Your Organisation
     </MudText>
     <MudForm Model="@Model"
              @ref="@_form"
              ValidationDelay="0">
+
         <ImageUploador OnImageUpdated="@OnLogoUploaded"/>
 
         <MudTextField Label="Name"
@@ -28,7 +29,7 @@
                       Variant="Variant.Filled"
                       @bind-Value="@Model.Description"
                       For="() => Model.Description"
-                      Lines="7"/>
+                      Lines="14"/>
 
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
@@ -38,7 +39,7 @@
             Create
         </MudButton>
     </MudForm>
-</MudPaper>
+</MudContainer>
 
 @code {
     private MudForm _form = new();
@@ -58,7 +59,7 @@
             return;
         }
         Model.ManagerId = Guid.Parse((await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.Claims.First(c => c.Type == ClaimTypes.Sid).Value);
-        await Client.PostAsJsonAsync("/api/organisations/create", Model);
+        await Client.PostAsJsonAsync("/api/organisations", Model);
         NavigationManager.NavigateTo("/");
     }
 

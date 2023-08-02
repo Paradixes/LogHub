@@ -1,3 +1,3 @@
-﻿namespace LogHub.Application.Users.Update;
+﻿namespace Application.Users.Update;
 
 public class UpdateUserCommandValidator { }

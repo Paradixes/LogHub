@@ -1,4 +1,4 @@
-﻿namespace LogHub.Domain.Shared;
+﻿namespace Domain.Shared;
 
 public sealed class ValidationResult : Result, IValidationResult
 {

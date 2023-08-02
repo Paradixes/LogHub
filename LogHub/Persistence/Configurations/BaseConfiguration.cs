@@ -1,10 +1,10 @@
-﻿using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.DataManagementPlans;
-using LogHub.Domain.Entities.Organisations;
+﻿using Domain.Entities.Bases;
+using Domain.Entities.DataManagementPlans;
+using Domain.Entities.Organisations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class BaseConfiguration : IEntityTypeConfiguration<Base>
 {

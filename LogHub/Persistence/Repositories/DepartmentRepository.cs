@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Repositories;
+﻿using Domain.Entities.Organisations;
+using Domain.Entities.Users;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogHub.Persistence.Repositories;
+namespace Persistence.Repositories;
 
 public class DepartmentRepository : IDepartmentRepository
 {

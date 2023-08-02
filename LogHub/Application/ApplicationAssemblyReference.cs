@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace LogHub.Application;
+namespace Application;
 
 public class ApplicationAssemblyReference
 {

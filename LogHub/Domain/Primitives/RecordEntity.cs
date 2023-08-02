@@ -1,10 +1,10 @@
-﻿using LogHub.Domain.Entities.Actions;
-using LogHub.Domain.Entities.Permissions;
-using LogHub.Domain.Entities.Requests;
-using LogHub.Domain.Entities.Users;
-using LogHub.Shared.Enums;
+﻿using Domain.Entities.Actions;
+using Domain.Entities.Permissions;
+using Domain.Entities.Requests;
+using Domain.Entities.Users;
+using Shared.Enums;
 
-namespace LogHub.Domain.Primitives;
+namespace Domain.Primitives;
 
 public abstract class RecordEntity<TId, TActionId, TPermissionId, TRequestId> : Entity<TId>, IAuditableEntity
     where TId : RecordId

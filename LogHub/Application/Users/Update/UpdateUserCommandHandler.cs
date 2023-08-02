@@ -1,10 +1,10 @@
-﻿using LogHub.Application.Abstracts;
-using LogHub.Application.Abstracts.Messaging;
-using LogHub.Application.Enums;
-using LogHub.Domain.Repositories;
-using LogHub.Domain.Shared;
+﻿using Application.Abstracts;
+using Application.Abstracts.Messaging;
+using Application.Enums;
+using Domain.Repositories;
+using Domain.Shared;
 
-namespace LogHub.Application.Users.Update;
+namespace Application.Users.Update;
 
 public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand>
 {

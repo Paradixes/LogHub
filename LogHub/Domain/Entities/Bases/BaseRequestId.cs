@@ -1,5 +1,5 @@
-using LogHub.Domain.Entities.Requests;
+using Domain.Entities.Requests;
 
-namespace LogHub.Domain.Entities.Bases;
+namespace Domain.Entities.Bases;
 
 public record BaseRequestId(Guid Value) : RecordRequestId(Value);

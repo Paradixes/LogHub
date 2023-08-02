@@ -1,6 +1,6 @@
-using LogHub.Shared.Enums;
+using Shared.Enums;
 
-namespace LogHub.Application.Users.GetUserById;
+namespace Application.Users.GetById;
 
 public sealed record UserResponse(
     Guid Id,

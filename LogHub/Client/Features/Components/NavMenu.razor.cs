@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace LogHub.Client.Features.Components;
+namespace Client.Features.Components;
 
 public partial class NavMenu
 {

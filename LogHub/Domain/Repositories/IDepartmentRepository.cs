@@ -1,7 +1,7 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Organisations;
+using Domain.Entities.Users;
 
-namespace LogHub.Domain.Repositories;
+namespace Domain.Repositories;
 
 public interface IDepartmentRepository
 {

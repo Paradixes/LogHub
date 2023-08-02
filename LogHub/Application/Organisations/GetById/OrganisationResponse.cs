@@ -1,4 +1,4 @@
-namespace LogHub.Application.Organisations.GetOrganisationById;
+namespace Application.Organisations.GetById;
 
 public sealed record OrganisationResponse(
     Guid Id,

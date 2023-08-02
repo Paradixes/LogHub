@@ -1,8 +1,9 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Organisations;
+using Domain.Entities.Users;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogHub.Persistence.Repositories;
+namespace Persistence.Repositories;
 
 public class OrganisationRepository : IOrganisationRepository
 {

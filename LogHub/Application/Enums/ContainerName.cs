@@ -1,4 +1,4 @@
-﻿namespace LogHub.Application.Enums;
+﻿namespace Application.Enums;
 
 public static class ContainerName
 {

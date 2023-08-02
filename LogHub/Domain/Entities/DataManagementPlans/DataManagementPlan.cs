@@ -1,4 +1,4 @@
-﻿namespace LogHub.Domain.Entities.DataManagementPlans;
+﻿namespace Domain.Entities.DataManagementPlans;
 
 public class DataManagementPlan : DataManagementPlanTemplate
 {

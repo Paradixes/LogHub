@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.DataManagementPlans;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.DataManagementPlans;
+using Domain.Entities.Organisations;
+using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Bases;
+namespace Domain.Entities.Bases;
 
 public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseRequestId>
 {

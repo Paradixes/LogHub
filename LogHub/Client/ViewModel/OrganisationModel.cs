@@ -1,4 +1,4 @@
-﻿namespace LogHub.Client.ViewModel;
+﻿namespace Client.ViewModel;
 
 public class OrganisationModel
 {

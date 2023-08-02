@@ -1,11 +1,11 @@
-﻿using LogHub.Application.Data;
-using LogHub.Domain.Repositories;
-using LogHub.Persistence.Repositories;
+﻿using Application.Data;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Repositories;
 
-namespace LogHub.Persistence;
+namespace Persistence;
 
 public static class DependencyInjection
 {

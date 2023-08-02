@@ -1,17 +1,17 @@
-﻿using LogHub.Application.Abstracts;
-using LogHub.Application.Enums;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Repositories;
+﻿using Application.Abstracts;
+using Application.Enums;
+using Domain.Entities.Organisations;
+using Domain.Repositories;
 using MediatR;
 
-namespace LogHub.Application.Organisations.AddDepartment;
+namespace Application.Departments.Create;
 
-public class AddDepartmentCommandHandler : IRequestHandler<AddDepartmentCommand>
+public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand>
 {
     private readonly IBlobStorageProvider _blobStorageProvider;
     private readonly IDepartmentRepository _departmentRepository;
 
-    public AddDepartmentCommandHandler(
+    public CreateDepartmentCommandHandler(
         IBlobStorageProvider blobStorageProvider,
         IDepartmentRepository departmentRepository)
     {
@@ -19,7 +19,7 @@ public class AddDepartmentCommandHandler : IRequestHandler<AddDepartmentCommand>
         _departmentRepository = departmentRepository;
     }
 
-    public async Task Handle(AddDepartmentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
         var department = Department.Create(
             request.Name,

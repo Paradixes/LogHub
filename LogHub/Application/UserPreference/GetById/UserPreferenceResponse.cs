@@ -1,6 +1,6 @@
-using LogHub.Shared.Enums;
+using Shared.Enums;
 
-namespace LogHub.Application.UserPreference.GetUserPreferenceById;
+namespace Application.UserPreference.GetById;
 
 public record UserPreferenceResponse(
     Guid Id,

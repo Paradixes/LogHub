@@ -1,18 +1,18 @@
-﻿using LogHub.Application.Data;
-using LogHub.Domain.Entities.Actions;
-using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.DataManagementPlans;
-using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Logbooks;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Permissions;
-using LogHub.Domain.Entities.Requests;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Application.Data;
+using Domain.Entities.Actions;
+using Domain.Entities.Bases;
+using Domain.Entities.DataManagementPlans;
+using Domain.Entities.Docs;
+using Domain.Entities.Logbooks;
+using Domain.Entities.Organisations;
+using Domain.Entities.Permissions;
+using Domain.Entities.Requests;
+using Domain.Entities.Users;
+using Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogHub.Persistence;
+namespace Persistence;
 
 public class LogHubDbContext : DbContext, IApplicationDbContext, IUnitOfWork
 {

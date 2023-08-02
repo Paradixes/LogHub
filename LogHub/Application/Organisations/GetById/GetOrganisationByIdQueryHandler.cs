@@ -1,9 +1,9 @@
-﻿using LogHub.Application.Abstracts.Messaging;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Shared;
-using LogHub.Persistence.Repositories;
+﻿using Application.Abstracts.Messaging;
+using Domain.Entities.Organisations;
+using Domain.Repositories;
+using Domain.Shared;
 
-namespace LogHub.Application.Organisations.GetOrganisationById;
+namespace Application.Organisations.GetById;
 
 public class GetOrganisationByIdQueryHandler : IQueryHandler<GetOrganisationByIdQuery, OrganisationResponse>
 {

@@ -1,8 +1,8 @@
-﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Repositories;
+﻿using Domain.Entities.Users;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogHub.Persistence.Repositories;
+namespace Persistence.Repositories;
 
 public sealed class UserRepository : IUserRepository
 {

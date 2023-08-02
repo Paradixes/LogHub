@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.Docs;
+﻿using Domain.Entities.Bases;
+using Domain.Entities.Docs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class DocLabelConfiguration : IEntityTypeConfiguration<DocLabel>
 {

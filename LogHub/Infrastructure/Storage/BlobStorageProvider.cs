@@ -1,7 +1,7 @@
-﻿using Azure.Storage.Blobs;
-using LogHub.Application.Abstracts;
+﻿using Application.Abstracts;
+using Azure.Storage.Blobs;
 
-namespace LogHub.Infrastructure.Storage;
+namespace Infrastructure.Storage;
 
 public class BlobStorageProvider : IBlobStorageProvider
 {

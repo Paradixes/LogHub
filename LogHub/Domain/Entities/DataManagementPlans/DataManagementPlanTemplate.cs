@@ -1,8 +1,8 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.Organisations;
+using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.DataManagementPlans;
+namespace Domain.Entities.DataManagementPlans;
 
 public class DataManagementPlanTemplate : Entity<DmpId>, IAuditableEntity
 {

@@ -1,12 +1,12 @@
-﻿using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Logbooks;
-using LogHub.Domain.Entities.Permissions;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Bases;
+using Domain.Entities.Docs;
+using Domain.Entities.Logbooks;
+using Domain.Entities.Permissions;
+using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class BasePermissionConfiguration : IEntityTypeConfiguration<RecordPermission<BasePermissionId, BaseId>>
 {

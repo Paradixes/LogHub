@@ -1,6 +1,6 @@
-﻿using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Users;
 
-namespace LogHub.Application.Abstracts;
+namespace Application.Abstracts;
 
 public interface IJwtProvider
 {

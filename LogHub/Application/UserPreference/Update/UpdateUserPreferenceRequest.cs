@@ -1,6 +1,6 @@
-﻿using LogHub.Shared.Enums;
+﻿using Shared.Enums;
 
-namespace LogHub.Application.UserPreference.Update;
+namespace Application.UserPreference.Update;
 
 public record UpdateUserPreferenceRequest(
     Theme Theme,

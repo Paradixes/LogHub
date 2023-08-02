@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Primitives;
-using LogHub.Shared.Enums;
+﻿using Domain.Entities.Docs;
+using Domain.Entities.Organisations;
+using Domain.Primitives;
+using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Users;
+namespace Domain.Entities.Users;
 
 public class User : Entity<UserId>, IAuditableEntity
 {

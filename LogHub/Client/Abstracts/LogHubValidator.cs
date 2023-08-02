@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace LogHub.Client.Abstracts;
+namespace Client.Abstracts;
 
 public abstract class LogHubValidator<TModel> : AbstractValidator<TModel>
 {

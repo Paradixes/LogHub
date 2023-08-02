@@ -1,8 +1,8 @@
-﻿using LogHub.Application.Abstracts.Messaging;
-using LogHub.Domain.Entities.Users;
-using LogHub.Shared.Enums;
+﻿using Application.Abstracts.Messaging;
+using Domain.Entities.Users;
+using Shared.Enums;
 
-namespace LogHub.Application.UserPreference.Update;
+namespace Application.UserPreference.Update;
 
 public record UpdateUserPreferenceCommand(
     UserId UserId,

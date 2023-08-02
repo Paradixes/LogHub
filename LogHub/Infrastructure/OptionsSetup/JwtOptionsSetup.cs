@@ -1,8 +1,8 @@
-﻿using LogHub.Infrastructure.Authentication;
+﻿using Infrastructure.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace LogHub.Infrastructure.OptionsSetup;
+namespace Infrastructure.OptionsSetup;
 
 public class JwtOptionsSetup : IConfigureOptions<JwtOptions>
 {

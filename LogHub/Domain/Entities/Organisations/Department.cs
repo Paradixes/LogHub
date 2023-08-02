@@ -1,7 +1,7 @@
-﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Organisations;
+namespace Domain.Entities.Organisations;
 
 public class Department : Entity<DepartmentId>
 {

@@ -1,6 +1,6 @@
-﻿using LogHub.Shared.Enums;
+﻿using Shared.Enums;
 
-namespace LogHub.Application.Users.Register;
+namespace Application.Users.Register;
 
 public record RegisterUserRequest(
     string Email,

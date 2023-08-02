@@ -1,13 +1,13 @@
-﻿using Carter;
-using LogHub.Application.Users.GetUserById;
-using LogHub.Application.Users.Login;
-using LogHub.Application.Users.Register;
-using LogHub.Application.Users.Update;
-using LogHub.Domain.Entities.Users;
+﻿using Application.Users.GetById;
+using Application.Users.Login;
+using Application.Users.Register;
+using Application.Users.Update;
+using Carter;
+using Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LogHub.Web.API.Endpoints;
+namespace Web.API.Endpoints;
 
 public class Users : ICarterModule
 {

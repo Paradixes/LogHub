@@ -1,4 +1,4 @@
-﻿namespace LogHub.Application.Users.Update;
+﻿namespace Application.Users.Update;
 
 public record UpdateUserRequest(
     string Name,

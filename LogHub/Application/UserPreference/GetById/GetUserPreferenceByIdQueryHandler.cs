@@ -1,9 +1,9 @@
-﻿using LogHub.Application.Abstracts.Messaging;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Repositories;
-using LogHub.Domain.Shared;
+﻿using Application.Abstracts.Messaging;
+using Domain.Entities.Users;
+using Domain.Repositories;
+using Domain.Shared;
 
-namespace LogHub.Application.UserPreference.GetUserPreferenceById;
+namespace Application.UserPreference.GetById;
 
 public class GetUserPreferenceByIdQueryHandler : IQueryHandler<GetUserPreferenceByIdQuery, UserPreferenceResponse>
 {

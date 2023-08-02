@@ -1,8 +1,8 @@
-﻿using LogHub.Domain.Entities.DataManagementPlans;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.DataManagementPlans;
+using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Organisations;
+namespace Domain.Entities.Organisations;
 
 public class Organisation : Entity<OrganisationId>
 {

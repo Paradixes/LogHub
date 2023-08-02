@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
-using LogHub.Shared.Enums;
+﻿using Domain.Entities.Bases;
+using Domain.Entities.Users;
+using Domain.Primitives;
+using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Logbooks;
+namespace Domain.Entities.Logbooks;
 
 public class Logbook : RecordEntity<LogbookId, LogbookActionId, LogbookPermissionId, LogbookRequestId>
 {

@@ -1,6 +1,6 @@
-﻿using LogHub.Domain.Primitives;
+﻿using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.DataManagementPlans;
+namespace Domain.Entities.DataManagementPlans;
 
 public class Question : Entity<QuestionId>
 {

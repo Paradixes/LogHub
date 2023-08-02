@@ -1,13 +1,13 @@
-﻿using Carter;
-using LogHub.Application.Organisations.AddDepartment;
-using LogHub.Application.Organisations.Create;
-using LogHub.Application.Organisations.GetOrganisationById;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
+﻿using Application.Departments.Create;
+using Application.Organisations.Create;
+using Application.Organisations.GetById;
+using Carter;
+using Domain.Entities.Organisations;
+using Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LogHub.Web.API.Endpoints;
+namespace Web.API.Endpoints;
 
 public class Organisations : ICarterModule
 {
@@ -42,10 +42,10 @@ public class Organisations : ICarterModule
 
         app.MapPut("api/organisations/{id:guid}/departments", async (
             Guid id,
-            [FromBody] AddDepartmentRequest request,
+            [FromBody] CreateDepartmentRequest request,
             ISender sender) =>
         {
-            var command = new AddDepartmentCommand(
+            var command = new CreateDepartmentCommand(
                 new OrganisationId(id),
                 new UserId(request.ManagerId),
                 request.Logo,

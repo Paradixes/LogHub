@@ -1,7 +1,7 @@
-﻿using LogHub.Persistence;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Persistence;
 
-namespace LogHub.Web.API.Extensions;
+namespace Web.API.Extensions;
 
 public static class MigrationExtensions
 {

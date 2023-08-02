@@ -1,12 +1,12 @@
-﻿using LogHub.Application.Abstracts;
-using LogHub.Application.Abstracts.Messaging;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Errors;
-using LogHub.Domain.Repositories;
-using LogHub.Domain.Shared;
+﻿using Application.Abstracts;
+using Application.Abstracts.Messaging;
+using Domain.Entities.Users;
+using Domain.Errors;
+using Domain.Repositories;
+using Domain.Shared;
 using Microsoft.AspNetCore.Identity;
 
-namespace LogHub.Application.Users.Login;
+namespace Application.Users.Login;
 
 internal sealed class LoginUserCommandHandler
     : ICommandHandler<LoginUserCommand, string>

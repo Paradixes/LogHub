@@ -1,6 +1,6 @@
-﻿using LogHub.Domain.Entities.Bases;
+﻿using Domain.Entities.Bases;
 
-namespace LogHub.Domain.Entities.Docs;
+namespace Domain.Entities.Docs;
 
 public class DocLabel
 {

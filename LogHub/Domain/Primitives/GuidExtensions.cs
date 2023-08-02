@@ -1,4 +1,4 @@
-﻿namespace LogHub.Domain.Primitives;
+﻿namespace Domain.Primitives;
 
 public static class GuidExtensions
 {

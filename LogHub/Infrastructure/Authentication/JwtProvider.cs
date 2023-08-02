@@ -1,12 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using LogHub.Application.Abstracts;
-using LogHub.Domain.Entities.Users;
+using Application.Abstracts;
+using Domain.Entities.Users;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LogHub.Infrastructure.Authentication;
+namespace Infrastructure.Authentication;
 
 public sealed class JwtProvider : IJwtProvider
 {

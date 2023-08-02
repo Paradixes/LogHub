@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Docs;
+using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class DocEditorConfiguration : IEntityTypeConfiguration<DocEditor>
 {

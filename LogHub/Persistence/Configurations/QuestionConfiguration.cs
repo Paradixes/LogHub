@@ -1,8 +1,8 @@
-﻿using LogHub.Domain.Entities.DataManagementPlans;
+﻿using Domain.Entities.DataManagementPlans;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class QuestionConfiguration : IEntityTypeConfiguration<Question>
 {

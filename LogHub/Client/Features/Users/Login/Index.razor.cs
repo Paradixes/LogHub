@@ -1,8 +1,8 @@
-﻿using LogHub.Client.Validations;
-using LogHub.Client.ViewModel;
+﻿using Client.Validations;
+using Client.ViewModel;
 using MudBlazor;
 
-namespace LogHub.Client.Features.Users.Login;
+namespace Client.Features.Users.Login;
 
 public partial class Index
 {

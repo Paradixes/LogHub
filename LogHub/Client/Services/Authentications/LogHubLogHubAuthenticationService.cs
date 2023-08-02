@@ -2,10 +2,10 @@
 using System.Net.Http.Json;
 using System.Security.Claims;
 using Blazored.LocalStorage;
-using LogHub.Client.ViewModel;
+using Client.ViewModel;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace LogHub.Client.Services.Authentications;
+namespace Client.Services.Authentications;
 
 public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvider, ILogHubAuthenticationService
 {

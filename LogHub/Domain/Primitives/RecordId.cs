@@ -1,3 +1,3 @@
-﻿namespace LogHub.Domain.Primitives;
+﻿namespace Domain.Primitives;
 
 public record RecordId(Guid Value) : EntityId(Value);

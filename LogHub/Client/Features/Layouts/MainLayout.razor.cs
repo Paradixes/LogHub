@@ -1,6 +1,4 @@
-﻿using LogHub.Client.ViewModel;
-
-namespace LogHub.Client.Features.Layouts;
+﻿namespace Client.Features.Layouts;
 
 public partial class MainLayout
 {

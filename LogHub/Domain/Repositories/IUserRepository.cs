@@ -1,6 +1,6 @@
-﻿using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Users;
 
-namespace LogHub.Domain.Repositories;
+namespace Domain.Repositories;
 
 public interface IUserRepository
 {

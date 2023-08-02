@@ -1,12 +1,11 @@
-﻿using LogHub.Application.Abstracts;
-using LogHub.Application.Abstracts.Messaging;
-using LogHub.Application.Enums;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Repositories;
-using LogHub.Domain.Shared;
-using LogHub.Persistence.Repositories;
+﻿using Application.Abstracts;
+using Application.Abstracts.Messaging;
+using Application.Enums;
+using Domain.Entities.Organisations;
+using Domain.Repositories;
+using Domain.Shared;
 
-namespace LogHub.Application.Organisations.Create;
+namespace Application.Organisations.Create;
 
 public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisationCommand, Guid>
 {

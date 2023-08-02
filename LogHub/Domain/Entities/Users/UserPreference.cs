@@ -1,6 +1,6 @@
-﻿using LogHub.Shared.Enums;
+﻿using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Users;
+namespace Domain.Entities.Users;
 
 public class UserPreference
 {

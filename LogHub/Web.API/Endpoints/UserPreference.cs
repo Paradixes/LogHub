@@ -1,10 +1,10 @@
-﻿using Carter;
-using LogHub.Application.UserPreference.GetUserPreferenceById;
-using LogHub.Application.UserPreference.Update;
-using LogHub.Domain.Entities.Users;
+﻿using Application.UserPreference.GetById;
+using Application.UserPreference.Update;
+using Carter;
+using Domain.Entities.Users;
 using MediatR;
 
-namespace LogHub.Web.API.Endpoints;
+namespace Web.API.Endpoints;
 
 public class UserPreference : ICarterModule
 {

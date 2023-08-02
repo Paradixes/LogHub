@@ -1,4 +1,4 @@
-﻿namespace LogHub.Application.Abstracts;
+﻿namespace Application.Abstracts;
 
 public interface IBlobStorageProvider
 {

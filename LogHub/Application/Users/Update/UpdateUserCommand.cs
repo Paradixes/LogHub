@@ -1,7 +1,7 @@
-﻿using LogHub.Application.Abstracts.Messaging;
-using LogHub.Domain.Entities.Users;
+﻿using Application.Abstracts.Messaging;
+using Domain.Entities.Users;
 
-namespace LogHub.Application.Users.Update;
+namespace Application.Users.Update;
 
 public record UpdateUserCommand(
     UserId UserId,

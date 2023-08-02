@@ -1,5 +1,5 @@
-using LogHub.Domain.Primitives;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Organisations;
+namespace Domain.Entities.Organisations;
 
 public record OrganisationId(Guid Value) : EntityId(Value);

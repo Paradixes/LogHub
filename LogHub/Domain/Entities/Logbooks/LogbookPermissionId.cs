@@ -1,5 +1,5 @@
-using LogHub.Domain.Entities.Permissions;
+using Domain.Entities.Permissions;
 
-namespace LogHub.Domain.Entities.Logbooks;
+namespace Domain.Entities.Logbooks;
 
 public record LogbookPermissionId(Guid Value) : RecordPermissionId(Value);

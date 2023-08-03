@@ -1,12 +1,12 @@
-﻿using LogHub.Application.Abstracts;
-using LogHub.Infrastructure.Authentication;
-using LogHub.Infrastructure.OptionsSetup;
-using LogHub.Infrastructure.Storage;
+﻿using Application.Abstracts;
+using Infrastructure.Authentication;
+using Infrastructure.OptionsSetup;
+using Infrastructure.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LogHub.Infrastructure;
+namespace Infrastructure;
 
 public static class DependencyInjection
 {

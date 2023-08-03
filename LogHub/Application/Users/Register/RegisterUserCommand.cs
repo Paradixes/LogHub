@@ -1,7 +1,7 @@
-﻿using LogHub.Application.Abstracts.Messaging;
-using LogHub.Shared.Enums;
+﻿using Application.Abstracts.Messaging;
+using Shared.Enums;
 
-namespace LogHub.Application.Users.Register;
+namespace Application.Users.Register;
 
 public record RegisterUserCommand(
     string Email,

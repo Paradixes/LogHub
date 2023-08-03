@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Actions;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
-using LogHub.Shared.Enums;
+﻿using Domain.Entities.Actions;
+using Domain.Entities.Users;
+using Domain.Primitives;
+using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Requests;
+namespace Domain.Entities.Requests;
 
 public class RecordRequest<TId, TRecordId> : RecordAction<TId, TRecordId>
     where TId : RecordRequestId

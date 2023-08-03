@@ -1,9 +1,9 @@
-﻿using LogHub.Application.Behaviours;
-using LogHub.Domain.Entities.Users;
+﻿using Application.Behaviours;
+using Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LogHub.Application;
+namespace Application;
 
 public static class DependencyInjection
 {

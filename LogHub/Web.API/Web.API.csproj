@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\LogHub.Application.csproj" />
-    <ProjectReference Include="..\Client\LogHub.Client.csproj" />
-    <ProjectReference Include="..\Infrastructure\LogHub.Infrastructure.csproj" />
-    <ProjectReference Include="..\Persistence\LogHub.Persistence.csproj" />
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Client\Client.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
   </ItemGroup>
 
 

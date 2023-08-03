@@ -1,6 +1,6 @@
-﻿using LogHub.Shared.Enums;
+﻿using Shared.Enums;
 
-namespace LogHub.Client.ViewModel;
+namespace Client.ViewModel;
 
 public class RegisterModel
 {

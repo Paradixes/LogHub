@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Organisations;
+using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -27,6 +27,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(u => u.DepartmentId)
             .IsRequired(false);
 
-        builder.OwnsOne(u => u.UserSetting);
+        builder.OwnsOne(u => u.UserPreference);
     }
 }

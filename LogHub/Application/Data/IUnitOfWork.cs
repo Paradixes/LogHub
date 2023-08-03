@@ -1,4 +1,4 @@
-﻿namespace LogHub.Application.Data;
+﻿namespace Application.Data;
 
 public interface IUnitOfWork
 {

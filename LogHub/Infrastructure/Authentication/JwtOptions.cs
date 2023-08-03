@@ -1,4 +1,4 @@
-﻿namespace LogHub.Infrastructure.Authentication;
+﻿namespace Infrastructure.Authentication;
 
 public class JwtOptions
 {

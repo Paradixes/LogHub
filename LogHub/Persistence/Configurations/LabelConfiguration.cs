@@ -1,8 +1,8 @@
-﻿using LogHub.Domain.Entities.Bases;
+﻿using Domain.Entities.Bases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class LabelConfiguration : IEntityTypeConfiguration<Label>
 {

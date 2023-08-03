@@ -1,7 +1,7 @@
-﻿using LogHub.Domain.Shared;
+﻿using Domain.Shared;
 using MediatR;
 
-namespace LogHub.Application.Abstracts.Messaging;
+namespace Application.Abstracts.Messaging;
 
 public interface ICommand : IRequest<Result> { }
 

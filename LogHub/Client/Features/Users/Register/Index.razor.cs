@@ -1,9 +1,9 @@
-﻿using LogHub.Client.Validations;
-using LogHub.Client.ViewModel;
-using LogHub.Shared.Enums;
+﻿using Client.Validations;
+using Client.ViewModel;
 using MudBlazor;
+using Shared.Enums;
 
-namespace LogHub.Client.Features.Users.Register;
+namespace Client.Features.Users.Register;
 
 public partial class Index
 {

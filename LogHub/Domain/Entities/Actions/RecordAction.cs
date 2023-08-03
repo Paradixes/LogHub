@@ -1,7 +1,7 @@
-﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Actions;
+namespace Domain.Entities.Actions;
 
 public class RecordAction<TId, TRecordId> : Entity<TId>, IAuditableEntity
     where TId : RecordActionId

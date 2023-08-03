@@ -1,6 +1,6 @@
-﻿using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Users;
 
-namespace LogHub.Domain.Entities.Docs;
+namespace Domain.Entities.Docs;
 
 public class DocEditor
 {

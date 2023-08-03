@@ -1,12 +1,12 @@
-﻿using LogHub.Domain.Entities.Bases;
-using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Logbooks;
-using LogHub.Domain.Entities.Requests;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.Bases;
+using Domain.Entities.Docs;
+using Domain.Entities.Logbooks;
+using Domain.Entities.Requests;
+using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class BaseRequestConfiguration : IEntityTypeConfiguration<RecordRequest<BaseRequestId, BaseId>>
 {

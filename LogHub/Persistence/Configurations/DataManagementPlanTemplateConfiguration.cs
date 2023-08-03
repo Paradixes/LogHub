@@ -1,10 +1,10 @@
-﻿using LogHub.Domain.Entities.DataManagementPlans;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
+﻿using Domain.Entities.DataManagementPlans;
+using Domain.Entities.Organisations;
+using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class DataManagementPlanTemplateConfiguration : IEntityTypeConfiguration<DataManagementPlanTemplate>
 {

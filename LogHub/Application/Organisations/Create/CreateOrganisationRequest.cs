@@ -1,4 +1,4 @@
-﻿namespace LogHub.Application.Organisations.Create;
+﻿namespace Application.Organisations.Create;
 
 public record CreateOrganisationRequest(
     Guid ManagerId,

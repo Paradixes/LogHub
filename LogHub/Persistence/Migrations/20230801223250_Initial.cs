@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace LogHub.Persistence.Migrations
+namespace Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -66,6 +66,7 @@ namespace LogHub.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DepartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IsFinished = table.Column<bool>(type: "bit", nullable: false),
                     DmpId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -177,7 +178,6 @@ namespace LogHub.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -224,7 +224,7 @@ namespace LogHub.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrganisationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -436,10 +436,10 @@ namespace LogHub.Persistence.Migrations
                     Orcid = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HashedPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
-                    UserSetting_Theme = table.Column<int>(type: "int", nullable: false),
-                    UserSetting_EmailNotification = table.Column<bool>(type: "bit", nullable: false),
-                    UserSetting_AutoSave = table.Column<bool>(type: "bit", nullable: false),
-                    UserSetting_FontSize = table.Column<int>(type: "int", nullable: false),
+                    UserPreference_Theme = table.Column<int>(type: "int", nullable: false),
+                    UserPreference_EmailNotification = table.Column<bool>(type: "bit", nullable: false),
+                    UserPreference_AutoSave = table.Column<bool>(type: "bit", nullable: false),
+                    UserPreference_FontSize = table.Column<int>(type: "int", nullable: false),
                     CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -497,6 +497,11 @@ namespace LogHub.Persistence.Migrations
                 name: "IX_BaseRequests_RecordId",
                 table: "BaseRequests",
                 column: "RecordId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bases_DepartmentId",
+                table: "Bases",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bases_DmpId",
@@ -739,6 +744,13 @@ namespace LogHub.Persistence.Migrations
                 principalTable: "DataManagementPlanTemplates",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Bases_Department_DepartmentId",
+                table: "Bases",
+                column: "DepartmentId",
+                principalTable: "Department",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Bases_Organisations_OrganisationId",

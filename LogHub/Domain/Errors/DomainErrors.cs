@@ -1,7 +1,7 @@
-﻿using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Shared;
+﻿using Domain.Entities.Organisations;
+using Domain.Shared;
 
-namespace LogHub.Domain.Errors;
+namespace Domain.Errors;
 
 public static class DomainErrors
 {

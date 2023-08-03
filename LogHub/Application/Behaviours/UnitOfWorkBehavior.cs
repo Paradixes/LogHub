@@ -1,10 +1,10 @@
 ﻿using System.Transactions;
-using LogHub.Application.Data;
-using LogHub.Domain.Primitives;
+using Application.Data;
+using Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogHub.Application.Behaviours;
+namespace Application.Behaviours;
 
 public sealed class UnitOfWorkBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>

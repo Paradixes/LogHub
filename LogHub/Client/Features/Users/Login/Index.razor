@@ -1,11 +1,12 @@
 ﻿@page "/users/login"
+@using Client.Services.Authentications
 @layout BackgroundLayout
 @inject ILogHubAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 
 
 <MudImage Src="/img/logo.png" Width="300" Class="py-3 justify-center"/>
-<MudPaper Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
     <MudForm Model="@Model"
              @ref="@_form"
              Validation="_validator.ValidateValue"
@@ -46,4 +47,4 @@
         You don't have an account yet?,
         <MudLink Href="/users/register/">Register</MudLink>
     </MudForm>
-</MudPaper>
+</MudContainer>

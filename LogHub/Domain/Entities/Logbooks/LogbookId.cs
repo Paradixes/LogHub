@@ -1,5 +1,5 @@
-﻿using LogHub.Domain.Primitives;
+﻿using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Logbooks;
+namespace Domain.Entities.Logbooks;
 
 public record LogbookId(Guid Value) : RecordId(Value);

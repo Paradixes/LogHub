@@ -1,12 +1,14 @@
-﻿using LogHub.Client.ViewModel;
+﻿using Client.ViewModel;
 
-namespace LogHub.Client.Services.Authentications;
+namespace Client.Services.Authentications;
 
 public interface ILogHubAuthenticationService
 {
-	Task<bool> LogInAsync(LoginModel model);
+    Task<bool> LogInAsync(LoginModel model);
 
-	Task LogOutAsync();
+    Task LogOutAsync();
 
-	Task<bool> RegisterAsync(RegisterModel model);
+    Task<bool> RegisterAsync(RegisterModel model);
+
+    Task<Guid> GetUserIdAsync();
 }

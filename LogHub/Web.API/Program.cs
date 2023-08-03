@@ -1,8 +1,8 @@
+using Application;
 using Carter;
-using LogHub.Application;
-using LogHub.Infrastructure;
-using LogHub.Persistence;
-using LogHub.Web.API.Extensions;
+using Infrastructure;
+using Persistence;
+using Web.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,5 +1,4 @@
-﻿@using LogHub.Client.Features.Layouts
-@inject NavigationManager NavigationManager
+﻿@inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 
 <CascadingAuthenticationState>
@@ -11,7 +10,7 @@
                         @{
                             NavigationManager.NavigateTo("/");
                             NavigationManager.NavigateTo("/login");
-                            Snackbar.Add("You shold login first", Severity.Warning);
+                            Snackbar.Add("You should login first", Severity.Warning);
                         }
                     </NotAuthorized>
                 </AuthorizeRouteView>

@@ -1,5 +1,5 @@
-using LogHub.Domain.Entities.Permissions;
+using Domain.Entities.Permissions;
 
-namespace LogHub.Domain.Entities.Bases;
+namespace Domain.Entities.Bases;
 
 public record BasePermissionId(Guid Value) : RecordPermissionId(Value);

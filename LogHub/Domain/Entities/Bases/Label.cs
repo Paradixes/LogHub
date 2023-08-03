@@ -1,6 +1,6 @@
-﻿using LogHub.Domain.Primitives;
+﻿using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Bases;
+namespace Domain.Entities.Bases;
 
 public class Label : Entity<LabelId>
 {

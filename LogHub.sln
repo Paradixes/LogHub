@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Client", "LogHub\Client\LogHub.Client.csproj", "{CC4F4468-F97D-44BF-AA09-7ADB92242BA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "LogHub\Client\Client.csproj", "{CC4F4468-F97D-44BF-AA09-7ADB92242BA0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Shared", "LogHub\Shared\LogHub.Shared.csproj", "{74546B6D-2F1F-4F2E-B9E0-52DFD8488BAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "LogHub\Shared\Shared.csproj", "{74546B6D-2F1F-4F2E-B9E0-52DFD8488BAA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Domain", "LogHub\Domain\LogHub.Domain.csproj", "{D019968F-CD22-45C0-A3EA-EE150126E057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "LogHub\Domain\Domain.csproj", "{D019968F-CD22-45C0-A3EA-EE150126E057}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Application", "LogHub\Application\LogHub.Application.csproj", "{FBE8CD0A-280C-4765-9D46-6C5F62F4DFB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "LogHub\Application\Application.csproj", "{FBE8CD0A-280C-4765-9D46-6C5F62F4DFB3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Infrastructure", "LogHub\Infrastructure\LogHub.Infrastructure.csproj", "{3F2C4D0F-F4C4-4953-BFF3-31CD4516E735}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "LogHub\Infrastructure\Infrastructure.csproj", "{3F2C4D0F-F4C4-4953-BFF3-31CD4516E735}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogHub.Persistence", "LogHub\Persistence\LogHub.Persistence.csproj", "{683A70B5-FCB3-40F2-B622-274100C41594}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "LogHub\Persistence\Persistence.csproj", "{683A70B5-FCB3-40F2-B622-274100C41594}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D7E19420-E8E2-4A62-8534-4C8589DEB636}"
 EndProject
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{1134C0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{1608286F-B029-47AA-AC48-DFB9DE423E1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogHub.Web.API", "LogHub\Web.API\LogHub.Web.API.csproj", "{D3134948-6F61-439C-A753-FEB770F82919}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.API", "LogHub\Web.API\Web.API.csproj", "{D3134948-6F61-439C-A753-FEB770F82919}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C9244760-3A42-41A7-921B-8C1DFDB85435}"
 EndProject

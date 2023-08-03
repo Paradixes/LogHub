@@ -1,8 +1,8 @@
-﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
-using LogHub.Shared.Enums;
+﻿using Domain.Entities.Users;
+using Domain.Primitives;
+using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Permissions;
+namespace Domain.Entities.Permissions;
 
 public class RecordPermission<TId, TRecordId> : Entity<TId>
     where TId : RecordPermissionId

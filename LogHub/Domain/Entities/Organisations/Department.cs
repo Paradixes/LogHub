@@ -1,7 +1,7 @@
-﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Organisations;
+namespace Domain.Entities.Organisations;
 
 public class Department : Entity<DepartmentId>
 {
@@ -11,7 +11,7 @@ public class Department : Entity<DepartmentId>
 
     public string Name { get; private set; } = null!;
 
-    public string? Icon { get; private set; }
+    public Uri? LogoUri { get; private set; }
 
     public string? Description { get; private set; }
 
@@ -19,7 +19,6 @@ public class Department : Entity<DepartmentId>
 
     public static Department Create(
         string name,
-        string? icon,
         string? description,
         UserId managerId,
         OrganisationId parentId)
@@ -28,18 +27,21 @@ public class Department : Entity<DepartmentId>
         {
             ManagerId = managerId,
             Name = name,
-            Icon = icon,
             Description = description,
             OrganisationId = parentId
         };
         return department;
     }
 
-    public void UpdateDetails(string name, string? icon, string? description)
+    public void UpdateDetails(string name, string? description)
     {
         Name = name;
-        Icon = icon;
         Description = description;
+    }
+
+    public void UpdateLogo(Uri? logoUri)
+    {
+        LogoUri = logoUri;
     }
 
     public void UpdateManager(UserId managerId)

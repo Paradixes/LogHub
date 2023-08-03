@@ -1,8 +1,9 @@
-﻿using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Repositories;
+﻿using Domain.Entities.Organisations;
+using Domain.Entities.Users;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogHub.Persistence.Repositories;
+namespace Persistence.Repositories;
 
 public sealed class UserRepository : IUserRepository
 {
@@ -13,34 +14,38 @@ public sealed class UserRepository : IUserRepository
         _context = context;
     }
 
-    public Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default)
+    public Task<User?> GetByIdAsync(UserId id)
     {
-        return _context
-            .Set<User>()
-            .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+        return _context.Users
+            .FirstOrDefaultAsync(user => user.Id == id);
     }
 
-    public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public Task<User?> GetByEmailAsync(string email)
     {
-        return _context
-            .Set<User>()
-            .FirstOrDefaultAsync(user => user.Email == email, cancellationToken);
+        return _context.Users
+            .FirstOrDefaultAsync(user => user.Email == email);
     }
 
-    public Task<bool> IsEmailUniqueAsync(string email, CancellationToken cancellationToken = default)
+    public Task<bool> IsEmailUniqueAsync(string email)
     {
-        return _context
-            .Set<User>()
-            .AllAsync(user => user.Email != email, cancellationToken);
+        return _context.Users
+            .AllAsync(user => user.Email != email);
     }
 
     public void Add(User user)
     {
-        _context.Set<User>().Add(user);
+        _context.Users.Add(user);
     }
 
     public void Update(User user)
     {
-        _context.Set<User>().Update(user);
+        _context.Users.Update(user);
+    }
+
+    public Task<List<User>> GetByOrganisationIdAsync(OrganisationId organisationId)
+    {
+        return _context.Users
+            .Where(user => user.OrganisationId == organisationId)
+            .ToListAsync();
     }
 }

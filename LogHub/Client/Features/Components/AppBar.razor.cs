@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace LogHub.Client.Features.Components;
+namespace Client.Features.Components;
 
 public partial class AppBar
 {

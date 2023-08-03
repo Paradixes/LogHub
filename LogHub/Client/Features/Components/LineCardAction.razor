@@ -1,0 +1,33 @@
+﻿<MudItem xs="12">
+    <MudCard Elevation="4" Outlined="true">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.body1">@Title</MudText>
+                <MudText Typo="Typo.body2">@Content</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="OnAction">
+                    @ActionText
+                </MudButton>
+            </CardHeaderActions>
+        </MudCardHeader>
+    </MudCard>
+</MudItem>
+
+@code {
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Content { get; set; }
+
+    [Parameter]
+    public string? ActionText { get; set; }
+
+    [Parameter]
+    public EventCallback OnAction { get; set; }
+
+}

@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.DataManagementPlans;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Entities.Users;
-using LogHub.Domain.Primitives;
+﻿using Domain.Entities.DataManagementPlans;
+using Domain.Entities.Organisations;
+using Domain.Entities.Users;
+using Domain.Primitives;
 
-namespace LogHub.Domain.Entities.Bases;
+namespace Domain.Entities.Bases;
 
 public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseRequestId>
 {
@@ -16,15 +16,19 @@ public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseReq
         string? icon,
         string? description,
         UserId creatorId,
-        OrganisationId organisationId)
+        OrganisationId organisationId,
+        DepartmentId? departmentId)
         : base(creatorId, title, icon, description)
     {
         OrganisationId = organisationId;
+        DepartmentId = departmentId;
     }
 
     public IEnumerable<Label> Labels => _labels.AsReadOnly();
 
     public OrganisationId OrganisationId { get; private set; } = null!;
+
+    public DepartmentId? DepartmentId { get; private set; }
 
     public bool IsFinished { get; private set; }
 
@@ -61,5 +65,10 @@ public class Base : RecordEntity<BaseId, BaseActionId, BasePermissionId, BaseReq
     public void Finish()
     {
         IsFinished = true;
+    }
+
+    public void SetDepartmentId(DepartmentId? departmentId)
+    {
+        DepartmentId = departmentId;
     }
 }

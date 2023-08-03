@@ -1,7 +1,9 @@
-﻿namespace LogHub.Client.ViewModel;
+﻿namespace Client.ViewModel;
 
-public class OrganisationModel
+public record OrganisationModel
 {
+    public Guid OrganisationId { get; set; }
+
     public Guid ManagerId { get; set; }
 
     public string Name { get; set; } = string.Empty;

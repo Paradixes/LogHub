@@ -2,10 +2,10 @@
 using System.Net.Http.Json;
 using System.Security.Claims;
 using Blazored.LocalStorage;
-using LogHub.Client.ViewModel;
+using Client.ViewModel;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace LogHub.Client.Services.Authentications;
+namespace Client.Services.Authentications;
 
 public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvider, ILogHubAuthenticationService
 {
@@ -23,7 +23,7 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
     public async Task<bool> LogInAsync(LoginModel model)
     {
         // query account info from the server
-        var response = await _client.PostAsJsonAsync("api/users/login", model);
+        var response = await _client.PostAsJsonAsync("api/login", model);
         if (!response.IsSuccessStatusCode)
         {
             return false;
@@ -48,13 +48,19 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
 
     public async Task<bool> RegisterAsync(RegisterModel model)
     {
-        var response = await _client.PostAsJsonAsync("api/users/register", model);
+        var response = await _client.PostAsJsonAsync("api/users", model);
         if (!response.IsSuccessStatusCode)
         {
             return false;
         }
 
         return await LogInAsync(new LoginModel(model.Email, model.Password));
+    }
+
+    public async Task<Guid> GetUserIdAsync()
+    {
+        var claims = (await GetAuthenticationStateAsync()).User.Claims;
+        return Guid.Parse(claims.First(c => c.Type == ClaimTypes.Sid).Value);
     }
 
     private static IEnumerable<Claim> GetClaimsFromToken(string token)

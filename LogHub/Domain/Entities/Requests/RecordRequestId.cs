@@ -1,5 +1,5 @@
-using LogHub.Domain.Entities.Actions;
+using Domain.Entities.Actions;
 
-namespace LogHub.Domain.Entities.Requests;
+namespace Domain.Entities.Requests;
 
 public record RecordRequestId(Guid Value) : RecordActionId(Value);

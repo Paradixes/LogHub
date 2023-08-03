@@ -1,5 +1,5 @@
-using LogHub.Domain.Entities.Actions;
+using Domain.Entities.Actions;
 
-namespace LogHub.Domain.Entities.Logbooks;
+namespace Domain.Entities.Logbooks;
 
 public record LogbookActionId(Guid Value) : RecordActionId(Value);

@@ -1,8 +1,8 @@
-﻿using FluentValidation;
-using LogHub.Client.Abstracts;
-using LogHub.Client.ViewModel;
+﻿using Client.Abstracts;
+using Client.ViewModel;
+using FluentValidation;
 
-namespace LogHub.Client.Validations;
+namespace Client.Validations;
 
 public class RegisterModelValidator : LogHubValidator<RegisterModel>
 {

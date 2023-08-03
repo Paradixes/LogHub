@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Organisations;
-using LogHub.Domain.Primitives;
-using LogHub.Shared.Enums;
+﻿using Domain.Entities.Docs;
+using Domain.Entities.Organisations;
+using Domain.Primitives;
+using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Users;
+namespace Domain.Entities.Users;
 
 public class User : Entity<UserId>, IAuditableEntity
 {
@@ -34,7 +34,7 @@ public class User : Entity<UserId>, IAuditableEntity
 
     public UserRole Role { get; private set; }
 
-    public UserSetting UserSetting { get; private set; } = null!;
+    public UserPreference UserPreference { get; private set; } = null!;
 
     public DateTime CreatedOnUtc { get; set; }
 
@@ -58,7 +58,7 @@ public class User : Entity<UserId>, IAuditableEntity
             Profession = profession,
             Orcid = orcid,
             Role = role,
-            UserSetting = new UserSetting()
+            UserPreference = new UserPreference()
         };
 
         return user;
@@ -74,13 +74,18 @@ public class User : Entity<UserId>, IAuditableEntity
         Orcid = orcid;
     }
 
-    public void UpdateUserSetting(
+    public void UpdatePreference(
         Theme theme,
         bool emailNotification,
         bool autoSave,
         int fontSize)
     {
-        UserSetting.Update(theme, emailNotification, autoSave, fontSize);
+        UserPreference.Update(theme, emailNotification, autoSave, fontSize);
+    }
+
+    public void UpdateAvatar(Uri avatarUri)
+    {
+        AvatarUri = avatarUri;
     }
 
     public void SetOrganisation(OrganisationId organisationId)

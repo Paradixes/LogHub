@@ -1,4 +1,4 @@
-﻿namespace LogHub.Domain.Exceptions;
+﻿namespace Domain.Exceptions;
 
 public abstract class DomainException : Exception
 {

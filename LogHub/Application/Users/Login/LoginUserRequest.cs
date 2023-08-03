@@ -1,3 +1,3 @@
-﻿namespace LogHub.Application.Users.Login;
+﻿namespace Application.Users.Login;
 
 public record LoginUserRequest(string Email, string Password);

@@ -1,12 +1,12 @@
-﻿using LogHub.Shared.Enums;
+﻿using Shared.Enums;
 
-namespace LogHub.Domain.Entities.Users;
+namespace Domain.Entities.Users;
 
-public class UserSetting
+public class UserPreference
 {
-    internal UserSetting() { }
+    internal UserPreference() { }
 
-    internal UserSetting(
+    internal UserPreference(
         Theme theme,
         bool emailNotification,
         bool autoSave,

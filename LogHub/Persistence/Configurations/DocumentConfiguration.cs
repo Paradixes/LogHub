@@ -1,9 +1,9 @@
-﻿using LogHub.Domain.Entities.Docs;
-using LogHub.Domain.Entities.Logbooks;
+﻿using Domain.Entities.Docs;
+using Domain.Entities.Logbooks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LogHub.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public class DocumentConfiguration : IEntityTypeConfiguration<Document>
 {

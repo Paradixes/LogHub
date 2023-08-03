@@ -1,7 +1,7 @@
-﻿using Azure.Storage.Blobs;
-using LogHub.Application.Abstracts;
+﻿using Application.Abstracts;
+using Azure.Storage.Blobs;
 
-namespace LogHub.Infrastructure.Storage;
+namespace Infrastructure.Storage;
 
 public class BlobStorageProvider : IBlobStorageProvider
 {
@@ -12,8 +12,7 @@ public class BlobStorageProvider : IBlobStorageProvider
         _connectionString = connectionString;
     }
 
-    public async Task<Uri> UploadAsync(string containerName, string blobName, string base64Uri,
-        CancellationToken cancellationToken = default)
+    public async Task<Uri> UploadAsync(string containerName, string blobName, string base64Uri)
     {
         if (string.IsNullOrWhiteSpace(_connectionString))
         {
@@ -26,7 +25,7 @@ public class BlobStorageProvider : IBlobStorageProvider
 
         try
         {
-            await blobClient.UploadAsync(GenerateStreamFromBase64Uri(base64Uri), cancellationToken);
+            await blobClient.UploadAsync(GenerateStreamFromBase64Uri(base64Uri));
         }
         catch (Exception e)
         {
@@ -38,8 +37,7 @@ public class BlobStorageProvider : IBlobStorageProvider
         return blobClient.Uri;
     }
 
-    public async Task<bool> DeleteAsync(string containerName, string blobName,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(string containerName, string blobName)
     {
         if (string.IsNullOrWhiteSpace(_connectionString))
         {
@@ -49,7 +47,7 @@ public class BlobStorageProvider : IBlobStorageProvider
         var blobServiceClient = new BlobServiceClient(_connectionString);
         var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
         var blobClient = blobContainerClient.GetBlobClient(blobName);
-        return await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+        return await blobClient.DeleteIfExistsAsync();
     }
 
     private static Stream GenerateStreamFromBase64Uri(string str)

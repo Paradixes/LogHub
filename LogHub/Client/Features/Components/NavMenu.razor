@@ -11,16 +11,16 @@
                     <ActivatorContent>
                         <MudButton Color="Color.Surface" Style="width: 100%">
                             <MudAvatar Color="Color.Tertiary" Size="Size.Medium">
-                                @if (_userAccountModel?.AvatarUri is not null)
+                                @if (UserAccountModel?.AvatarUri is not null)
                                 {
-                                    <MudImage Src="@_userAccountModel.AvatarUri.ToString()"/>
+                                    <MudImage Src="@UserAccountModel.AvatarUri.ToString()"/>
                                 }
                                 else
                                 {
-                                    @_userAccountModel?.Name?[0]
+                                    @UserAccountModel?.Name?[0]
                                 }
                             </MudAvatar>
-                            <MudText Typo="Typo.h6" Class="pl-2">@_userAccountModel?.Name</MudText>
+                            <MudText Typo="Typo.h6" Class="pl-2">@UserAccountModel?.Name</MudText>
                             <MudSpacer/>
                         </MudButton>
                     </ActivatorContent>
@@ -56,10 +56,11 @@
 
 @code {
 
+    private UserAccountModel? UserAccountModel { get; set; } = new();
+
     [Parameter]
     public bool DrawerOpen { get; set; }
 
-    UserAccountModel? _userAccountModel;
 
     private void DrawerToggle(bool isDrawerOpen)
     {
@@ -69,7 +70,11 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var userId = await AuthenticationService.GetUserIdAsync();
-        _userAccountModel = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}");
+        if (userId == Guid.Empty)
+        {
+            return;
+        }
+        UserAccountModel = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}");
     }
 
     private async Task LogOutAsync()

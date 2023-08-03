@@ -59,6 +59,11 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
 
     public async Task<Guid> GetUserIdAsync()
     {
+        if ((await GetAuthenticationStateAsync()).User.Identity is null)
+        {
+            return Guid.Empty;
+        }
+
         var claims = (await GetAuthenticationStateAsync()).User.Claims;
         return Guid.Parse(claims.First(c => c.Type == ClaimTypes.Sid).Value);
     }

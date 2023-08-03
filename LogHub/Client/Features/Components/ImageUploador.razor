@@ -1,17 +1,17 @@
 ﻿<MudFileUpload T="IBrowserFile" Accept=".jpg, .png" OnFilesChanged="@UploadImage" MaximumFileCount="100">
     <ButtonTemplate>
-        @if (_imageUri == null)
+        @if (OriginImageUri is null && _imageUri is null)
         {
             <MudFab HtmlTag="label"
                     Color="Color.Info"
                     StartIcon="@Icons.Material.Filled.CloudUpload"
                     Size="Size.Large"
-                    IconSize="Size.Large"
+                    IconSize="Size.Medium"
                     for="@context"
                     Class="mb-3">
             </MudFab>
         }
-        else
+        else if (_imageUri is not null)
         {
             <MudButton HtmlTag="label"
                        Color="Color.Info"
@@ -23,12 +23,31 @@
                 </MudAvatar>
             </MudButton>
         }
+        else
+        {
+            <MudButton HtmlTag="label"
+                       Color="Color.Info"
+                       Size="Size.Large"
+                       for="@context">
+                <MudAvatar Size="Size.Large">
+                    <MudImage Src="@OriginImageUri"/>
+
+                </MudAvatar>
+            </MudButton>
+        }
     </ButtonTemplate >
 </MudFileUpload>
 
 
 @code {
-    private string? _imageUri;
+
+    [Parameter]
+    public string? OriginImageUri { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnImageUpdated { get; set; }
+
+    string? _imageUri;
 
     private async Task UploadImage(InputFileChangeEventArgs inputFileChangeEventArgs)
     {
@@ -44,8 +63,5 @@
         await OnImageUpdated.InvokeAsync(_imageUri);
         StateHasChanged();
     }
-
-    [Parameter]
-    public EventCallback<string> OnImageUpdated { get; set; }
 
 }

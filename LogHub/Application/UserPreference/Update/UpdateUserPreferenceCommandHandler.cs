@@ -15,7 +15,7 @@ public class UpdateUserPreferenceCommandHandler : ICommandHandler<UpdateUserPref
 
     public async Task<Result> Handle(UpdateUserPreferenceCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(request.UserId);
 
         if (user is null)
         {

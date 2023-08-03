@@ -1,6 +1,9 @@
-﻿using Application.Departments.Create;
+﻿using Application.Organisations.AddDepartment;
 using Application.Organisations.Create;
 using Application.Organisations.GetById;
+using Application.Organisations.GetByManagerId;
+using Application.Organisations.GetDepartments;
+using Application.Organisations.GetUsers;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Users;
@@ -42,10 +45,10 @@ public class Organisations : ICarterModule
 
         app.MapPut("api/organisations/{id:guid}/departments", async (
             Guid id,
-            [FromBody] CreateDepartmentRequest request,
+            [FromBody] AddDepartmentRequest request,
             ISender sender) =>
         {
-            var command = new CreateDepartmentCommand(
+            var command = new AddDepartmentCommand(
                 new OrganisationId(id),
                 new UserId(request.ManagerId),
                 request.Logo,
@@ -55,6 +58,33 @@ public class Organisations : ICarterModule
             await sender.Send(command);
 
             return Results.Ok();
+        });
+
+        app.MapGet("api/organisations/{id:guid}/departments", async (Guid id, ISender sender) =>
+        {
+            var query = new GetDepartmentsByOrganisationQuery(id);
+
+            var result = await sender.Send(query);
+
+            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+        });
+
+        app.MapGet("api/organisations/{id:guid}/users", async (Guid id, ISender sender) =>
+        {
+            var query = new GetUsersByOrganisationQuery(new OrganisationId(id));
+
+            var result = await sender.Send(query);
+
+            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+        });
+
+        app.MapGet("api/organisations/manager/{managerId:guid}", async (Guid managerId, ISender sender) =>
+        {
+            var query = new GetOrganisationByManagerIdQuery(managerId);
+
+            var result = await sender.Send(query);
+
+            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
         });
     }
 }

@@ -5,9 +5,9 @@ namespace Domain.Repositories;
 
 public interface IOrganisationRepository
 {
-    Task<Organisation?> GetByIdAsync(OrganisationId id, CancellationToken cancellationToken = default);
+    Task<Organisation?> GetByIdAsync(OrganisationId id);
 
-    Task<Organisation?> GetByManagerIdAsync(UserId managerId, CancellationToken cancellationToken = default);
+    Task<Organisation?> GetByManagerIdAsync(UserId managerId);
 
     void Add(Organisation organisation);
 

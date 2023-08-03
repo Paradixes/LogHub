@@ -17,7 +17,7 @@ public class GetUserPreferenceByIdQueryHandler : IQueryHandler<GetUserPreference
     public async Task<Result<UserPreferenceResponse>> Handle(GetUserPreferenceByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(new UserId(request.UserId), cancellationToken);
+        var user = await _userRepository.GetByIdAsync(new UserId(request.UserId));
 
         if (user is null)
         {

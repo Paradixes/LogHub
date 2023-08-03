@@ -37,13 +37,12 @@ public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisati
             var logoUri = await _blobStorageProvider.UploadAsync(
                 ContainerName.OrganisationLogos,
                 organisation.Id.Value + ".png",
-                request.Logo,
-                cancellationToken);
+                request.Logo);
 
             organisation.SetLogo(logoUri);
         }
 
-        var manager = await _userRepository.GetByIdAsync(request.ManagerId, cancellationToken);
+        var manager = await _userRepository.GetByIdAsync(request.ManagerId);
 
         if (manager is null)
         {

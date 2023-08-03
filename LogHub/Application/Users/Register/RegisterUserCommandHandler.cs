@@ -23,7 +23,7 @@ public class RegisterUserCommandHandler :
 
     public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        if (!await _userRepository.IsEmailUniqueAsync(request.Email, cancellationToken))
+        if (!await _userRepository.IsEmailUniqueAsync(request.Email))
         {
             return Result.Failure<Guid>(DomainErrors.User.EmailAlreadyInUse);
         }

@@ -24,6 +24,8 @@ public class LogHubDbContext : DbContext, IApplicationDbContext, IUnitOfWork
         _publisher = publisher;
     }
 
+    public DbSet<Department> Departments { get; set; }
+
     public DbSet<User> Users { get; set; }
     public DbSet<Organisation> Organisations { get; set; }
     public DbSet<Question> Questions { get; set; }

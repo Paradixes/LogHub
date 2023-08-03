@@ -21,7 +21,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand>
 
     public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(request.UserId);
 
         if (user is null)
         {
@@ -34,9 +34,10 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand>
         {
             var avatarUri = await _blobStorageProvider.UploadAsync(
                 ContainerName.UserAvatars,
-                request.UserId.ToString(),
-                request.Avatar,
-                cancellationToken);
+                request.UserId.Value + ".png",
+                request.Avatar);
+
+            user.UpdateAvatar(avatarUri);
         }
 
         user.UpdateProfile(request.Name, request.Profession, request.Orcid);

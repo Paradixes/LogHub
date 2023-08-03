@@ -55,13 +55,14 @@ public class Organisation : Entity<OrganisationId>
         InvitationCode = GenerateRandomString(8);
     }
 
-    public void AddDepartment(
+    public Department AddDepartment(
         string name,
         string? description,
         UserId managerId)
     {
         var department = Department.Create(name, description, managerId, Id);
         _departments.Add(department);
+        return department;
     }
 
     public void RemoveDepartment(OrganisationId childOrganisationId)

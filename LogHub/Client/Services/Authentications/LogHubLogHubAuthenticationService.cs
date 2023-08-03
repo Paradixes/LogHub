@@ -57,6 +57,12 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         return await LogInAsync(new LoginModel(model.Email, model.Password));
     }
 
+    public async Task<Guid> GetUserIdAsync()
+    {
+        var claims = (await GetAuthenticationStateAsync()).User.Claims;
+        return Guid.Parse(claims.First(c => c.Type == ClaimTypes.Sid).Value);
+    }
+
     private static IEnumerable<Claim> GetClaimsFromToken(string token)
     {
         JwtSecurityTokenHandler handler = new();

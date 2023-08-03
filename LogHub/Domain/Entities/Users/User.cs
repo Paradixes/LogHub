@@ -83,6 +83,11 @@ public class User : Entity<UserId>, IAuditableEntity
         UserPreference.Update(theme, emailNotification, autoSave, fontSize);
     }
 
+    public void UpdateAvatar(Uri avatarUri)
+    {
+        AvatarUri = avatarUri;
+    }
+
     public void SetOrganisation(OrganisationId organisationId)
     {
         OrganisationId = organisationId;

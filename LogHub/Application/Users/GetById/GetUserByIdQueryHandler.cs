@@ -18,7 +18,7 @@ public class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, UserRespo
         GetUserByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(new UserId(query.UserId), cancellationToken);
+        var user = await _userRepository.GetByIdAsync(new UserId(query.UserId));
 
         if (user is null)
         {

@@ -16,10 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Departments\GetById\" />
-      <Folder Include="Organisations\AddUser\" />
-      <Folder Include="Organisations\GetByInvitationCode\" />
       <Folder Include="Organisations\Update\" />
+      <Folder Include="Users\JoinOrganisation\" />
     </ItemGroup>
 
 </Project>

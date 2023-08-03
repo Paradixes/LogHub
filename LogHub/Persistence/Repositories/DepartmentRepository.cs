@@ -14,32 +14,38 @@ public class DepartmentRepository : IDepartmentRepository
         _context = context;
     }
 
-    public Task<Department?> GetByIdAsync(DepartmentId id, CancellationToken cancellationToken = default)
+    public Task<Department?> GetByIdAsync(DepartmentId id)
     {
         return _context
             .Set<Department>()
-            .FirstOrDefaultAsync(department => department.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(department => department.Id == id);
     }
 
-    public Task<Department?> GetByManagerIdAsync(UserId managerId, CancellationToken cancellationToken = default)
+    public Task<Department?> GetByManagerIdAsync(UserId managerId)
     {
-        return _context
-            .Set<Department>()
-            .FirstOrDefaultAsync(department => department.ManagerId == managerId, cancellationToken);
+        return _context.Departments
+            .FirstOrDefaultAsync(department => department.ManagerId == managerId);
     }
 
     public void Add(Department department)
     {
-        _context.Set<Department>().Add(department);
+        _context.Departments.Add(department);
     }
 
     public void Update(Department department)
     {
-        _context.Set<Department>().Update(department);
+        _context.Departments.Update(department);
     }
 
     public void Remove(Department department)
     {
-        _context.Set<Department>().Remove(department);
+        _context.Departments.Remove(department);
+    }
+
+    public List<Department> GetByOrganisationId(OrganisationId organisationId)
+    {
+        return _context.Departments
+            .Where(department => department.OrganisationId == organisationId)
+            .ToList();
     }
 }

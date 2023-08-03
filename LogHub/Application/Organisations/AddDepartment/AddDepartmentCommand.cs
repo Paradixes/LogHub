@@ -2,9 +2,9 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Application.Departments.Create;
+namespace Application.Organisations.AddDepartment;
 
-public record CreateDepartmentCommand(
+public record AddDepartmentCommand(
     OrganisationId OrganisationId,
     UserId ManagerId,
     string? Logo,

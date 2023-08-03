@@ -1,0 +1,46 @@
+﻿@inject HttpClient Client
+@inject ILogHubAuthenticationService AuthenticationService
+
+<AuthorizeView Roles="@UserRole.DataManager.ToString()">
+    <Authorized>
+        @if (_organisationModel is null)
+        {
+            <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">New organisation</MudNavLink>
+        }
+        else
+        {
+            <MudDivider Class="my-2"/>
+            <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
+                <MudNavGroup Title="@_organisationModel.Name">
+                    <MudNavLink Href="departments/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
+                        Department List
+                    </MudNavLink>
+                    <MudNavLink Href="users/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
+                        User List
+                    </MudNavLink>
+                    <MudNavLink Href="projects/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
+                        Project List
+                    </MudNavLink>
+                </MudNavGroup>
+            </MudNavGroup>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    OrganisationModel? _organisationModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var managerId = await AuthenticationService.GetUserIdAsync();
+        _organisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/manager/{managerId}");
+
+        if (_organisationModel != null && _organisationModel.OrganisationId == Guid.Empty)
+        {
+            _organisationModel = null;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+}

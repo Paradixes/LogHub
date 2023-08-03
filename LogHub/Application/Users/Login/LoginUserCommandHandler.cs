@@ -29,7 +29,7 @@ internal sealed class LoginUserCommandHandler
         LoginUserCommand request,
         CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+        var user = await _userRepository.GetByEmailAsync(request.Email);
         if (user is null)
         {
             return Result.Failure<string>(

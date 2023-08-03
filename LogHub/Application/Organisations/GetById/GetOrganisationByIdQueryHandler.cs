@@ -18,7 +18,7 @@ public class GetOrganisationByIdQueryHandler : IQueryHandler<GetOrganisationById
         CancellationToken cancellationToken)
     {
         var organisation =
-            await _organisationRepository.GetByIdAsync(new OrganisationId(request.OrganisationId), cancellationToken);
+            await _organisationRepository.GetByIdAsync(new OrganisationId(request.OrganisationId));
 
         if (organisation is null)
         {
@@ -31,8 +31,7 @@ public class GetOrganisationByIdQueryHandler : IQueryHandler<GetOrganisationById
             organisation.Id.Value,
             organisation.Name,
             organisation.LogoUri,
-            organisation.Description
-        );
+            organisation.Description);
 
         return response;
     }

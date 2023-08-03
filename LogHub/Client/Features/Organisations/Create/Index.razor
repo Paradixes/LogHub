@@ -1,35 +1,39 @@
 ﻿@page "/organisations/create"
-@using Client.ViewModel
-@using System.Security.Claims
-@layout BackgroundLayout
+@layout FormLayout
 @attribute [Authorize(Roles = "DataManager")]
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ILogHubAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 @inject HttpClient Client
 
-
-<MudImage Src="/img/logo-partial.png" Width="200" Class="py-3 justify-center"/>
-<MudContainer MaxWidth="MaxWidth.Small" Elevation="5" Class="frosted-glass-container d-flex flex-column py-8 px-10">
-    <MudText Align="Align.Center" Typo="Typo.h6">
+<MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
         Create Your Organisation
     </MudText>
+    <MudDivider Class="py-4"/>
     <MudForm Model="@Model"
              @ref="@_form"
              ValidationDelay="0">
 
-        <ImageUploador OnImageUpdated="@OnLogoUploaded"/>
+        <MudGrid Spacing="2">
+            <MudItem xs="2">
+                <ImageUploador OnImageUpdated="@OnLogoUploaded"/>
+            </MudItem>
+            <MudItem xs="10">
+                <MudTextField Label="Organisation Name"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Name"
+                              For="() => Model.Name"
+                              Required="true"/>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Description"
+                              For="() => Model.Description"
+                              Lines="14"/>
+            </MudItem>
+        </MudGrid>
 
-        <MudTextField Label="Name"
-                      Variant="Variant.Filled"
-                      @bind-Value="@Model.Name"
-                      For="() => Model.Name"
-                      Required="true"/>
-
-        <MudTextField Label="Description"
-                      Variant="Variant.Filled"
-                      @bind-Value="@Model.Description"
-                      For="() => Model.Description"
-                      Lines="14"/>
 
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
@@ -58,9 +62,9 @@
         {
             return;
         }
-        Model.ManagerId = Guid.Parse((await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.Claims.First(c => c.Type == ClaimTypes.Sid).Value);
+        Model.ManagerId = await AuthenticationService.GetUserIdAsync();
         await Client.PostAsJsonAsync("/api/organisations", Model);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/", true);
     }
 
 }

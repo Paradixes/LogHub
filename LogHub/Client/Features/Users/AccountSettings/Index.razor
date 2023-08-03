@@ -1,0 +1,132 @@
+﻿@page "/users/account"
+@layout FormLayout
+@inject HttpClient Client
+@inject ILogHubAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        User Account Settings
+    </MudText>
+    <MudDivider Class="py-4"/>
+    <MudForm Model="@Model"
+             @ref="@_form"
+             ValidationDelay="0">
+
+        <MudGrid Spacing="2">
+            <MudItem xs="2">
+                <ImageUploador OnImageUpdated="@OnAvatarUploaded" OriginImageUri="@Model.AvatarUri?.ToString()"/>
+            </MudItem>
+            <MudItem xs="10">
+                <MudTextField Label="Preferred Name"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Name"
+                              For="() => Model.Name"
+                              Required="true"/>
+            </MudItem>
+
+            <LineCardAction Title="Email"
+                            Content="@Model.Email"
+                            ActionText="Change"/>
+
+            <MudItem xs="12">
+                <MudSelect Label="Profession"
+                           @bind-Value="Model.Profession"
+                           For="@(() => Model.Profession)"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Required="true"
+                           Class="pb-1">
+                    @foreach (var profession in _professions)
+                    {
+                        <MudSelectItem Value="@profession"/>
+                    }
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField Label="ORCID"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Orcid"
+                              For="() => Model.Orcid"/>
+            </MudItem>
+
+            <LineCardAction Title="Organisation"
+                            Content="@Model.OrganisationName"
+                            ActionText="Change"/>
+
+            <LineCardAction Title="Department"
+                            Content="@Model.DepartmentName"
+                            ActionText="Change"/>
+
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   OnClick="SubmitAsync"
+                   Disabled="@(!_form.IsValid)">
+            Update
+        </MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+
+    private readonly string[] _professions =
+    { "Researcher", "Student", "Engineer", "Data Manager", "Expert Witness", "Other" };
+
+    UserAccountModel Model { get; set; } = new();
+
+    MudForm _form = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await AuthenticationService.GetUserIdAsync();
+
+        Model = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}") ?? new UserAccountModel();
+
+        if (Model.OrganisationId is null)
+        {
+            Model.OrganisationName = "Not Set";
+            return;
+        }
+
+        var organisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Model.OrganisationId}");
+
+        Model.OrganisationName = organisation?.Name ?? "Not Set";
+
+        if (Model.DepartmentId is null)
+        {
+            Model.DepartmentName = "Not Set";
+            return;
+        }
+
+        var department = await Client.GetFromJsonAsync<DepartmentModel>($"api/departments/{Model.DepartmentId}");
+
+        Model.DepartmentName = department?.Name ?? "Not Set";
+    }
+
+    private void OnAvatarUploaded(string avatar)
+    {
+        Model.Avatar = avatar;
+    }
+
+    private async Task SubmitAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        await Client.PutAsJsonAsync($"api/users/{Model.Id}", Model);
+
+        StateHasChanged();
+
+        NavigationManager.NavigateTo("/users/account", true);
+        Snackbar.Add("User account updated", Severity.Success);
+    }
+
+}

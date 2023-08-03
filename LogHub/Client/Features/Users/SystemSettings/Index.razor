@@ -1,0 +1,150 @@
+﻿@page "/users/system"
+@using System.Reflection
+@using System.ComponentModel
+@inject ILogHubAuthenticationService AuthenticationService
+@inject HttpClient Client
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        User Account Settings
+    </MudText>
+    <MudDivider Class="py-4"/>
+    <MudForm Model="@Model"
+             @ref="@_form"
+             ValidationDelay="0">
+        <MudGrid Spacing="2">
+            <MudItem xs="12">
+                <MudCard Elevation="4" Outlined="true">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Theme</MudText>
+                            <MudText Typo="Typo.body2">Choose your Theme</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudSelect Label="Theme"
+                                       @bind-Value="Model.Theme"
+                                       For="@(() => Model.Theme)"
+                                       AnchorOrigin="Origin.BottomCenter"
+                                       Required="true"
+                                       Style="width: 100px">
+                                @foreach (var theme in Enum.GetValues(typeof(Theme)))
+                                {
+                                    var enumValue = (Theme)theme;
+                                    var displayName = enumValue.GetType()
+                                        .GetMember(enumValue.ToString())
+                                        .FirstOrDefault()?
+                                        .GetCustomAttribute<DisplayNameAttribute>()?
+                                        .DisplayName ?? enumValue.ToString();
+                                    <MudSelectItem Value="@enumValue">@displayName</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="4" Outlined="true">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Email Notification</MudText>
+                            <MudText Typo="Typo.body2">Do you want to be notified by Email?</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudSelect Label="Notify"
+                                       @bind-Value="Model.EmailNotification"
+                                       For="@(() => Model.EmailNotification)"
+                                       AnchorOrigin="Origin.BottomCenter"
+                                       Required="true"
+                                       Style="width: 100px">
+                                <MudSelectItem Value="@true">Yes</MudSelectItem>
+                                <MudSelectItem Value="@false">No</MudSelectItem>
+                            </MudSelect>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="4" Outlined="true">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Auto Save</MudText>
+                            <MudText Typo="Typo.body2">Do you want to auto save your document?</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudSelect Label="AutoSave"
+                                       @bind-Value="Model.AutoSave"
+                                       For="@(() => Model.AutoSave)"
+                                       AnchorOrigin="Origin.BottomCenter"
+                                       Required="true"
+                                       Style="width: 100px">
+                                <MudSelectItem Value="@true">Yes</MudSelectItem>
+                                <MudSelectItem Value="@false">No</MudSelectItem>
+                            </MudSelect>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="4" Outlined="true">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Font Size</MudText>
+                            <MudText Typo="Typo.body2">Choose your displayed font size</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudNumericField Label=""
+                                             Min="8"
+                                             Max="24"
+                                             Variant="Variant.Outlined"
+                                             @bind-Value="@Model.FontSize"
+                                             For="() => Model.FontSize"
+                                             Required="true"
+                                             Style="width: 100px"/>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                </MudCard>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Class="mt-4"
+                           OnClick="SubmitAsync"
+                           Disabled="@(!_form.IsValid)">
+                    Update
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+</MudContainer>
+
+@code {
+    SystemSettingsModel Model { get; set; } = new();
+
+    MudForm _form = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var id = await AuthenticationService.GetUserIdAsync();
+        Model = await Client.GetFromJsonAsync<SystemSettingsModel>($"api/users/{id}/preference") ?? new SystemSettingsModel();
+    }
+
+    private async Task SubmitAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+        var id = await AuthenticationService.GetUserIdAsync();
+        await Client.PutAsJsonAsync($"api/users/{id}/preference", Model);
+
+        NavigationManager.NavigateTo("/users/system");
+        Snackbar.Add("User settings updated", Severity.Success);
+    }
+
+}

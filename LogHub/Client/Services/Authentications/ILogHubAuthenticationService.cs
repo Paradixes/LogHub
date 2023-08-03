@@ -9,4 +9,6 @@ public interface ILogHubAuthenticationService
     Task LogOutAsync();
 
     Task<bool> RegisterAsync(RegisterModel model);
+
+    Task<Guid> GetUserIdAsync();
 }

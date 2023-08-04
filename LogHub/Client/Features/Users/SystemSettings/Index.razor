@@ -5,11 +5,12 @@
 @inject HttpClient Client
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@layout FormLayout
 @attribute [Authorize]
 
 <MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
     <MudText Align="Align.Left" Typo="Typo.h4">
-        User Account Settings
+        System Settings
     </MudText>
     <MudDivider Class="py-4"/>
     <MudForm Model="@Model"

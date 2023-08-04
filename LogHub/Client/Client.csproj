@@ -40,6 +40,9 @@
     <ItemGroup>
       <AdditionalFiles Include="Features\Components\LoadingScreen.razor" />
       <AdditionalFiles Include="Features\Components\NavMenu.razor" />
+      <AdditionalFiles Include="Features\Organisations\DepartmentList\Index.razor" />
+      <AdditionalFiles Include="Features\Organisations\ProjectList\Index.razor" />
+      <AdditionalFiles Include="Features\Organisations\UserList\Index.razor" />
     </ItemGroup>
 
 </Project>

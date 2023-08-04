@@ -47,7 +47,11 @@
     protected override async Task OnInitializedAsync()
     {
         var userId = await AuthenticationService.GetUserIdAsync();
-        UserAccountModel = await Client.GetFromJsonAsync<UserAccountModel>($"api/user-accounts/{userId}") ?? new UserAccountModel();
+        if (userId == Guid.Empty)
+        {
+            return;
+        }
+        UserAccountModel = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}") ?? new UserAccountModel();
         if (UserAccountModel.OrganisationId == Guid.Empty)
         {
             return;

@@ -1,86 +1,66 @@
 ﻿@page "/organisations/{id:guid}/department-list"
 @inject HttpClient Http
-@layout MainLayout
+@inject NavigationManager NavigationManager
+@layout FormLayout
 @attribute [Authorize(Roles = "DataManager,Administrator")]
 
-@* <MudDataGrid T="DepartmentModel" MultiSelection="true" Items="@_users" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@QuickFilter" Hideable="true" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"> *@
-@*     <ToolBarContent> *@
-@*         <MudText Typo="Typo.h6"> *@
-@*             Departments *@
-@*         </MudText> *@
-@*         <MudSpacer/> *@
-@*         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4"> *@
-@*             Add *@
-@*         </MudButton> *@
-@*         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true" *@
-@*                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"> *@
-@*         </MudTextField> *@
-@* *@
-@*     </ToolBarContent> *@
-@*     <Columns> *@
-@*         <SelectColumn T="DepartmentModel"/> *@
-@*         <TemplateColumn CellClass="d-flex justify-end" Sortable="false" Filterable="false"> *@
-@*             <CellTemplate> *@
-@*                 <MudAvatar> *@
-@*                     @if (context.Item.AvatarUri is not null) *@
-@*                     { *@
-@*                         <MudAvatarImg Src="@context.Item.AvatarUri.ToString()"/> *@
-@*                     } *@
-@*                     else if (context.Item.Name.Length > 0) *@
-@*                     { *@
-@*                         @context.Item.Name[0] *@
-@*                     } *@
-@*                 </MudAvatar> *@
-@*             </CellTemplate> *@
-@*         </TemplateColumn> *@
-@*         <PropertyColumn Property="x => x.Name" Title="Name"/> *@
-@*         <PropertyColumn Property="x => x.Email" Title="Email"/> *@
-@*         <PropertyColumn Property="x => x.Profession" Title="Profession"/> *@
-@*         <PropertyColumn Property="x => x.Orcid" Title="ORCID"/> *@
-@*     </Columns> *@
-@*     <PagerContent> *@
-@*         <MudDataGridPager T="DepartmentModel"/> *@
-@*     </PagerContent> *@
-@* </MudDataGrid> *@
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
+    <MudAvatar Size="Size.Large">
+        @if (OrganisationModel.LogoUri is not null)
+        {
+            <MudImage Src="@OrganisationModel.LogoUri.ToString()"/>
+        }
+        else if (OrganisationModel.Name.Length > 0)
+        {
+            @OrganisationModel.Name[0]
+        }
+    </MudAvatar>
 
-@* @code { *@
-@* *@
-@*     [Parameter] *@
-@*     public Guid? Id { get; set; } *@
-@* *@
-@*     private string _searchString = string.Empty; *@
-@* *@
-@*     private List<DepartmentModel> _users = new(); *@
-@* *@
-@*     protected override async Task OnInitializedAsync() *@
-@*     { *@
-@*         _users = await Http.GetFromJsonAsync<List<DepartmentModel>>($"api/organisations/{Id}/departments") ?? new List<DepartmentModel>(); *@
-@*     } *@
-@* *@
-@*     private Func<DepartmentModel, bool> QuickFilter => x => *@
-@*     { *@
-@*         if (string.IsNullOrWhiteSpace(_searchString)) *@
-@*             return true; *@
-@* *@
-@*         if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) *@
-@*             return true; *@
-@* *@
-@*         if (x.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) *@
-@*             return true; *@
-@* *@
-@*         if (x.Profession.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) *@
-@*             return true; *@
-@* *@
-@*         if (x.Orcid != null && x.Orcid.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) *@
-@*             return true; *@
-@* *@
-@*         if ($"{x.Name} {x.Email} {x.Profession} {x.Orcid}".Contains(_searchString)) *@
-@*             return true; *@
-@* *@
-@*         return false; *@
-@*     }; *@
-@* *@
-@*     void RowClicked(DataGridRowClickEventArgs<UserAccountModel> args) { } *@
-@* *@
-@*     void SelectedItemsChanged(HashSet<UserAccountModel> items) { } *@
-@* } *@
+    <MudText Typo="Typo.h4" Class="mt-2">
+        @OrganisationModel.Name
+    </MudText>
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(OrganisationModel.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Department List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
+</MudTabs>
+
+@code {
+
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private int _index;
+
+    private OrganisationModel OrganisationModel { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        OrganisationModel = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+    }
+
+    private void OnTabClicked(MouseEventArgs me)
+    {
+        switch (_index)
+        {
+            case 0:
+                break;
+            case 1:
+                NavigationManager.NavigateTo($"/organisations/{Id}/user-list");
+                break;
+            case 2:
+                NavigationManager.NavigateTo($"/organisations/{Id}/project-list");
+                break;
+        }
+    }
+
+}

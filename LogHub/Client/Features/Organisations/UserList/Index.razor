@@ -1,7 +1,38 @@
 ﻿@page "/organisations/{id:guid}/user-list"
 @inject HttpClient Http
-@layout MainLayout
+@inject NavigationManager NavigationManager
+@layout FormLayout
 @attribute [Authorize(Roles = "DataManager,Administrator")]
+
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
+    <MudAvatar Size="Size.Large">
+        @if (OrganisationModel.LogoUri is not null)
+        {
+            <MudImage Src="@OrganisationModel.LogoUri.ToString()"/>
+        }
+        else if (OrganisationModel.Name.Length > 0)
+        {
+            @OrganisationModel.Name[0]
+        }
+    </MudAvatar>
+
+    <MudText Typo="Typo.h4" Class="mt-2">
+        @OrganisationModel.Name
+    </MudText>
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(OrganisationModel.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Department List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
+</MudTabs>
 
 <MudDataGrid T="UserAccountModel" MultiSelection="true" Items="@_users" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@QuickFilter" Hideable="true" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged">
     <ToolBarContent>
@@ -9,12 +40,12 @@
             Users
         </MudText>
         <MudSpacer/>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4">
-            Add
-        </MudButton>
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
         </MudTextField>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4">
+            Add
+        </MudButton>
 
     </ToolBarContent>
     <Columns>
@@ -48,12 +79,18 @@
     [Parameter]
     public Guid? Id { get; set; }
 
+    private int _index = 1;
+
     private string _searchString = string.Empty;
 
     private List<UserAccountModel> _users = new();
 
+    private OrganisationModel OrganisationModel { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
+        OrganisationModel = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+
         _users = await Http.GetFromJsonAsync<List<UserAccountModel>>($"api/organisations/{Id}/users") ?? new List<UserAccountModel>();
     }
 
@@ -83,4 +120,20 @@
     void RowClicked(DataGridRowClickEventArgs<UserAccountModel> args) { }
 
     void SelectedItemsChanged(HashSet<UserAccountModel> items) { }
+
+    private void OnTabClicked(MouseEventArgs me)
+    {
+        switch (_index)
+        {
+            case 0:
+                NavigationManager.NavigateTo($"/organisations/{Id}/department-list");
+                break;
+            case 1:
+                break;
+            case 2:
+                NavigationManager.NavigateTo($"/organisations/{Id}/project-list");
+                break;
+        }
+    }
+
 }

@@ -12,7 +12,7 @@ public class RegisterModel
 
     public string Name { get; set; } = string.Empty;
 
-    public UserRole Role { get; set; }
+    public UserRole Role { get; private set; }
 
     public string Profession { get; set; } = string.Empty;
 

@@ -3,7 +3,7 @@
 
 <AuthorizeView Roles="@UserRole.DataManager.ToString()">
     <Authorized>
-        @if (_organisationModel is null)
+        @if (OrganisationModel.Id == Guid.Empty)
         {
             <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">New organisation</MudNavLink>
         }
@@ -11,7 +11,7 @@
         {
             <MudDivider Class="my-2"/>
             <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
-                <MudNavGroup Title="@_organisationModel.Name">
+                <MudNavGroup Title="@OrganisationModel.Name">
                     <MudNavLink Href="departments/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
                         Department List
                     </MudNavLink>
@@ -28,19 +28,12 @@
 </AuthorizeView>
 
 @code {
-    OrganisationModel? _organisationModel;
+    OrganisationModel OrganisationModel { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         var managerId = await AuthenticationService.GetUserIdAsync();
-        _organisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/manager/{managerId}");
-
-        if (_organisationModel != null && _organisationModel.OrganisationId == Guid.Empty)
-        {
-            _organisationModel = null;
-        }
-
-        await base.OnInitializedAsync();
+        OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/manager/{managerId}") ?? new OrganisationModel();
     }
 
 }

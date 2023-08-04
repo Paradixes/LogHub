@@ -12,13 +12,13 @@
             <MudDivider Class="my-2"/>
             <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
                 <MudNavGroup Title="@OrganisationModel.Name">
-                    <MudNavLink Href="departments/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
+                    <MudNavLink Href="@GetUrl("department")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
                         Department List
                     </MudNavLink>
-                    <MudNavLink Href="users/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
+                    <MudNavLink Href="@GetUrl("user")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
                         User List
                     </MudNavLink>
-                    <MudNavLink Href="projects/list" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
+                    <MudNavLink Href="@GetUrl("project")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
                         Project List
                     </MudNavLink>
                 </MudNavGroup>
@@ -34,6 +34,11 @@
     {
         var managerId = await AuthenticationService.GetUserIdAsync();
         OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/manager/{managerId}") ?? new OrganisationModel();
+    }
+
+    private string GetUrl(string objName)
+    {
+        return $"/organisations/{OrganisationModel.Id}/{objName}-list";
     }
 
 }

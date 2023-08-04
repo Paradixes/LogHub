@@ -1,0 +1,48 @@
+﻿@page "/organisations/{id}/department-list"
+@* @inject HttpClient Http *@
+@* @layout MainLayout *@
+@* @attribute [Authorize(Roles = "DataManager,Administrator")] *@
+@* *@
+@* <MudTable Items="_departments" Hover="true" SortLabel="Sort By" Elevation="0"> *@
+@*     <HeaderContent> *@
+@*         <MudTh> *@
+@*             <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<DepartmentModel, object>(x => x.Name)">Id</MudTableSortLabel> *@
+@*         </MudTh> *@
+@*         <MudTh> *@
+@* *@
+@*         </MudTh> *@
+@*         <MudTh> *@
+@*             <MudTableSortLabel SortBy="new Func<DepartmentModel, object>(x => x.Description)"> *@
+@*                 Email *@
+@*             </MudTableSortLabel> *@
+@*         </MudTh> *@
+@*         <MudTh> *@
+@*             <MudTableSortLabel SortBy="new Func<DepartmentModel, object>(x => x.)"> *@
+@*                 Organization *@
+@*             </MudTableSortLabel> *@
+@*         </MudTh> *@
+@*     </HeaderContent> *@
+@*     <RowTemplate> *@
+@*         <MudTd DataLabel="UserId">@context.UserId</MudTd> *@
+@*         <MudTd DataLabel="Name">@context.Name</MudTd> *@
+@*         <MudTd DataLabel="Email">@context.Email</MudTd> *@
+@*         <MudTd DataLabel="Organisation">@context.Organization</MudTd> *@
+@*     </RowTemplate> *@
+@*     <PagerContent> *@
+@*         <MudTablePager PageSizeOptions="new[] { 50, 100 }"/> *@
+@*     </PagerContent> *@
+@* </MudTable> *@
+@* *@
+@* @code { *@
+@* *@
+@*     [Parameter] *@
+@*     public Guid? Id { get; set; } *@
+@* *@
+@*     private List<DepartmentModel> _departments = new(); *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         _departments = await Http.GetFromJsonAsync<List<DepartmentModel>>($"api/organisations/{Id}/departments") ?? new List<DepartmentModel>(); *@
+@*     } *@
+@* *@
+@* } *@

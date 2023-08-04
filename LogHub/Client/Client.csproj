@@ -42,4 +42,8 @@
       <AdditionalFiles Include="Features\Components\NavMenu.razor" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Organisations\ProjectList\" />
+    </ItemGroup>
+
 </Project>

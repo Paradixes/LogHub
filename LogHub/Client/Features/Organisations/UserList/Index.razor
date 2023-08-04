@@ -1,0 +1,64 @@
+﻿@page "/organisations/{id:guid}/user-list"
+@inject HttpClient Http
+@layout MainLayout
+@attribute [Authorize(Roles = "DataManager,Administrator")]
+
+<MudTable Items="_users" Hover="true" SortLabel="Sort By" Elevation="0">
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Name)">
+                UserName
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Email)">
+                Email
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Profession)">
+                Organization
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Orcid)">
+                ORCID
+            </MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">
+            <MudAvatar>
+                @if (context.AvatarUri is not null)
+                {
+                    <MudAvatarImg Src="@context.AvatarUri.ToString()"/>
+                }
+                else if (context.Name.Length > 0)
+                {
+                    @context.Name[0]
+                }
+            </MudAvatar>
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Profession">@context.Profession</MudTd>
+        <MudTd DataLabel="ORCID">@context.Orcid</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new[] { 50, 100 }"/>
+    </PagerContent>
+</MudTable>
+
+@code {
+
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private List<UserAccountModel> _users = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await Http.GetFromJsonAsync<List<UserAccountModel>>($"api/organisations/{Id}/users") ?? new List<UserAccountModel>();
+    }
+
+}

@@ -3,56 +3,52 @@
 @layout MainLayout
 @attribute [Authorize(Roles = "DataManager,Administrator")]
 
-<MudTable Items="_users" Hover="true" SortLabel="Sort By" Elevation="0">
-    <HeaderContent>
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Name)">
-                UserName
-            </MudTableSortLabel>
-        </MudTh>
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Email)">
-                Email
-            </MudTableSortLabel>
-        </MudTh>
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Profession)">
-                Organization
-            </MudTableSortLabel>
-        </MudTh>
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<UserAccountModel, object>(x => x.Orcid)">
-                ORCID
-            </MudTableSortLabel>
-        </MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Name">
-            <MudAvatar>
-                @if (context.AvatarUri is not null)
-                {
-                    <MudAvatarImg Src="@context.AvatarUri.ToString()"/>
-                }
-                else if (context.Name.Length > 0)
-                {
-                    @context.Name[0]
-                }
-            </MudAvatar>
-            @context.Name
-        </MudTd>
-        <MudTd DataLabel="Email">@context.Email</MudTd>
-        <MudTd DataLabel="Profession">@context.Profession</MudTd>
-        <MudTd DataLabel="ORCID">@context.Orcid</MudTd>
-    </RowTemplate>
+<MudDataGrid T="UserAccountModel" MultiSelection="true" Items="@_users" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@QuickFilter" Hideable="true" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">
+            Users
+        </MudText>
+        <MudSpacer/>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4">
+            Add
+        </MudButton>
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="UserAccountModel"/>
+        <TemplateColumn CellClass="d-flex justify-end" Sortable="false" Filterable="false">
+            <CellTemplate>
+                <MudAvatar>
+                    @if (context.Item.AvatarUri is not null)
+                    {
+                        <MudAvatarImg Src="@context.Item.AvatarUri.ToString()"/>
+                    }
+                    else if (context.Item.Name.Length > 0)
+                    {
+                        @context.Item.Name[0]
+                    }
+                </MudAvatar>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Name" Title="Name"/>
+        <PropertyColumn Property="x => x.Email" Title="Email"/>
+        <PropertyColumn Property="x => x.Profession" Title="Profession"/>
+        <PropertyColumn Property="x => x.Orcid" Title="ORCID"/>
+    </Columns>
     <PagerContent>
-        <MudTablePager PageSizeOptions="new[] { 50, 100 }"/>
+        <MudDataGridPager T="UserAccountModel"/>
     </PagerContent>
-</MudTable>
+</MudDataGrid>
 
 @code {
 
     [Parameter]
     public Guid? Id { get; set; }
+
+    private string _searchString = string.Empty;
 
     private List<UserAccountModel> _users = new();
 
@@ -61,4 +57,30 @@
         _users = await Http.GetFromJsonAsync<List<UserAccountModel>>($"api/organisations/{Id}/users") ?? new List<UserAccountModel>();
     }
 
+    private Func<UserAccountModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Profession.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Orcid != null && x.Orcid.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Name} {x.Email} {x.Profession} {x.Orcid}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+
+    void RowClicked(DataGridRowClickEventArgs<UserAccountModel> args) { }
+
+    void SelectedItemsChanged(HashSet<UserAccountModel> items) { }
 }

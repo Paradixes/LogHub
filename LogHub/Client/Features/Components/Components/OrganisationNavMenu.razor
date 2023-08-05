@@ -1,11 +1,23 @@
 ﻿@inject HttpClient Client
 @inject ILogHubAuthenticationService AuthenticationService
 
+<AuthorizeView>
+    <Authorized>
+        @if (OrganisationModel.Id == Guid.Empty)
+        {
+            <MudNavLink Href="organisations/join" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DomainAdd">
+                Join organisation
+            </MudNavLink>
+        }
+    </Authorized>
+</AuthorizeView>
 <AuthorizeView Roles="@UserRole.DataManager.ToString()">
     <Authorized>
         @if (OrganisationModel.Id == Guid.Empty)
         {
-            <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">New organisation</MudNavLink>
+            <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
+                New organisation
+            </MudNavLink>
         }
         else
         {
@@ -30,10 +42,21 @@
 @code {
     OrganisationModel OrganisationModel { get; set; } = new();
 
+    UserAccountModel UserAccountModel { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        var managerId = await AuthenticationService.GetUserIdAsync();
-        OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/manager/{managerId}") ?? new OrganisationModel();
+        var userId = await AuthenticationService.GetUserIdAsync();
+        if (userId == Guid.Empty)
+        {
+            return;
+        }
+        UserAccountModel = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}") ?? new UserAccountModel();
+        if (UserAccountModel.OrganisationId == Guid.Empty)
+        {
+            return;
+        }
+        OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{UserAccountModel.OrganisationId}") ?? new OrganisationModel();
     }
 
     private string GetUrl(string objName)

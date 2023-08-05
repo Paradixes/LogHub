@@ -1,48 +1,66 @@
-﻿@page "/organisations/{id}/department-list"
-@* @inject HttpClient Http *@
-@* @layout MainLayout *@
-@* @attribute [Authorize(Roles = "DataManager,Administrator")] *@
-@* *@
-@* <MudTable Items="_departments" Hover="true" SortLabel="Sort By" Elevation="0"> *@
-@*     <HeaderContent> *@
-@*         <MudTh> *@
-@*             <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<DepartmentModel, object>(x => x.Name)">Id</MudTableSortLabel> *@
-@*         </MudTh> *@
-@*         <MudTh> *@
-@* *@
-@*         </MudTh> *@
-@*         <MudTh> *@
-@*             <MudTableSortLabel SortBy="new Func<DepartmentModel, object>(x => x.Description)"> *@
-@*                 Email *@
-@*             </MudTableSortLabel> *@
-@*         </MudTh> *@
-@*         <MudTh> *@
-@*             <MudTableSortLabel SortBy="new Func<DepartmentModel, object>(x => x.)"> *@
-@*                 Organization *@
-@*             </MudTableSortLabel> *@
-@*         </MudTh> *@
-@*     </HeaderContent> *@
-@*     <RowTemplate> *@
-@*         <MudTd DataLabel="UserId">@context.UserId</MudTd> *@
-@*         <MudTd DataLabel="Name">@context.Name</MudTd> *@
-@*         <MudTd DataLabel="Email">@context.Email</MudTd> *@
-@*         <MudTd DataLabel="Organisation">@context.Organization</MudTd> *@
-@*     </RowTemplate> *@
-@*     <PagerContent> *@
-@*         <MudTablePager PageSizeOptions="new[] { 50, 100 }"/> *@
-@*     </PagerContent> *@
-@* </MudTable> *@
-@* *@
-@* @code { *@
-@* *@
-@*     [Parameter] *@
-@*     public Guid? Id { get; set; } *@
-@* *@
-@*     private List<DepartmentModel> _departments = new(); *@
-@* *@
-@*     protected override async Task OnInitializedAsync() *@
-@*     { *@
-@*         _departments = await Http.GetFromJsonAsync<List<DepartmentModel>>($"api/organisations/{Id}/departments") ?? new List<DepartmentModel>(); *@
-@*     } *@
-@* *@
-@* } *@
+﻿@page "/organisations/{id:guid}/department-list"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@layout FormLayout
+@attribute [Authorize(Roles = "DataManager,Administrator")]
+
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
+    <MudAvatar Size="Size.Large">
+        @if (OrganisationModel.LogoUri is not null)
+        {
+            <MudImage Src="@OrganisationModel.LogoUri.ToString()"/>
+        }
+        else if (OrganisationModel.Name.Length > 0)
+        {
+            @OrganisationModel.Name[0]
+        }
+    </MudAvatar>
+
+    <MudText Typo="Typo.h4" Class="mt-2">
+        @OrganisationModel.Name
+    </MudText>
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(OrganisationModel.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Department List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
+</MudTabs>
+
+@code {
+
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private int _index;
+
+    private OrganisationModel OrganisationModel { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        OrganisationModel = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+    }
+
+    private void OnTabClicked(MouseEventArgs me)
+    {
+        switch (_index)
+        {
+            case 0:
+                break;
+            case 1:
+                NavigationManager.NavigateTo($"/organisations/{Id}/user-list");
+                break;
+            case 2:
+                NavigationManager.NavigateTo($"/organisations/{Id}/project-list");
+                break;
+        }
+    }
+
+}

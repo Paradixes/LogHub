@@ -1,7 +1,5 @@
 ﻿using Domain.Entities.Middlewares;
 using Domain.Entities.Records;
-using Domain.Entities.Records.Docs;
-using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,11 +15,11 @@ public class DocEditorConfiguration : IEntityTypeConfiguration<DocEditor>
             .HasConversion(docId => docId.Value,
                 value => new RecordId(value));
 
-        builder.HasOne<Document>()
+        builder.HasOne(x => x.Doc)
             .WithMany(d => d.Editors)
             .HasForeignKey(x => x.DocId);
 
-        builder.HasOne<User>()
+        builder.HasOne(x => x.User)
             .WithMany()
             .HasForeignKey(x => x.UserId);
 

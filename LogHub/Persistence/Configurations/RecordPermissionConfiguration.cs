@@ -1,6 +1,4 @@
 ﻿using Domain.Entities.Middlewares;
-using Domain.Entities.Records;
-using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,11 +10,11 @@ public class RecordPermissionConfiguration : IEntityTypeConfiguration<RecordPerm
     {
         builder.HasKey(p => new { p.UserId, p.RecordId });
 
-        builder.HasOne<User>()
+        builder.HasOne(x => x.User)
             .WithMany(u => u.RecordPermissions)
             .HasForeignKey(p => p.UserId);
 
-        builder.HasOne<Record>()
+        builder.HasOne(x => x.Record)
             .WithMany(r => r.Permissions)
             .HasForeignKey(p => p.RecordId);
 

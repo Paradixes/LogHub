@@ -5,4 +5,4 @@ public record CreateOrganisationRequest(
     string? Logo,
     string Name,
     string Description,
-    Guid ParentId);
+    Guid? ParentId);

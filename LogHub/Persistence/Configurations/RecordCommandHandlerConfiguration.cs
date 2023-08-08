@@ -1,5 +1,4 @@
 ﻿using Domain.Entities.Middlewares;
-using Domain.Entities.Records;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +11,7 @@ public class RecordCommandHandlerConfiguration : IEntityTypeConfiguration<Record
         builder.HasKey(x => new { x.RecordId, x.Command });
 
 
-        builder.HasOne<Record>()
+        builder.HasOne(x => x.Record)
             .WithMany(r => r.CommandHandlers)
             .HasForeignKey(x => x.RecordId);
 

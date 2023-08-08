@@ -26,6 +26,34 @@ public sealed class UserRepository : IUserRepository
             .FirstOrDefaultAsync(user => user.Email == email);
     }
 
+    public async Task<List<Organisation?>> GetOrganisationsAsync(UserId userId)
+    {
+        return await _context.Users
+            .Where(user => user.Id == userId)
+            .SelectMany(user => user.OrganisationMemberships)
+            .Select(membership => membership.Organisation)
+            .ToListAsync();
+    }
+
+    public async Task<List<Organisation?>> GetRootOrganisationsAsync(UserId userId)
+    {
+        var organisations = await _context.Users
+            .Include(user => user.OrganisationMemberships)
+            .ThenInclude(membership => membership.Organisation)
+            .ThenInclude(organisation => organisation!.RootOrganisation)
+            .Where(user => user.Id == userId)
+            .SelectMany(user => user.OrganisationMemberships)
+            .Select(membership => membership.Organisation)
+            .ToListAsync();
+
+        var rootOrganisations = organisations
+            .Select(o => o.RootOrganisation)
+            .Distinct()
+            .ToList();
+
+        return rootOrganisations;
+    }
+
     public Task<bool> IsEmailUniqueAsync(string email)
     {
         return _context.Users

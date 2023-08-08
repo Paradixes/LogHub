@@ -19,6 +19,8 @@ public class RecordCommandHandler
 
     public RecordId RecordId { get; private init; } = null!;
 
+    public Record? Record { get; private set; }
+
     public PermissionLevel Level { get; private set; } = PermissionLevel.Owner;
 
     public RecordRequestCommand Command { get; private set; }

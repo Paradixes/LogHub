@@ -206,9 +206,14 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("ParentOrganisationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("RootOrganisationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentOrganisationId");
+
+                    b.HasIndex("RootOrganisationId");
 
                     b.ToTable("Organisations");
                 });
@@ -469,86 +474,108 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Middlewares.DocEditor", b =>
                 {
-                    b.HasOne("Domain.Entities.Records.Docs.Document", null)
+                    b.HasOne("Domain.Entities.Records.Docs.Document", "Doc")
                         .WithMany("Editors")
                         .HasForeignKey("DocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.DocLabel", b =>
                 {
-                    b.HasOne("Domain.Entities.Records.Docs.Document", null)
+                    b.HasOne("Domain.Entities.Records.Docs.Document", "Doc")
                         .WithMany("Labels")
                         .HasForeignKey("DocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Records.Labels.Label", null)
+                    b.HasOne("Domain.Entities.Records.Labels.Label", "Label")
                         .WithMany()
                         .HasForeignKey("LabelId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("Label");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.FavouriteDoc", b =>
                 {
-                    b.HasOne("Domain.Entities.Records.Docs.Document", null)
+                    b.HasOne("Domain.Entities.Records.Docs.Document", "Doc")
                         .WithMany()
                         .HasForeignKey("DocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("FavouriteDocs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.OrganisationMembership", b =>
                 {
-                    b.HasOne("Domain.Entities.Organisations.Organisation", null)
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "Organisation")
                         .WithMany("Memberships")
                         .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("OrganisationMemberships")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.RecordCommandHandler", b =>
                 {
-                    b.HasOne("Domain.Entities.Records.Record", null)
+                    b.HasOne("Domain.Entities.Records.Record", "Record")
                         .WithMany("CommandHandlers")
                         .HasForeignKey("RecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Record");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.RecordPermission", b =>
                 {
-                    b.HasOne("Domain.Entities.Records.Record", null)
+                    b.HasOne("Domain.Entities.Records.Record", "Record")
                         .WithMany("Permissions")
                         .HasForeignKey("RecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("RecordPermissions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Record");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Organisations.Organisation", b =>
@@ -558,7 +585,14 @@ namespace Persistence.Migrations
                         .HasForeignKey("ParentOrganisationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "RootOrganisation")
+                        .WithMany()
+                        .HasForeignKey("RootOrganisationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("ParentOrganisation");
+
+                    b.Navigation("RootOrganisation");
                 });
 
             modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.Question", b =>

@@ -1,6 +1,4 @@
 ﻿using Domain.Entities.Middlewares;
-using Domain.Entities.Organisations;
-using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,11 +10,11 @@ public class OrganisationMembershipConfiguration : IEntityTypeConfiguration<Orga
     {
         builder.HasKey(x => new { x.OrganisationId, x.UserId });
 
-        builder.HasOne<Organisation>()
+        builder.HasOne(x => x.Organisation)
             .WithMany(o => o.Memberships)
             .HasForeignKey(x => x.OrganisationId);
 
-        builder.HasOne<User>()
+        builder.HasOne(u => u.User)
             .WithMany(u => u.OrganisationMemberships)
             .HasForeignKey(x => x.UserId);
 

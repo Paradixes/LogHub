@@ -9,5 +9,5 @@ public record CreateOrganisationCommand(
     string? Logo,
     string Name,
     string? Description,
-    OrganisationId ParentId
+    OrganisationId? ParentId
 ) : ICommand<Guid>;

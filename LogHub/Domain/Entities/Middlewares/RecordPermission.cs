@@ -20,7 +20,11 @@ public class RecordPermission
 
     public UserId UserId { get; set; } = null!;
 
+    public User? User { get; set; }
+
     public RecordId RecordId { get; private init; } = null!;
+
+    public Record? Record { get; set; }
 
     public PermissionLevel Level { get; set; }
 

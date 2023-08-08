@@ -1,10 +1,10 @@
 ﻿using Domain.Entities.Middlewares;
+using Domain.Entities.Records;
 using Domain.Entities.Records.DataManagementPlans;
 using Domain.Entities.Records.Repositories;
 using Domain.Entities.Users;
 using Domain.Primitives;
 using Shared.Enums;
-using RecordId = Domain.Entities.Records.RecordId;
 
 namespace Domain.Entities.Organisations;
 
@@ -31,6 +31,10 @@ public class Organisation : Entity<OrganisationId>
     public OrganisationId? ParentOrganisationId { get; private set; }
 
     public Organisation? ParentOrganisation { get; private set; }
+
+    public OrganisationId? RootOrganisationId { get; private set; }
+
+    public Organisation? RootOrganisation { get; private set; }
 
     public string InvitationCode { get; private set; } = null!;
 
@@ -64,6 +68,11 @@ public class Organisation : Entity<OrganisationId>
 
         organisation._memberships.Add(new OrganisationMembership(organisation.Id, creatorId, OrganisationRole.Owner));
 
+        if (parentOrganisationId is null)
+        {
+            organisation.RootOrganisationId = organisation.Id;
+        }
+
         return organisation;
     }
 
@@ -77,20 +86,23 @@ public class Organisation : Entity<OrganisationId>
         string name,
         string? description)
     {
-        var department = Create(creatorId, name, description, Id);
-        _subOrganisations.Add(department);
-        return department;
+        var organisation = Create(creatorId, name, description, Id);
+        _subOrganisations.Add(organisation);
+
+        organisation.RootOrganisationId = RootOrganisationId ?? Id;
+
+        return organisation;
     }
 
     public void RemoveSubOrganisation(OrganisationId childOrganisationId)
     {
-        var department = _subOrganisations.SingleOrDefault(x => x.Id == childOrganisationId);
-        if (department is null)
+        var organisation = _subOrganisations.SingleOrDefault(x => x.Id == childOrganisationId);
+        if (organisation is null)
         {
             return;
         }
 
-        _subOrganisations.Remove(department);
+        _subOrganisations.Remove(organisation);
     }
 
     public void AddDataManagementPlanTemplate(

@@ -19,6 +19,11 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
             .HasForeignKey(o => o.ParentOrganisationId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(o => o.RootOrganisation)
+            .WithMany()
+            .HasForeignKey(o => o.RootOrganisationId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(o => o.Name).IsRequired();
     }
 }

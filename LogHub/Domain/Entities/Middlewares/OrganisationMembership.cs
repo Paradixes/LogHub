@@ -17,7 +17,11 @@ public class OrganisationMembership
 
     public OrganisationId OrganisationId { get; private init; } = null!;
 
+    public Organisation? Organisation { get; private set; }
+
     public UserId UserId { get; private init; } = null!;
+
+    public User? User { get; private set; }
 
     public OrganisationRole Role { get; private set; } = OrganisationRole.Member;
 

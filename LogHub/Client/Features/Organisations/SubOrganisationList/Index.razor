@@ -1,0 +1,150 @@
+﻿@page "/organisations/{id:guid}/sub-organisation-list"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@layout FormLayout
+@attribute [Authorize(Roles = "DataManager,Administrator")]
+
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
+    <MudAvatar Size="Size.Large">
+        @if (OrganisationModel.LogoUri is not null)
+        {
+            <MudImage Src="@OrganisationModel.LogoUri.ToString()"/>
+        }
+        else if (OrganisationModel.Name.Length > 0)
+        {
+            @OrganisationModel.Name[0]
+        }
+    </MudAvatar>
+
+    <MudText Typo="Typo.h4" Class="mt-2">
+        @OrganisationModel.Name
+    </MudText>
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(OrganisationModel.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Sub-Organisation List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
+</MudTabs>
+
+<MudDataGrid T="OrganisationMembershipModel" MultiSelection="true" Items="@_subOrganisations" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@QuickFilter" Hideable="true" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">
+            Sub-Organisations
+        </MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4" Href="/organisations/create">
+            Add
+        </MudButton>
+
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="OrganisationMembershipModel"/>
+        <TemplateColumn Sortable="false" Filterable="false">
+            <CellTemplate>
+                <MudAvatar>
+                    @if (context.Item.Organisation.LogoUri is not null)
+                    {
+                        <MudImage Src="@context.Item.Organisation.LogoUri.ToString()"/>
+                    }
+                    else if (context.Item.Organisation.Name.Length > 0)
+                    {
+                        @context.Item.Organisation.Name[0]
+                    }
+                </MudAvatar>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudLink OnClick="@(() => NavigationManager.NavigateTo("/organisations/" + context.Item.Organisation.Id + "/sub-organisation-list", true))">
+                    @context.Item.Organisation.Name
+                </MudLink>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Organisation.Description" Title="Description"/>
+        <TemplateColumn Sortable="false" Filterable="false">
+            <CellTemplate>
+                <MudAvatar>
+                    @if (context.Item.User.AvatarUri is not null)
+                    {
+                        <MudImage Src="@context.Item.User.AvatarUri.ToString()"/>
+                    }
+                    else if (context.Item.User.Name.Length > 0)
+                    {
+                        @context.Item.User.Name[0]
+                    }
+                </MudAvatar>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.User.Name" Title="Owner Name"/>
+        <PropertyColumn Property="x => x.User.Email" Title="Owner Email"/>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="OrganisationMembershipModel"/>
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private int _index;
+
+    private string _searchString = string.Empty;
+
+    private List<OrganisationMembershipModel> _subOrganisations = new();
+
+    private OrganisationModel OrganisationModel { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        OrganisationModel = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+
+        _subOrganisations = await Http.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{Id}/sub-organisations") ?? new List<OrganisationMembershipModel>();
+    }
+
+    private Func<OrganisationMembershipModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Organisation.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Organisation.Description != null && x.Organisation.Description.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+
+    void RowClicked(DataGridRowClickEventArgs<OrganisationMembershipModel> args) { }
+
+    void SelectedItemsChanged(HashSet<OrganisationMembershipModel> items) { }
+
+    private void OnTabClicked(MouseEventArgs me)
+    {
+        switch (_index)
+        {
+            case 0:
+                break;
+            case 1:
+                NavigationManager.NavigateTo($"/organisations/{Id}/user-list");
+                break;
+            case 2:
+                NavigationManager.NavigateTo($"/organisations/{Id}/project-list");
+                break;
+        }
+    }
+
+}

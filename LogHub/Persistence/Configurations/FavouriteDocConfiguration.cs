@@ -1,6 +1,4 @@
 ﻿using Domain.Entities.Middlewares;
-using Domain.Entities.Records.Docs;
-using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,11 +10,11 @@ public class FavouriteDocConfiguration : IEntityTypeConfiguration<FavouriteDoc>
     {
         builder.HasKey(x => new { x.DocId, x.UserId });
 
-        builder.HasOne<Document>()
+        builder.HasOne(x => x.Doc)
             .WithMany()
             .HasForeignKey(x => x.DocId);
 
-        builder.HasOne<User>()
+        builder.HasOne(x => x.User)
             .WithMany(u => u.FavouriteDocs)
             .HasForeignKey(x => x.UserId);
 

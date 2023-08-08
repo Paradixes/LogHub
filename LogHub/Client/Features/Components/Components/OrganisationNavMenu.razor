@@ -3,65 +3,49 @@
 
 <AuthorizeView>
     <Authorized>
-        @if (OrganisationModel.Id == Guid.Empty)
-        {
-            <MudNavLink Href="organisations/join" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DomainAdd">
-                Join organisation
-            </MudNavLink>
-        }
+        <MudNavLink Href="organisations/join" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DomainAdd">
+            Join organisation
+        </MudNavLink>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="@UserRole.DataManager.ToString()">
     <Authorized>
-        @if (OrganisationModel.Id == Guid.Empty)
-        {
-            <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
-                New organisation
-            </MudNavLink>
-        }
-        else
-        {
-            <MudDivider Class="my-2"/>
-            <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
-                <MudNavGroup Title="@OrganisationModel.Name">
-                    <MudNavLink Href="@GetUrl("department")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
-                        Department List
+        <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
+            New organisation
+        </MudNavLink>
+        <MudDivider Class="my-2"/>
+        <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
+            @foreach (var organisationModel in OrganisationModels)
+            {
+                <MudNavGroup Title="@organisationModel.Name">
+                    <MudNavLink Href="@GetUrl("sub-organisation", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
+                        Sub-Organisation List
                     </MudNavLink>
-                    <MudNavLink Href="@GetUrl("user")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
+                    <MudNavLink Href="@GetUrl("user", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
                         User List
                     </MudNavLink>
-                    <MudNavLink Href="@GetUrl("project")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
+                    <MudNavLink Href="@GetUrl("project", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
                         Project List
                     </MudNavLink>
                 </MudNavGroup>
-            </MudNavGroup>
-        }
+            }
+
+        </MudNavGroup>
     </Authorized>
 </AuthorizeView>
 
 @code {
-    OrganisationModel OrganisationModel { get; set; } = new();
-
-    UserAccountModel UserAccountModel { get; set; } = new();
+    List<OrganisationModel> OrganisationModels { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         var userId = await AuthenticationService.GetUserIdAsync();
-        if (userId == Guid.Empty)
-        {
-            return;
-        }
-        UserAccountModel = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}") ?? new UserAccountModel();
-        if (UserAccountModel.OrganisationId == Guid.Empty)
-        {
-            return;
-        }
-        OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{UserAccountModel.OrganisationId}") ?? new OrganisationModel();
+        OrganisationModels = await Client.GetFromJsonAsync<List<OrganisationModel>>($"api/users/{userId}/root-organisations") ?? new List<OrganisationModel>();
     }
 
-    private string GetUrl(string objName)
+    private string GetUrl(string objName, Guid id)
     {
-        return $"/organisations/{OrganisationModel.Id}/{objName}-list";
+        return $"/organisations/{id}/{objName}-list";
     }
 
 }

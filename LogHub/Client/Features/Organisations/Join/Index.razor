@@ -1,0 +1,83 @@
+﻿@page "/organisations/join"
+@layout MainLayout
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        Join an organisation
+    </MudText>
+
+    <MudDivider Class="py-4"/>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Align="Align.Left" Typo="Typo.body1">
+                Enter the code provided by the organisation you wish to join.
+            </MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudTextField Label="Invitation code"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_code"
+                          For="() => _code"
+                          OnlyValidateIfDirty="true"
+                          Required="true"/>
+            @if (_notFound)
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mt-4">
+                    Organisation not found
+                </MudAlert>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       OnClick="SearchOrganisation">
+                Search
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+
+    @if (_organisation is not null)
+    {
+        <MudText Typo="Typo.h6">
+            @(_organisation.Name)
+        </MudText>
+        <MudText Typo="Typo.body1">
+            @(_organisation.Description)
+        </MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinOrganisation">
+            Join
+        </MudButton>
+    }
+</MudContainer>
+
+
+@code {
+    OrganisationModel? _organisation;
+
+    string _code = "";
+
+    bool _notFound;
+
+    async Task SearchOrganisation()
+    {
+        _organisation = await Http.GetFromJsonAsync<OrganisationModel?>($"api/organisations/{_code}/invitation");
+        if (_organisation is null)
+        {
+            _notFound = true;
+        }
+    }
+
+    async Task JoinOrganisation()
+    {
+        var user = await Http.GetFromJsonAsync<UserAccountModel>("api/users");
+
+        await Http.PostAsJsonAsync($"api/organisations/{_code}/invitation", user);
+
+        NavigationManager.NavigateTo("/");
+    }
+
+
+}

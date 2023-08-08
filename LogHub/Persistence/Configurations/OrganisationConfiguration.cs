@@ -1,5 +1,4 @@
 ﻿using Domain.Entities.Organisations;
-using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,11 +14,11 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
             organisation => organisation.Value,
             value => new OrganisationId(value));
 
-        builder.Property(o => o.Name).IsRequired();
+        builder.HasOne(o => o.ParentOrganisation)
+            .WithMany(o => o.SubOrganisations)
+            .HasForeignKey(o => o.ParentOrganisationId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<User>()
-            .WithMany()
-            .HasForeignKey(o => o.ManagerId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(o => o.Name).IsRequired();
     }
 }

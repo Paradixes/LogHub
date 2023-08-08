@@ -1,6 +1,10 @@
-﻿using Domain.Entities.DataManagementPlans;
+﻿using Domain.Entities.Middlewares;
+using Domain.Entities.Records.DataManagementPlans;
+using Domain.Entities.Records.Repositories;
 using Domain.Entities.Users;
 using Domain.Primitives;
+using Shared.Enums;
+using RecordId = Domain.Entities.Records.RecordId;
 
 namespace Domain.Entities.Organisations;
 
@@ -8,15 +12,25 @@ public class Organisation : Entity<OrganisationId>
 {
     private readonly List<DataManagementPlanTemplate> _dataManagementPlanTemplates = new();
 
-    private readonly List<Department> _departments = new();
+    private readonly List<OrganisationMembership> _memberships = new();
+
+    private readonly List<Repository> _repositories = new();
+
+    private readonly List<Organisation> _subOrganisations = new();
 
     private Organisation() { }
 
-    public IEnumerable<Department> Departments => _departments.ToList();
+    public IEnumerable<Organisation> SubOrganisations => _subOrganisations.ToList();
 
     public IEnumerable<DataManagementPlanTemplate> DataManagementPlanTemplates => _dataManagementPlanTemplates.ToList();
 
-    public UserId ManagerId { get; private set; } = null!;
+    public IEnumerable<Repository> Repositories => _repositories.ToList();
+
+    public IEnumerable<OrganisationMembership> Memberships => _memberships.ToList();
+
+    public OrganisationId? ParentOrganisationId { get; private set; }
+
+    public Organisation? ParentOrganisation { get; private set; }
 
     public string InvitationCode { get; private set; } = null!;
 
@@ -37,15 +51,18 @@ public class Organisation : Entity<OrganisationId>
     public static Organisation Create(
         UserId creatorId,
         string name,
-        string? description)
+        string? description,
+        OrganisationId? parentOrganisationId)
     {
         var organisation = new Organisation
         {
-            ManagerId = creatorId,
             Name = name,
             Description = description,
-            InvitationCode = GenerateRandomString(8)
+            InvitationCode = GenerateRandomString(8),
+            ParentOrganisationId = parentOrganisationId
         };
+
+        organisation._memberships.Add(new OrganisationMembership(organisation.Id, creatorId, OrganisationRole.Owner));
 
         return organisation;
     }
@@ -55,35 +72,34 @@ public class Organisation : Entity<OrganisationId>
         InvitationCode = GenerateRandomString(8);
     }
 
-    public Department AddDepartment(
+    public Organisation AddSubOrganisation(
+        UserId creatorId,
         string name,
-        string? description,
-        UserId managerId)
+        string? description)
     {
-        var department = Department.Create(name, description, managerId, Id);
-        _departments.Add(department);
+        var department = Create(creatorId, name, description, Id);
+        _subOrganisations.Add(department);
         return department;
     }
 
-    public void RemoveDepartment(OrganisationId childOrganisationId)
+    public void RemoveSubOrganisation(OrganisationId childOrganisationId)
     {
-        var department = _departments.SingleOrDefault(x => x.Id == childOrganisationId);
+        var department = _subOrganisations.SingleOrDefault(x => x.Id == childOrganisationId);
         if (department is null)
         {
             return;
         }
 
-        _departments.Remove(department);
+        _subOrganisations.Remove(department);
     }
 
     public void AddDataManagementPlanTemplate(
-        UserId? managerId,
+        UserId creatorId,
         string title,
+        string icon,
         string? description)
     {
-        managerId ??= ManagerId;
-
-        var dataManagementPlanTemplate = new DataManagementPlanTemplate(Id, null, managerId, title, description);
+        var dataManagementPlanTemplate = DataManagementPlanTemplate.Create(Id, creatorId, title, icon, description);
         _dataManagementPlanTemplates.Add(dataManagementPlanTemplate);
     }
 
@@ -98,8 +114,13 @@ public class Organisation : Entity<OrganisationId>
         _dataManagementPlanTemplates.Remove(dataManagementPlan);
     }
 
-    public void UpdateDetails(string name, string? description)
+    public void UpdateDetails(UserId userId, string name, string? description)
     {
+        if (!_memberships.Any(x => x.UserId == userId && x.Role == OrganisationRole.Owner))
+        {
+            return;
+        }
+
         Name = name;
         Description = description;
     }
@@ -109,8 +130,37 @@ public class Organisation : Entity<OrganisationId>
         LogoUri = logoUri;
     }
 
-    public void UpdateManager(UserId managerId)
+    public void AddMembership(UserId managerId, OrganisationRole role)
     {
-        ManagerId = managerId;
+        if (_memberships.Any(x => x.UserId == managerId))
+        {
+            return;
+        }
+
+        _memberships.Add(new OrganisationMembership(Id, managerId, role));
+    }
+
+    public void UpdateMembership(UserId managerId, OrganisationRole role)
+    {
+        var membership = _memberships.SingleOrDefault(x => x.UserId == managerId);
+
+        if (membership is null)
+        {
+            AddMembership(managerId, role);
+            return;
+        }
+
+        membership.UpdateRole(role);
+    }
+
+    public void RemoveMembership(UserId managerId)
+    {
+        var membership = _memberships.SingleOrDefault(x => x.UserId == managerId);
+        if (membership is null)
+        {
+            return;
+        }
+
+        _memberships.Remove(membership);
     }
 }

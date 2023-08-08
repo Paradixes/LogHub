@@ -1,5 +1,9 @@
-﻿using Domain.Entities.Docs;
+﻿using Domain.Entities.Behaviours.Actions;
+using Domain.Entities.Behaviours.Requests;
+using Domain.Entities.Middlewares;
 using Domain.Entities.Organisations;
+using Domain.Entities.Records;
+using Domain.Entities.Records.Docs;
 using Domain.Primitives;
 using Shared.Enums;
 
@@ -9,22 +13,42 @@ public class User : Entity<UserId>, IAuditableEntity
 {
     private readonly List<FavouriteDoc> _favouriteDocs = new();
 
-    private User() { }
+    private readonly List<OrganisationMembership> _organisationMemberships = new();
+
+    private readonly List<RecordAction> _recordActions = new();
+
+    private readonly List<RecordPermission> _recordPermissions = new();
+
+    private readonly List<Record> _records = new();
+
+    private readonly List<RecordRequest> _requestToHandle = new();
+
+    private readonly List<RecordRequest> _requestToInitiate = new();
+
+    protected User() { }
 
     public IEnumerable<FavouriteDoc> FavouriteDocs => _favouriteDocs.ToList();
+
+    public IEnumerable<OrganisationMembership> OrganisationMemberships => _organisationMemberships.ToList();
+
+    public IEnumerable<RecordPermission> RecordPermissions => _recordPermissions.ToList();
+
+    public IEnumerable<RecordRequest> RequestToHandle => _requestToHandle.ToList();
+
+    public IEnumerable<RecordRequest> RequestToInitiate => _requestToInitiate.ToList();
+
+    public IEnumerable<RecordAction> RecordActions => _recordActions.ToList();
+
+    public IEnumerable<Record> Records => _records.ToList();
 
     public string Name { get; private set; } = null!;
 
     public string Email { get; private set; } = null!;
 
     // TODO: Email Verify Flag
-    // public bool EmailConfirmed { get; private set; }
+    public bool EmailConfirmed { get; private set; } = true;
 
     public Uri? AvatarUri { get; private set; }
-
-    public OrganisationId? OrganisationId { get; private set; }
-
-    public DepartmentId? DepartmentId { get; private set; }
 
     public string Profession { get; private set; } = null!;
 
@@ -44,7 +68,6 @@ public class User : Entity<UserId>, IAuditableEntity
         string name,
         string email,
         OrganisationId? organisationId,
-        DepartmentId? departmentId,
         string profession,
         string? orcid,
         UserRole role)
@@ -53,13 +76,17 @@ public class User : Entity<UserId>, IAuditableEntity
         {
             Name = name,
             Email = email,
-            OrganisationId = organisationId,
-            DepartmentId = departmentId,
             Profession = profession,
             Orcid = orcid,
             Role = role,
             UserPreference = new UserPreference()
         };
+
+        if (organisationId is not null)
+        {
+            user._organisationMemberships.Add(new OrganisationMembership(organisationId, user.Id,
+                OrganisationRole.Admin));
+        }
 
         return user;
     }
@@ -88,19 +115,31 @@ public class User : Entity<UserId>, IAuditableEntity
         AvatarUri = avatarUri;
     }
 
-    public void SetOrganisation(OrganisationId organisationId)
+    public void AddOrganisationMembership(
+        OrganisationId organisationId,
+        OrganisationRole role)
     {
-        OrganisationId = organisationId;
-    }
-
-    public void SetDepartment(DepartmentId departmentId)
-    {
-        if (OrganisationId is null)
+        if (_organisationMemberships.Any(x => x.OrganisationId == organisationId))
         {
-            throw new InvalidOperationException("OrganisationId is null");
+            return;
         }
 
-        DepartmentId = departmentId;
+        _organisationMemberships.Add(new OrganisationMembership(organisationId, Id, role));
+    }
+
+    public void CreateOrganisation(
+        string name,
+        string? description,
+        OrganisationId parentId)
+    {
+        if (Role != UserRole.DataManager)
+        {
+            throw new InvalidOperationException("Only admin can create organisation");
+        }
+
+        var organisation = Organisation.Create(Id, name, description, parentId);
+
+        _organisationMemberships.Add(new OrganisationMembership(organisation.Id, Id, OrganisationRole.Admin));
     }
 
     public void ChangePassword(string hashedPassword)

@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Docs;
-using Domain.Entities.Logbooks;
+﻿using Domain.Entities.Records;
+using Domain.Entities.Records.Docs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,18 +9,17 @@ public class DocumentConfiguration : IEntityTypeConfiguration<Document>
 {
     public void Configure(EntityTypeBuilder<Document> builder)
     {
-        builder.HasKey(d => d.Id);
+        builder.ToTable("Documents");
 
-        builder.Property(d => d.Id).HasConversion(
-            documentId => documentId.Value,
-            value => new DocumentId(value));
-
-        builder.HasOne<Logbook>()
-            .WithMany()
+        builder.HasOne(d => d.Logbook)
+            .WithMany(l => l.Documents)
             .HasForeignKey(d => d.LogbookId);
 
-        builder.Property(d => d.Status).IsRequired();
+        builder.HasOne<Record>()
+            .WithOne()
+            .HasForeignKey<Document>(l => l.Id)
+            .OnDelete(DeleteBehavior.NoAction);
 
-        builder.Property(r => r.Title).IsRequired();
+        builder.Property(d => d.Status).IsRequired();
     }
 }

@@ -4,6 +4,7 @@ using Application.Enums;
 using Domain.Entities.Organisations;
 using Domain.Repositories;
 using Domain.Shared;
+using Shared.Enums;
 
 namespace Application.Organisations.Create;
 
@@ -30,7 +31,8 @@ public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisati
         var organisation = Organisation.Create(
             request.ManagerId,
             request.Name,
-            request.Description);
+            request.Description,
+            request.ParentId);
 
         if (request.Logo is not null)
         {
@@ -51,7 +53,7 @@ public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisati
                 $"The user with Id {request.ManagerId} was not found"));
         }
 
-        manager.SetOrganisation(organisation.Id);
+        manager.AddOrganisationMembership(organisation.Id, OrganisationRole.Owner);
 
         _userRepository.Update(manager);
 

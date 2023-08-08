@@ -32,8 +32,6 @@ public class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, UserRespo
             user.Email,
             user.Name,
             user.AvatarUri,
-            user.OrganisationId?.Value,
-            user.DepartmentId?.Value,
             user.Profession,
             user.Orcid,
             user.Role

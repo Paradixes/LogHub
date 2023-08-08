@@ -45,7 +45,7 @@ public sealed class UserRepository : IUserRepository
     public Task<List<User>> GetByOrganisationIdAsync(OrganisationId organisationId)
     {
         return _context.Users
-            .Where(user => user.OrganisationId == organisationId)
+            .Where(user => user.OrganisationMemberships.Any(membership => membership.OrganisationId == organisationId))
             .ToListAsync();
     }
 }

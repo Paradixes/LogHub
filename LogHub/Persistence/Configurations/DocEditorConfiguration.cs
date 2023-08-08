@@ -1,4 +1,6 @@
-﻿using Domain.Entities.Docs;
+﻿using Domain.Entities.Middlewares;
+using Domain.Entities.Records;
+using Domain.Entities.Records.Docs;
 using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,13 +13,9 @@ public class DocEditorConfiguration : IEntityTypeConfiguration<DocEditor>
     {
         builder.HasKey(x => new { x.DocId, x.UserId });
 
-        builder.Property(x => x.DocId).HasConversion(
-            docId => docId.Value,
-            value => new DocumentId(value));
-
-        builder.Property(x => x.UserId).HasConversion(
-            userId => userId.Value,
-            value => new UserId(value));
+        builder.Property(x => x.DocId)
+            .HasConversion(docId => docId.Value,
+                value => new RecordId(value));
 
         builder.HasOne<Document>()
             .WithMany(d => d.Editors)
@@ -25,7 +23,10 @@ public class DocEditorConfiguration : IEntityTypeConfiguration<DocEditor>
 
         builder.HasOne<User>()
             .WithMany()
-            .HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(x => x.UserId);
+
+        builder.Property(x => x.DocId).IsRequired();
+
+        builder.Property(x => x.UserId).IsRequired();
     }
 }

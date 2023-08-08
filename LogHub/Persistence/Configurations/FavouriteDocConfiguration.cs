@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Docs;
+﻿using Domain.Entities.Middlewares;
+using Domain.Entities.Records.Docs;
 using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,17 +12,16 @@ public class FavouriteDocConfiguration : IEntityTypeConfiguration<FavouriteDoc>
     {
         builder.HasKey(x => new { x.DocId, x.UserId });
 
-        builder.Property(x => x.DocId).HasConversion(
-            docId => docId.Value,
-            value => new DocumentId(value));
-
-        builder.Property(x => x.UserId).HasConversion(
-            userId => userId.Value,
-            value => new UserId(value));
-
         builder.HasOne<Document>()
             .WithMany()
-            .HasForeignKey(x => x.DocId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(x => x.DocId);
+
+        builder.HasOne<User>()
+            .WithMany(u => u.FavouriteDocs)
+            .HasForeignKey(x => x.UserId);
+
+        builder.Property(x => x.DocId).IsRequired();
+
+        builder.Property(x => x.UserId).IsRequired();
     }
 }

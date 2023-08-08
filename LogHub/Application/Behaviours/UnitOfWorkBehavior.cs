@@ -10,10 +10,10 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private readonly IApplicationDbContext _dbContext;
+    private readonly ILogHubDbContext _dbContext;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UnitOfWorkBehavior(IUnitOfWork unitOfWork, IApplicationDbContext dbContext)
+    public UnitOfWorkBehavior(IUnitOfWork unitOfWork, ILogHubDbContext dbContext)
     {
         _unitOfWork = unitOfWork;
         _dbContext = dbContext;

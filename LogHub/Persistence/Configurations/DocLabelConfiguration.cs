@@ -1,5 +1,6 @@
-﻿using Domain.Entities.Bases;
-using Domain.Entities.Docs;
+﻿using Domain.Entities.Middlewares;
+using Domain.Entities.Records.Docs;
+using Domain.Entities.Records.Labels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,17 +12,17 @@ public class DocLabelConfiguration : IEntityTypeConfiguration<DocLabel>
     {
         builder.HasKey(x => new { x.DocId, x.LabelId });
 
-        builder.Property(x => x.DocId).HasConversion(
-            docId => docId.Value,
-            value => new DocumentId(value));
-
-        builder.Property(x => x.LabelId).HasConversion(
-            labelId => labelId.Value,
-            value => new LabelId(value));
-
         builder.HasOne<Label>()
             .WithMany()
             .HasForeignKey(x => x.LabelId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne<Document>()
+            .WithMany(d => d.Labels)
+            .HasForeignKey(x => x.DocId);
+
+        builder.Property(x => x.DocId).IsRequired();
+
+        builder.Property(x => x.LabelId).IsRequired();
     }
 }

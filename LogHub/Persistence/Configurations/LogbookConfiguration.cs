@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Bases;
-using Domain.Entities.Logbooks;
+﻿using Domain.Entities.Records;
+using Domain.Entities.Records.Logbooks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,20 +9,17 @@ public class LogbookConfiguration : IEntityTypeConfiguration<Logbook>
 {
     public void Configure(EntityTypeBuilder<Logbook> builder)
     {
-        builder.HasKey(l => l.Id);
-
-        builder.Property(l => l.Id).HasConversion(
-            logbookId => logbookId.Value,
-            value => new LogbookId(value));
-
         builder.ToTable("Logbooks");
 
-        builder.HasOne<Base>()
-            .WithMany()
-            .HasForeignKey(l => l.BaseId);
+        builder.HasOne(l => l.Repository)
+            .WithMany(r => r.Logbooks)
+            .HasForeignKey(l => l.RepositoryId);
+
+        builder.HasOne<Record>()
+            .WithOne()
+            .HasForeignKey<Logbook>(l => l.Id)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.Property(l => l.Importance).IsRequired();
-
-        builder.Property(r => r.Title).IsRequired();
     }
 }

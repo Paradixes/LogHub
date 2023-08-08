@@ -18,7 +18,7 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("Database"));
         });
 
-        services.AddScoped<IApplicationDbContext>(sp =>
+        services.AddScoped<ILogHubDbContext>(sp =>
             sp.GetRequiredService<LogHubDbContext>());
 
         services.AddScoped<IUnitOfWork>(sp =>
@@ -27,7 +27,6 @@ public static class DependencyInjection
         // TODO: Add repositories here
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
-        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
         return services;
     }

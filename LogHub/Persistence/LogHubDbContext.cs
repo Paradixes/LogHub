@@ -1,12 +1,14 @@
 ﻿using Application.Data;
-using Domain.Entities.Actions;
-using Domain.Entities.Bases;
-using Domain.Entities.DataManagementPlans;
-using Domain.Entities.Docs;
-using Domain.Entities.Logbooks;
+using Domain.Entities.Behaviours.Actions;
+using Domain.Entities.Behaviours.Requests;
+using Domain.Entities.Middlewares;
 using Domain.Entities.Organisations;
-using Domain.Entities.Permissions;
-using Domain.Entities.Requests;
+using Domain.Entities.Records;
+using Domain.Entities.Records.DataManagementPlans;
+using Domain.Entities.Records.Docs;
+using Domain.Entities.Records.Labels;
+using Domain.Entities.Records.Logbooks;
+using Domain.Entities.Records.Repositories;
 using Domain.Entities.Users;
 using Domain.Primitives;
 using MediatR;
@@ -14,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
 
-public class LogHubDbContext : DbContext, IApplicationDbContext, IUnitOfWork
+public class LogHubDbContext : DbContext, ILogHubDbContext, IUnitOfWork
 {
     private readonly IPublisher _publisher;
 
@@ -24,29 +26,26 @@ public class LogHubDbContext : DbContext, IApplicationDbContext, IUnitOfWork
         _publisher = publisher;
     }
 
-    public DbSet<Department> Departments { get; set; }
-
     public DbSet<User> Users { get; set; }
     public DbSet<Organisation> Organisations { get; set; }
+    public DbSet<RecordAction> RecordActions { get; set; }
+    public DbSet<RecordRequest> RecordRequests { get; set; }
+    public DbSet<RecordPermission> RecordPermissions { get; set; }
+    public DbSet<Record> Records { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<DataManagementPlanTemplate> DataManagementPlanTemplates { get; set; }
     public DbSet<DataManagementPlan> DataManagementPlans { get; set; }
+
     public DbSet<Label> Labels { get; set; }
-    public DbSet<RecordAction<BaseActionId, BaseId>> BaseActions { get; set; }
-    public DbSet<RecordPermission<BasePermissionId, BaseId>> BasePermissions { get; set; }
-    public DbSet<RecordRequest<BaseRequestId, BaseId>> BaseRequests { get; set; }
-    public DbSet<Base> Bases { get; set; }
-    public DbSet<RecordAction<LogbookActionId, LogbookId>> LogbookActions { get; set; }
-    public DbSet<RecordPermission<LogbookPermissionId, LogbookId>> LogbookPermissions { get; set; }
-    public DbSet<RecordRequest<LogbookRequestId, LogbookId>> LogbookRequests { get; set; }
+
+    public DbSet<Repository> Repositories { get; set; }
     public DbSet<Logbook> Logbooks { get; set; }
-    public DbSet<RecordAction<DocActionId, DocumentId>> DocActions { get; set; }
-    public DbSet<RecordPermission<DocPermissionId, DocumentId>> DocPermissions { get; set; }
-    public DbSet<RecordRequest<DocRequestId, DocumentId>> DocRequests { get; set; }
     public DbSet<Document> Docs { get; set; }
     public DbSet<DocEditor> DocEditors { get; set; }
     public DbSet<FavouriteDoc> FavouriteDocs { get; set; }
     public DbSet<DocLabel> DocLabels { get; set; }
+    public DbSet<OrganisationMembership> OrganisationMemberships { get; set; }
+    public DbSet<RecordCommandHandler> RecordCommandHandlers { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {

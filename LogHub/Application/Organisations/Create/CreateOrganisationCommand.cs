@@ -5,7 +5,7 @@ using MediatR;
 namespace Application.Organisations.Create;
 
 public record CreateOrganisationCommand(
-    UserId ManagerId,
+    UserId CreatorId,
     string? Logo,
     string Name,
     string? Description,

@@ -24,6 +24,7 @@ public class CreateOrganisationCommandHandler :
 
     public async Task Handle(CreateOrganisationCommand request, CancellationToken cancellationToken)
     {
+        Organisation organisation;
         if (request.ParentId is not null)
         {
             var parent = await _organisationRepository.GetByIdAsync(request.ParentId);
@@ -33,14 +34,16 @@ public class CreateOrganisationCommandHandler :
                 throw new OrganisationNotFoundException(request.ParentId);
             }
 
-            parent.AddSubOrganisation(request.ManagerId, request.Name, request.Description);
+            organisation = parent.AddSubOrganisation(request.CreatorId, request.Name, request.Description);
         }
-
-        var organisation = Organisation.Create(
-            request.ManagerId,
-            request.Name,
-            request.Description,
-            request.ParentId);
+        else
+        {
+            organisation = Organisation.Create(
+                request.CreatorId,
+                request.Name,
+                request.Description,
+                request.ParentId);
+        }
 
         var logoUri = await _blobStorageProvider.UploadAsync(
             ContainerName.OrganisationLogos,

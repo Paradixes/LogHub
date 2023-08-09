@@ -1,4 +1,4 @@
-﻿using Application.Abstracts.Messaging;
+﻿using MediatR;
 using Shared.Enums;
 
 namespace Application.Users.Register;
@@ -9,4 +9,4 @@ public record RegisterUserCommand(
     string Profession,
     string? Orcid,
     UserRole Role,
-    string Password) : ICommand<Guid>;
+    string Password) : IRequest<Guid>;

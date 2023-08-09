@@ -1,11 +1,11 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Users;
+﻿using Domain.Exceptions.Users;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.UserPreference.GetById;
 
-public class GetUserPreferenceByIdQueryHandler : IQueryHandler<GetUserPreferenceByIdQuery, UserPreferenceResponse>
+public class GetUserPreferenceByIdQueryHandler :
+    IRequestHandler<GetUserPreferenceByIdQuery, UserPreferenceResponse>
 {
     private readonly IUserRepository _userRepository;
 
@@ -14,16 +14,14 @@ public class GetUserPreferenceByIdQueryHandler : IQueryHandler<GetUserPreference
         _userRepository = userRepository;
     }
 
-    public async Task<Result<UserPreferenceResponse>> Handle(GetUserPreferenceByIdQuery request,
+    public async Task<UserPreferenceResponse> Handle(
+        GetUserPreferenceByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(new UserId(request.UserId));
-
+        var user = await _userRepository.GetByIdAsync(request.UserId);
         if (user is null)
         {
-            return Result.Failure<UserPreferenceResponse>(new Error(
-                "User.NotFound",
-                $"The user with Id {request.UserId} was not found"));
+            throw new UserNotFoundException(request.UserId);
         }
 
         var response = new UserPreferenceResponse(
@@ -33,6 +31,6 @@ public class GetUserPreferenceByIdQueryHandler : IQueryHandler<GetUserPreference
             user.UserPreference.AutoSave,
             user.UserPreference.FontSize);
 
-        return Result.Success(response);
+        return response;
     }
 }

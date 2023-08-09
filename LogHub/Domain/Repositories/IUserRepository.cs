@@ -9,9 +9,9 @@ public interface IUserRepository
 
     Task<User?> GetByEmailAsync(string email);
 
-    Task<List<Organisation?>> GetOrganisationsAsync(UserId userId);
+    Task<List<Organisation>> GetOrganisationsAsync(UserId userId);
 
-    Task<List<Organisation?>> GetRootOrganisationsAsync(UserId userId);
+    Task<List<Organisation>> GetRootOrganisationsAsync(UserId userId);
 
     Task<bool> IsEmailUniqueAsync(string email);
 

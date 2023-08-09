@@ -1,9 +1,9 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Users;
+using MediatR;
 
 namespace Application.Organisations.JoinByInvitationCode;
 
 public record JoinOrganisationByInvitationCodeCommand(
     UserId UserId,
     string InvitationCode
-) : ICommand<Guid>;
+) : IRequest;

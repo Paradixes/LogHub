@@ -1,12 +1,12 @@
-﻿using Application.Abstracts.Messaging;
+﻿using Domain.Exceptions.Organisations;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 using Shared.Enums;
 
 namespace Application.Organisations.JoinByInvitationCode;
 
 public class
-    JoinOrganisationByInvitationCodeCommandHandler : ICommandHandler<JoinOrganisationByInvitationCodeCommand, Guid>
+    JoinOrganisationByInvitationCodeCommandHandler : IRequestHandler<JoinOrganisationByInvitationCodeCommand>
 {
     private readonly IOrganisationRepository _organisationRepository;
 
@@ -15,18 +15,16 @@ public class
         _organisationRepository = organisationRepository;
     }
 
-    public async Task<Result<Guid>> Handle(JoinOrganisationByInvitationCodeCommand request,
+    public async Task Handle(JoinOrganisationByInvitationCodeCommand request,
         CancellationToken cancellationToken)
     {
         var organisation = await _organisationRepository.GetByInvitationCodeAsync(request.InvitationCode);
 
         if (organisation is null)
         {
-            return Result.Failure<Guid>(new Error("Organisation.NotFound", "Organisation not found."));
+            throw new OrganisationNotFoundException(request.InvitationCode);
         }
 
         organisation.AddMembership(request.UserId, OrganisationRole.Guest);
-
-        return organisation.Id.Value;
     }
 }

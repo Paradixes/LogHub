@@ -1,8 +1,8 @@
-﻿using Application.Data;
+﻿using System.Transactions;
+using Application.Data;
 using Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
 
 namespace Application.Behaviours;
 

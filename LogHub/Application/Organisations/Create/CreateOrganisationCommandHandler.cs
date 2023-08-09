@@ -1,13 +1,14 @@
 ﻿using Application.Abstracts;
-using Application.Abstracts.Messaging;
 using Application.Enums;
 using Domain.Entities.Organisations;
+using Domain.Exceptions.Organisations;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.Organisations.Create;
 
-public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisationCommand, Guid>
+public class CreateOrganisationCommandHandler :
+    IRequestHandler<CreateOrganisationCommand>
 {
     private readonly IBlobStorageProvider _blobStorageProvider;
 
@@ -21,7 +22,7 @@ public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisati
         _organisationRepository = organisationRepository;
     }
 
-    public async Task<Result<Guid>> Handle(CreateOrganisationCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CreateOrganisationCommand request, CancellationToken cancellationToken)
     {
         if (request.ParentId is not null)
         {
@@ -29,16 +30,10 @@ public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisati
 
             if (parent is null)
             {
-                return Result.Failure<Guid>(new Error(
-                    "Organisation.NotFound",
-                    $"The organisation with Id {request.ParentId} was not found"));
+                throw new OrganisationNotFoundException(request.ParentId);
             }
 
             parent.AddSubOrganisation(request.ManagerId, request.Name, request.Description);
-
-            _organisationRepository.Update(parent);
-
-            return parent.Id.Value;
         }
 
         var organisation = Organisation.Create(
@@ -47,18 +42,13 @@ public class CreateOrganisationCommandHandler : ICommandHandler<CreateOrganisati
             request.Description,
             request.ParentId);
 
-        if (request.Logo is not null)
-        {
-            var logoUri = await _blobStorageProvider.UploadAsync(
-                ContainerName.OrganisationLogos,
-                organisation.Id.Value + ".png",
-                request.Logo);
+        var logoUri = await _blobStorageProvider.UploadAsync(
+            ContainerName.OrganisationLogos,
+            organisation.Id.Value + ".png",
+            request.Logo);
 
-            organisation.SetLogo(logoUri);
-        }
+        organisation.SetLogo(logoUri);
 
         _organisationRepository.Add(organisation);
-
-        return organisation.Id.Value;
     }
 }

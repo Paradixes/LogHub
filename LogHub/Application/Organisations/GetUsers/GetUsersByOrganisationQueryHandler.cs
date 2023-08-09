@@ -1,11 +1,11 @@
-﻿using Application.Abstracts.Messaging;
-using Application.Users.GetById;
+﻿using Application.Users.GetById;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.Organisations.GetUsers;
 
-public class GetUsersByOrganisationQueryHandler : IQueryHandler<GetUsersByOrganisationQuery, List<UserResponse>>
+public class GetUsersByOrganisationQueryHandler :
+    IRequestHandler<GetUsersByOrganisationQuery, List<UserResponse>>
 {
     private readonly IUserRepository _userRepository;
 
@@ -14,7 +14,7 @@ public class GetUsersByOrganisationQueryHandler : IQueryHandler<GetUsersByOrgani
         _userRepository = userRepository;
     }
 
-    public async Task<Result<List<UserResponse>>> Handle(
+    public async Task<List<UserResponse>> Handle(
         GetUsersByOrganisationQuery request,
         CancellationToken cancellationToken)
     {
@@ -29,6 +29,6 @@ public class GetUsersByOrganisationQueryHandler : IQueryHandler<GetUsersByOrgani
             user.Orcid,
             user.Role)).ToList();
 
-        return Result.Success(userResponses);
+        return userResponses;
     }
 }

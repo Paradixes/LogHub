@@ -2,7 +2,9 @@
 using Application.UserPreference.Update;
 using Carter;
 using Domain.Entities.Users;
+using Domain.Exceptions.Users;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Endpoints;
 
@@ -12,32 +14,42 @@ public class UserPreference : ICarterModule
     {
         app.MapGet("api/users/{id:guid}/preference", async (
             Guid id,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
-            var query = new GetUserPreferenceByIdQuery(id);
+            try
+            {
+                var query = new GetUserPreferenceByIdQuery(new UserId(id));
 
-            var response = await sender.Send(query, cancellationToken);
-
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+                return Results.Ok(await sender.Send(query));
+            }
+            catch (UserNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
 
         app.MapPut("api/users/{id:guid}/preference", async (
             Guid id,
-            UpdateUserPreferenceRequest request,
-            CancellationToken cancellationToken,
+            [FromBody] UpdateUserPreferenceRequest request,
             ISender sender) =>
         {
-            var command = new UpdateUserPreferenceCommand(
-                new UserId(id),
-                request.Theme,
-                request.EmailNotification,
-                request.AutoSave,
-                request.FontSize);
+            try
+            {
+                var command = new UpdateUserPreferenceCommand(
+                    new UserId(id),
+                    request.Theme,
+                    request.EmailNotification,
+                    request.AutoSave,
+                    request.FontSize);
 
-            var response = await sender.Send(command, cancellationToken);
+                await sender.Send(command);
 
-            return response.IsSuccess ? Results.Ok() : Results.NotFound(response.Error);
+                return Results.Ok();
+            }
+            catch (UserNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
     }
 }

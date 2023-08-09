@@ -1,11 +1,11 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Users;
+﻿using Domain.Exceptions.Users;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.Users.GetById;
 
-public class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, UserResponse>
+public class GetUserByIdQueryHandler :
+    IRequestHandler<GetUserByIdQuery, UserResponse>
 {
     private readonly IUserRepository _userRepository;
 
@@ -14,17 +14,15 @@ public class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, UserRespo
         _userRepository = userRepository;
     }
 
-    public async Task<Result<UserResponse>> Handle(
+    public async Task<UserResponse> Handle(
         GetUserByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(new UserId(query.UserId));
+        var user = await _userRepository.GetByIdAsync(query.UserId);
 
         if (user is null)
         {
-            return Result.Failure<UserResponse>(new Error(
-                "User.NotFound",
-                $"The user with Id {query.UserId} was not found"));
+            throw new UserNotFoundException(query.UserId);
         }
 
         var response = new UserResponse(

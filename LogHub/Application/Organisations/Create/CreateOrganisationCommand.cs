@@ -1,6 +1,6 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Organisations;
+﻿using Domain.Entities.Organisations;
 using Domain.Entities.Users;
+using MediatR;
 
 namespace Application.Organisations.Create;
 
@@ -10,4 +10,4 @@ public record CreateOrganisationCommand(
     string Name,
     string? Description,
     OrganisationId? ParentId
-) : ICommand<Guid>;
+) : IRequest;

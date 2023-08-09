@@ -12,8 +12,13 @@ public class BlobStorageProvider : IBlobStorageProvider
         _connectionString = connectionString;
     }
 
-    public async Task<Uri> UploadAsync(string containerName, string blobName, string base64Uri)
+    public async Task<Uri?> UploadAsync(string containerName, string blobName, string? base64Uri)
     {
+        if (string.IsNullOrWhiteSpace(base64Uri))
+        {
+            return null;
+        }
+
         if (string.IsNullOrWhiteSpace(_connectionString))
         {
             throw new ArgumentNullException(nameof(_connectionString));

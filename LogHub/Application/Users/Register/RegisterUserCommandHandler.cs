@@ -1,14 +1,13 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Users;
-using Domain.Errors;
+﻿using Domain.Entities.Users;
+using Domain.Exceptions.Users;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Users.Register;
 
 public class RegisterUserCommandHandler :
-    ICommandHandler<RegisterUserCommand, Guid>
+    IRequestHandler<RegisterUserCommand, Guid>
 {
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly IUserRepository _userRepository;
@@ -21,11 +20,11 @@ public class RegisterUserCommandHandler :
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         if (!await _userRepository.IsEmailUniqueAsync(request.Email))
         {
-            return Result.Failure<Guid>(DomainErrors.User.EmailAlreadyInUse);
+            throw new UserEmailNotUniqueException(request.Email);
         }
 
         var user = User.Create(
@@ -35,13 +34,10 @@ public class RegisterUserCommandHandler :
             request.Profession,
             request.Orcid,
             request.Role);
-
         var hashedPassword = _passwordHasher.HashPassword(user, request.Password);
-
         user.ChangePassword(hashedPassword);
 
         _userRepository.Add(user);
-
         return user.Id.Value;
     }
 }

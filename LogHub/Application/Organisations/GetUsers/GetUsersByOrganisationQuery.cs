@@ -1,7 +1,7 @@
-﻿using Application.Abstracts.Messaging;
-using Application.Users.GetById;
+﻿using Application.Users.GetById;
 using Domain.Entities.Organisations;
+using MediatR;
 
 namespace Application.Organisations.GetUsers;
 
-public record GetUsersByOrganisationQuery(OrganisationId OrganisationId) : IQuery<List<UserResponse>>;
+public record GetUsersByOrganisationQuery(OrganisationId OrganisationId) : IRequest<List<UserResponse>>;

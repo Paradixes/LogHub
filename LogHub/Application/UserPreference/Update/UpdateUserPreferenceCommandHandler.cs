@@ -1,10 +1,10 @@
-﻿using Application.Abstracts.Messaging;
+﻿using Domain.Exceptions.Users;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.UserPreference.Update;
 
-public class UpdateUserPreferenceCommandHandler : ICommandHandler<UpdateUserPreferenceCommand>
+public class UpdateUserPreferenceCommandHandler : IRequestHandler<UpdateUserPreferenceCommand>
 {
     private readonly IUserRepository _userRepository;
 
@@ -13,21 +13,14 @@ public class UpdateUserPreferenceCommandHandler : ICommandHandler<UpdateUserPref
         _userRepository = userRepository;
     }
 
-    public async Task<Result> Handle(UpdateUserPreferenceCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateUserPreferenceCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(request.UserId);
-
         if (user is null)
         {
-            return Result.Failure(new Error(
-                "User.NotFound",
-                $"The user with Id {request.UserId} was not found"));
+            throw new UserNotFoundException(request.UserId);
         }
 
         user.UpdatePreference(request.Theme, request.EmailNotification, request.AutoSave, request.FontSize);
-
-        _userRepository.Update(user);
-
-        return Result.Success();
     }
 }

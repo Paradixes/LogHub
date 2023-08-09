@@ -1,4 +1,5 @@
 ﻿@page "/organisations/join"
+@using System.Net
 @layout MainLayout
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
@@ -82,14 +83,16 @@
 
     async Task SearchOrganisation()
     {
-        _organisation = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{_code}/invitation");
-        if (_organisation == null || _organisation.Id == Guid.Empty)
+        var response = await Http.GetAsync($"api/organisations/{_code}/invitation");
+
+        if (response.IsSuccessStatusCode)
+        {
+            _organisation = await response.Content.ReadFromJsonAsync<OrganisationModel>();
+            _notFound = false;
+        }
+        else if (response.StatusCode == HttpStatusCode.NotFound)
         {
             _notFound = true;
-        }
-        else
-        {
-            _notFound = false;
         }
     }
 

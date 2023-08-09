@@ -137,7 +137,7 @@ public class Organisation : Entity<OrganisationId>
         Description = description;
     }
 
-    public void SetLogo(Uri logoUri)
+    public void SetLogo(Uri? logoUri)
     {
         LogoUri = logoUri;
     }

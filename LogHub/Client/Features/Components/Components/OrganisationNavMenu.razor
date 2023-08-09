@@ -41,7 +41,12 @@
     {
         var userId = await AuthenticationService.GetUserIdAsync();
 
-        OrganisationModels = await Client.GetFromJsonAsync<List<OrganisationModel>>($"api/users/{userId}/root-organisations") ?? new List<OrganisationModel>();
+        var response = await Client.GetAsync($"api/users/{userId}/root-organisations");
+
+        if (response.IsSuccessStatusCode)
+        {
+            OrganisationModels = await response.Content.ReadFromJsonAsync<List<OrganisationModel>>() ?? new List<OrganisationModel>();
+        }
     }
 
     private string GetUrl(string objName, Guid id)

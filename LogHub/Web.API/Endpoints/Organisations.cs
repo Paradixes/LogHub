@@ -7,6 +7,7 @@ using Application.Organisations.JoinByInvitationCode;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Users;
+using Domain.Exceptions.Organisations;
 using Domain.Primitives;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,57 +20,66 @@ public class Organisations : ICarterModule
     {
         app.MapPost("api/organisations", async (
             [FromBody] CreateOrganisationRequest request,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
-            var command = new CreateOrganisationCommand(
-                new UserId(request.ManagerId),
-                request.Logo,
-                request.Name,
-                request.Description,
-                request.ParentId?.Create<OrganisationId>());
+            try
+            {
+                var command = new CreateOrganisationCommand(
+                    new UserId(request.ManagerId),
+                    request.Logo,
+                    request.Name,
+                    request.Description,
+                    request.ParentId?.Create<OrganisationId>());
 
-            var result = await sender.Send(
-                command,
-                cancellationToken);
+                await sender.Send(command);
 
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+                return Results.Ok();
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
 
         app.MapGet("api/organisations/{id:guid}", async (Guid id, ISender sender) =>
         {
-            var query = new GetOrganisationByIdQuery(new OrganisationId(id));
-
-            var result = await sender.Send(query);
-
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+            try
+            {
+                var query = new GetOrganisationByIdQuery(new OrganisationId(id));
+                return Results.Ok(await sender.Send(query));
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
 
         app.MapGet("api/organisations/{id:guid}/sub-organisations", async (Guid id, ISender sender) =>
         {
             var query = new GetSubOrganisationsQuery(new OrganisationId(id));
 
-            var result = await sender.Send(query);
-
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+            return Results.Ok(await sender.Send(query));
         });
 
         app.MapGet("api/organisations/{id:guid}/users", async (Guid id, ISender sender) =>
         {
             var query = new GetUsersByOrganisationQuery(new OrganisationId(id));
 
-            var result = await sender.Send(query);
-
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+            return Results.Ok(await sender.Send(query));
         });
 
         app.MapGet("api/organisations/{code}/invitation", async (string code, ISender sender) =>
         {
-            var query = new GetOrganisationByInvitationCodeQuery(code);
+            try
+            {
+                var query = new GetOrganisationByInvitationCodeQuery(code);
 
-            var result = await sender.Send(query);
-
-            return result.IsFailure ? Results.Ok() : Results.Ok(result.Value);
+                return Results.Ok(await sender.Send(query));
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
 
         app.MapPost("api/organisations/{code}/invitation", async (
@@ -77,11 +87,17 @@ public class Organisations : ICarterModule
             string code,
             ISender sender) =>
         {
-            var command = new JoinOrganisationByInvitationCodeCommand(new UserId(userId), code);
+            try
+            {
+                var command = new JoinOrganisationByInvitationCodeCommand(new UserId(userId), code);
+                await sender.Send(command);
 
-            var result = await sender.Send(command);
-
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+                return Results.Ok();
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
     }
 }

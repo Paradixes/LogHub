@@ -1,13 +1,12 @@
-﻿using Application.Abstracts.Messaging;
-using Application.Organisations.GetById;
+﻿using Application.Organisations.GetById;
 using Application.Users.GetById;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.Organisations.GetSubOrganisations;
 
-public class
-    GetSubOrganisationsQueryHandler : IQueryHandler<GetSubOrganisationsQuery, List<OrganisationMembershipResponse>>
+public class GetSubOrganisationsQueryHandler :
+    IRequestHandler<GetSubOrganisationsQuery, List<OrganisationMembershipResponse>>
 {
     private readonly IOrganisationRepository _organisationRepository;
 
@@ -16,14 +15,15 @@ public class
         _organisationRepository = organisationRepository;
     }
 
-    public async Task<Result<List<OrganisationMembershipResponse>>> Handle(GetSubOrganisationsQuery request,
+    public async Task<List<OrganisationMembershipResponse>> Handle(GetSubOrganisationsQuery request,
         CancellationToken cancellationToken)
     {
         var memberships =
             await _organisationRepository.GetSubOrganisationOwnerMembershipsAsync(request.OrganisationId);
 
-        var response = memberships.Select(
-            m => new OrganisationMembershipResponse(
+        var response = memberships
+            .Where(m => m.User is not null && m.Organisation is not null)
+            .Select(m => new OrganisationMembershipResponse(
                 new UserResponse(
                     m.User.Id.Value,
                     m.User.Email,
@@ -37,10 +37,12 @@ public class
                     m.Organisation.Id.Value,
                     m.Organisation.Name,
                     m.Organisation.LogoUri,
-                    m.Organisation.Description),
+                    m.Organisation.Description
+                ),
                 m.Role
-            )).ToList();
+            ))
+            .ToList();
 
-        return Result.Success(response);
+        return response;
     }
 }

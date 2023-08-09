@@ -1,10 +1,10 @@
-﻿using Application.Abstracts.Messaging;
+﻿using Domain.Exceptions.Organisations;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.Organisations.GetById;
 
-public class GetOrganisationByIdQueryHandler : IQueryHandler<GetOrganisationByIdQuery, OrganisationResponse>
+public class GetOrganisationByIdQueryHandler : IRequestHandler<GetOrganisationByIdQuery, OrganisationResponse>
 {
     private readonly IOrganisationRepository _organisationRepository;
 
@@ -13,16 +13,14 @@ public class GetOrganisationByIdQueryHandler : IQueryHandler<GetOrganisationById
         _organisationRepository = organisationRepository;
     }
 
-    public async Task<Result<OrganisationResponse>> Handle(GetOrganisationByIdQuery request,
+    public async Task<OrganisationResponse> Handle(GetOrganisationByIdQuery request,
         CancellationToken cancellationToken)
     {
         var organisation = await _organisationRepository.GetByIdAsync(request.OrganisationId);
 
         if (organisation is null)
         {
-            return Result.Failure<OrganisationResponse>(new Error(
-                "Organisation.NotFound",
-                $"The organisation with Id {request.OrganisationId} was not found"));
+            throw new OrganisationNotFoundException(request.OrganisationId);
         }
 
         var response = new OrganisationResponse(

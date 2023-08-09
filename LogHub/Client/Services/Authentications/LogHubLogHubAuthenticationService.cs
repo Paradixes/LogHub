@@ -22,7 +22,6 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
 
     public async Task<bool> LogInAsync(LoginModel model)
     {
-        // query account info from the server
         var response = await _client.PostAsJsonAsync("api/login", model);
         if (!response.IsSuccessStatusCode)
         {
@@ -32,7 +31,6 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         var token = await response.Content.ReadAsStringAsync();
         token = token.Trim('"');
 
-        // store token
         await _localStorage.SetItemAsStringAsync("token", token);
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());

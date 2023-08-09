@@ -23,9 +23,7 @@ public class
 
         if (organisation is null)
         {
-            return Result.Failure<OrganisationResponse>(new Error(
-                "Organisation.NotFound",
-                $"The organisation with invitation code {request.InvitationCode} was not found"));
+            return new OrganisationResponse(Guid.Empty, "", null, null);
         }
 
         var response = new OrganisationResponse(organisation.Id.Value, organisation.Name, organisation.LogoUri,

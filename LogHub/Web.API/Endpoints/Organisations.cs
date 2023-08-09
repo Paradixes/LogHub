@@ -3,6 +3,7 @@ using Application.Organisations.GetById;
 using Application.Organisations.GetByInvitationCode;
 using Application.Organisations.GetSubOrganisations;
 using Application.Organisations.GetUsers;
+using Application.Organisations.JoinByInvitationCode;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Users;
@@ -69,6 +70,18 @@ public class Organisations : ICarterModule
             var result = await sender.Send(query);
 
             return result.IsFailure ? Results.Ok() : Results.Ok(result.Value);
+        });
+
+        app.MapPost("api/organisations/{code}/invitation", async (
+            [FromBody] Guid userId,
+            string code,
+            ISender sender) =>
+        {
+            var command = new JoinOrganisationByInvitationCodeCommand(new UserId(userId), code);
+
+            var result = await sender.Send(command);
+
+            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
         });
     }
 }

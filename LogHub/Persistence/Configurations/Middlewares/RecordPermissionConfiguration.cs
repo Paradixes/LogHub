@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace Persistence.Configurations.Middlewares;
 
 public class RecordPermissionConfiguration : IEntityTypeConfiguration<RecordPermission>
 {

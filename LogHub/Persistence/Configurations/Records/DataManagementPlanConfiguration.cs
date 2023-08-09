@@ -3,7 +3,7 @@ using Domain.Entities.Records.DataManagementPlans;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace Persistence.Configurations.Records;
 
 public class DataManagementPlanConfiguration : IEntityTypeConfiguration<DataManagementPlan>
 {

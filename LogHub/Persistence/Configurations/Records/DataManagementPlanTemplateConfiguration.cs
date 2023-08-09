@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace Persistence.Configurations.Records;
 
 public class DataManagementPlanTemplateConfiguration : IEntityTypeConfiguration<DataManagementPlanTemplate>
 {

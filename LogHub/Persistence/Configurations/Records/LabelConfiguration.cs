@@ -3,7 +3,7 @@ using Domain.Entities.Records.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace Persistence.Configurations.Records;
 
 public class LabelConfiguration : IEntityTypeConfiguration<Label>
 {

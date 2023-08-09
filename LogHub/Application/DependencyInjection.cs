@@ -13,7 +13,7 @@ public static class DependencyInjection
         {
             config.RegisterServicesFromAssemblyContaining<ApplicationAssemblyReference>();
 
-            config.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+            config.AddOpenBehavior(typeof(UnitOfWorkBehaviour<,>));
         });
 
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

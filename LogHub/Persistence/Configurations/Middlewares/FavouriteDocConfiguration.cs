@@ -1,26 +1,21 @@
 ﻿using Domain.Entities.Middlewares;
-using Domain.Entities.Records;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace Persistence.Configurations.Middlewares;
 
-public class DocEditorConfiguration : IEntityTypeConfiguration<DocEditor>
+public class FavouriteDocConfiguration : IEntityTypeConfiguration<FavouriteDoc>
 {
-    public void Configure(EntityTypeBuilder<DocEditor> builder)
+    public void Configure(EntityTypeBuilder<FavouriteDoc> builder)
     {
         builder.HasKey(x => new { x.DocId, x.UserId });
 
-        builder.Property(x => x.DocId)
-            .HasConversion(docId => docId.Value,
-                value => new RecordId(value));
-
         builder.HasOne(x => x.Doc)
-            .WithMany(d => d.Editors)
+            .WithMany()
             .HasForeignKey(x => x.DocId);
 
         builder.HasOne(x => x.User)
-            .WithMany()
+            .WithMany(u => u.FavouriteDocs)
             .HasForeignKey(x => x.UserId);
 
         builder.Property(x => x.DocId).IsRequired();

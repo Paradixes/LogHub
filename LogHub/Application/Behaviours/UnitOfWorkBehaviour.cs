@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Behaviours;
 
-public sealed class UnitOfWorkBehavior<TRequest, TResponse>
+public sealed class UnitOfWorkBehaviour<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
     private readonly ILogHubDbContext _dbContext;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UnitOfWorkBehavior(IUnitOfWork unitOfWork, ILogHubDbContext dbContext)
+    public UnitOfWorkBehaviour(IUnitOfWork unitOfWork, ILogHubDbContext dbContext)
     {
         _unitOfWork = unitOfWork;
         _dbContext = dbContext;

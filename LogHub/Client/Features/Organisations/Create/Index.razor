@@ -22,18 +22,33 @@
                 <MudTextField Label="Organisation Name"
                               Variant="Variant.Outlined"
                               @bind-Value="@Model.Name"
-                              For="() => Model.Name"
+                              For="@(() => Model.Name)"
+                              OnlyValidateIfDirty="true"
                               Required="true"/>
             </MudItem>
+
+            <MudItem xs="12">
+                <MudSelect Label="Parent Organisation"
+                           @bind-Value="@Model.ParentId"
+                           For="@(() => Model.ParentId)"
+                           AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@Guid.Empty">None</MudSelectItem>
+                    @foreach (var organisation in _parentOrganisations)
+                    {
+                        <MudSelectItem Value="@organisation.Id">@organisation.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
             <MudItem xs="12">
                 <MudTextField Label="Organisation Description"
                               Variant="Variant.Outlined"
                               @bind-Value="@Model.Description"
-                              For="() => Model.Description"
+                              For="@(() => Model.Description)"
                               Lines="14"/>
             </MudItem>
-        </MudGrid>
 
+        </MudGrid>
 
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
@@ -49,6 +64,15 @@
     private MudForm _form = new();
 
     private OrganisationModel Model { get; } = new();
+
+    private List<OrganisationModel> _parentOrganisations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await AuthenticationService.GetUserIdAsync();
+        _parentOrganisations = await Client.GetFromJsonAsync<List<OrganisationModel>>($"/api/users/{userId}/organisations")
+                               ?? new List<OrganisationModel>();
+    }
 
     private void OnLogoUploaded(string logo)
     {

@@ -1,12 +1,12 @@
-﻿using Application.Organisations.AddDepartment;
-using Application.Organisations.Create;
+﻿using Application.Organisations.Create;
 using Application.Organisations.GetById;
-using Application.Organisations.GetByManagerId;
-using Application.Organisations.GetDepartments;
+using Application.Organisations.GetByInvitationCode;
+using Application.Organisations.GetSubOrganisations;
 using Application.Organisations.GetUsers;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Users;
+using Domain.Primitives;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +25,8 @@ public class Organisations : ICarterModule
                 new UserId(request.ManagerId),
                 request.Logo,
                 request.Name,
-                request.Description);
+                request.Description,
+                request.ParentId?.Create<OrganisationId>());
 
             var result = await sender.Send(
                 command,
@@ -36,33 +37,16 @@ public class Organisations : ICarterModule
 
         app.MapGet("api/organisations/{id:guid}", async (Guid id, ISender sender) =>
         {
-            var query = new GetOrganisationByIdQuery(id);
+            var query = new GetOrganisationByIdQuery(new OrganisationId(id));
 
             var result = await sender.Send(query);
 
             return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
         });
 
-        app.MapPut("api/organisations/{id:guid}/departments", async (
-            Guid id,
-            [FromBody] AddDepartmentRequest request,
-            ISender sender) =>
+        app.MapGet("api/organisations/{id:guid}/sub-organisations", async (Guid id, ISender sender) =>
         {
-            var command = new AddDepartmentCommand(
-                new OrganisationId(id),
-                new UserId(request.ManagerId),
-                request.Logo,
-                request.Name,
-                request.Description);
-
-            await sender.Send(command);
-
-            return Results.Ok();
-        });
-
-        app.MapGet("api/organisations/{id:guid}/departments", async (Guid id, ISender sender) =>
-        {
-            var query = new GetDepartmentsByOrganisationQuery(id);
+            var query = new GetSubOrganisationsQuery(new OrganisationId(id));
 
             var result = await sender.Send(query);
 
@@ -78,13 +62,13 @@ public class Organisations : ICarterModule
             return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
         });
 
-        app.MapGet("api/organisations/manager/{managerId:guid}", async (Guid managerId, ISender sender) =>
+        app.MapGet("api/organisations/{code}/invitation", async (string code, ISender sender) =>
         {
-            var query = new GetOrganisationByManagerIdQuery(managerId);
+            var query = new GetOrganisationByInvitationCodeQuery(code);
 
             var result = await sender.Send(query);
 
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+            return result.IsFailure ? Results.Ok() : Results.Ok(result.Value);
         });
     }
 }

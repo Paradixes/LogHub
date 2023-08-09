@@ -1,8 +1,8 @@
-﻿using System.Transactions;
-using Application.Data;
+﻿using Application.Data;
 using Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace Application.Behaviours;
 
@@ -10,10 +10,10 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private readonly IApplicationDbContext _dbContext;
+    private readonly ILogHubDbContext _dbContext;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UnitOfWorkBehavior(IUnitOfWork unitOfWork, IApplicationDbContext dbContext)
+    public UnitOfWorkBehavior(IUnitOfWork unitOfWork, ILogHubDbContext dbContext)
     {
         _unitOfWork = unitOfWork;
         _dbContext = dbContext;
@@ -49,10 +49,8 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse>
 
     private void UpdateAuditableEntities()
     {
-        var entries =
-            _dbContext
-                .ChangeTracker
-                .Entries<IAuditableEntity>();
+        var entries = _dbContext.ChangeTracker
+            .Entries<IAuditableEntity>();
 
         foreach (var entityEntry in entries)
         {

@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Bases;
+﻿using Domain.Entities.Records.Labels;
+using Domain.Entities.Records.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,10 +15,10 @@ public class LabelConfiguration : IEntityTypeConfiguration<Label>
             labelId => labelId.Value,
             value => new LabelId(value));
 
-        builder.Property(l => l.Name).IsRequired();
+        builder.HasOne<Repository>()
+            .WithMany(r => r.Labels)
+            .HasForeignKey(l => l.RepositoryId);
 
-        builder.HasOne<Base>()
-            .WithMany(p => p.Labels)
-            .HasForeignKey(l => l.BaseId);
+        builder.Property(l => l.Name).IsRequired();
     }
 }

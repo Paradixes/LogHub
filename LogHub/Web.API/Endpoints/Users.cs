@@ -1,4 +1,6 @@
 ﻿using Application.Users.GetById;
+using Application.Users.GetOrganisations;
+using Application.Users.GetRootOrganisations;
 using Application.Users.Login;
 using Application.Users.Register;
 using Application.Users.Update;
@@ -75,6 +77,30 @@ public class Users : ICarterModule
             var result = await sender.Send(command, cancellationToken);
 
             return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok();
+        });
+
+        app.MapGet("api/users/{id:guid}/root-organisations", async (
+            Guid id,
+            CancellationToken cancellationToken,
+            ISender sender) =>
+        {
+            var query = new GetRootOrganisationsByIdQuery(id);
+
+            var response = await sender.Send(query, cancellationToken);
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+        });
+
+        app.MapGet("api/users/{id:guid}/organisations", async (
+            Guid id,
+            CancellationToken cancellationToken,
+            ISender sender) =>
+        {
+            var query = new GetOrganisationsByUserIdQuery(id);
+
+            var response = await sender.Send(query, cancellationToken);
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
     }
 }

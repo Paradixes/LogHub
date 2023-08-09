@@ -1,5 +1,4 @@
 ﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Organisations;
 using Domain.Repositories;
 using Domain.Shared;
 
@@ -17,8 +16,7 @@ public class GetOrganisationByIdQueryHandler : IQueryHandler<GetOrganisationById
     public async Task<Result<OrganisationResponse>> Handle(GetOrganisationByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var organisation =
-            await _organisationRepository.GetByIdAsync(new OrganisationId(request.OrganisationId));
+        var organisation = await _organisationRepository.GetByIdAsync(request.OrganisationId);
 
         if (organisation is null)
         {

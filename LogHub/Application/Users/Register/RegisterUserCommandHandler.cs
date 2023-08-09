@@ -32,7 +32,6 @@ public class RegisterUserCommandHandler :
             request.Name,
             request.Email,
             null,
-            null,
             request.Profession,
             request.Orcid,
             request.Role);

@@ -25,8 +25,6 @@ public class GetUsersByOrganisationQueryHandler : IQueryHandler<GetUsersByOrgani
             user.Email,
             user.Name,
             user.AvatarUri,
-            user.OrganisationId?.Value,
-            user.DepartmentId?.Value,
             user.Profession,
             user.Orcid,
             user.Role)).ToList();

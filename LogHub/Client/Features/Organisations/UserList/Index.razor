@@ -29,7 +29,7 @@
 <MudDivider/>
 
 <MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_index" @onclick="OnTabClicked">
-    <MudTabPanel Text="Department List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="Sub-Organisation List" Icon="@Icons.Material.Filled.Apartment"/>
     <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
     <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
 </MudTabs>
@@ -50,12 +50,12 @@
     </ToolBarContent>
     <Columns>
         <SelectColumn T="UserAccountModel"/>
-        <TemplateColumn CellClass="d-flex justify-end" Sortable="false" Filterable="false">
+        <TemplateColumn Sortable="false" Filterable="false">
             <CellTemplate>
                 <MudAvatar>
                     @if (context.Item.AvatarUri is not null)
                     {
-                        <MudAvatarImg Src="@context.Item.AvatarUri.ToString()"/>
+                        <MudImage Src="@context.Item.AvatarUri.ToString()"/>
                     }
                     else if (context.Item.Name.Length > 0)
                     {
@@ -126,7 +126,7 @@
         switch (_index)
         {
             case 0:
-                NavigationManager.NavigateTo($"/organisations/{Id}/department-list");
+                NavigationManager.NavigateTo($"/organisations/{Id}/sub-organisation-list");
                 break;
             case 1:
                 break;

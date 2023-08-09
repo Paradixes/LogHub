@@ -7,8 +7,6 @@ public sealed record UserResponse(
     string Email,
     string Name,
     Uri? AvatarUri,
-    Guid? OrganisationId,
-    Guid? DepartmentId,
     string Profession,
     string? Orcid,
     UserRole Role);

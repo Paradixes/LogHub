@@ -22,7 +22,7 @@ namespace Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Actions.RecordAction<Domain.Entities.Bases.BaseActionId, Domain.Entities.Bases.BaseId>", b =>
+            modelBuilder.Entity("Domain.Entities.Behaviours.Actions.RecordAction", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -40,7 +40,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("RecordId")
+                    b.Property<Guid>("RecordId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -49,16 +49,19 @@ namespace Persistence.Migrations
 
                     b.HasIndex("RecordId");
 
-                    b.ToTable("BaseActions");
+                    b.ToTable("RecordActions");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Actions.RecordAction<Domain.Entities.Docs.DocActionId, Domain.Entities.Docs.DocumentId>", b =>
+            modelBuilder.Entity("Domain.Entities.Behaviours.Requests.RecordRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Command")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("HandlerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("InitiatorId")
                         .HasColumnType("uniqueidentifier");
@@ -67,187 +70,24 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RecordId")
+                    b.Property<Guid>("RecordId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("HandlerId");
 
                     b.HasIndex("InitiatorId");
 
                     b.HasIndex("RecordId");
 
-                    b.ToTable("DocActions");
+                    b.ToTable("RecordRequests");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Actions.RecordAction<Domain.Entities.Logbooks.LogbookActionId, Domain.Entities.Logbooks.LogbookId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InitiatorId");
-
-                    b.HasIndex("RecordId");
-
-                    b.ToTable("LogbookActions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Bases.Base", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("DmpId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OrganisationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("DmpId");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.ToTable("Bases");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Bases.Label", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BaseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseId");
-
-                    b.ToTable("Labels");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("OrganisationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.ToTable("DataManagementPlanTemplates");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("DataManagementPlanTemplate");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Domain.Entities.DataManagementPlans.Question", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("DataManagementPlanTemplateId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("DmpId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DataManagementPlanTemplateId");
-
-                    b.HasIndex("DmpId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Docs.DocEditor", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.DocEditor", b =>
                 {
                     b.Property<Guid>("DocId")
                         .HasColumnType("uniqueidentifier");
@@ -262,7 +102,7 @@ namespace Persistence.Migrations
                     b.ToTable("DocEditors");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Docs.DocLabel", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.DocLabel", b =>
                 {
                     b.Property<Guid>("DocId")
                         .HasColumnType("uniqueidentifier");
@@ -270,56 +110,14 @@ namespace Persistence.Migrations
                     b.Property<Guid>("LabelId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("DocId", "LabelId");
-
-                    b.HasIndex("DocumentId");
 
                     b.HasIndex("LabelId");
 
                     b.ToTable("DocLabels");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Docs.Document", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("LogbookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LogbookId");
-
-                    b.ToTable("Docs");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Docs.FavouriteDoc", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.FavouriteDoc", b =>
                 {
                     b.Property<Guid>("DocId")
                         .HasColumnType("uniqueidentifier");
@@ -334,71 +132,56 @@ namespace Persistence.Migrations
                     b.ToTable("FavouriteDocs");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Logbooks.Logbook", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.OrganisationMembership", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BaseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CoverImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Importance")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseId");
-
-                    b.ToTable("Logbooks", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Organisations.Department", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LogoUri")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ManagerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("OrganisationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("ManagerId");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
-                    b.HasIndex("OrganisationId");
+                    b.HasKey("OrganisationId", "UserId");
 
-                    b.ToTable("Departments");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrganisationMemberships");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Middlewares.RecordCommandHandler", b =>
+                {
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Command")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecordId", "Command");
+
+                    b.ToTable("RecordCommandHandlers");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Middlewares.RecordPermission", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RecordId");
+
+                    b.HasIndex("RecordId");
+
+                    b.ToTable("RecordPermissions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Organisations.Organisation", b =>
@@ -416,105 +199,74 @@ namespace Persistence.Migrations
                     b.Property<string>("LogoUri")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ManagerId")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ParentOrganisationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RootOrganisationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentOrganisationId");
+
+                    b.HasIndex("RootOrganisationId");
+
+                    b.ToTable("Organisations");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.Question", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Answer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DataManagementPlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DataManagementPlanId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Labels.Label", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ManagerId");
-
-                    b.ToTable("Organisations");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Permissions.RecordPermission<Domain.Entities.Bases.BasePermissionId, Domain.Entities.Bases.BaseId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("BaseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("RepositoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BaseId");
+                    b.HasIndex("RepositoryId");
 
-                    b.HasIndex("RecordId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("BasePermissions");
+                    b.ToTable("Labels");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Permissions.RecordPermission<Domain.Entities.Docs.DocPermissionId, Domain.Entities.Docs.DocumentId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("RecordId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DocPermissions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Permissions.RecordPermission<Domain.Entities.Logbooks.LogbookPermissionId, Domain.Entities.Logbooks.LogbookId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("LogbookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LogbookId");
-
-                    b.HasIndex("RecordId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LogbookPermissions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Requests.RecordRequest<Domain.Entities.Bases.BaseRequestId, Domain.Entities.Bases.BaseId>", b =>
+            modelBuilder.Entity("Domain.Entities.Records.Record", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -522,110 +274,29 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("HandlerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
+                    b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HandlerId");
-
-                    b.HasIndex("InitiatorId");
-
-                    b.HasIndex("RecordId");
-
-                    b.ToTable("BaseRequests");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Requests.RecordRequest<Domain.Entities.Docs.DocRequestId, Domain.Entities.Docs.DocumentId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("HandlerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RecordId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HandlerId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("InitiatorId");
+                    b.ToTable("Records");
 
-                    b.HasIndex("RecordId");
-
-                    b.ToTable("DocRequests");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Requests.RecordRequest<Domain.Entities.Logbooks.LogbookRequestId, Domain.Entities.Logbooks.LogbookId>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("HandlerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RecordId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HandlerId");
-
-                    b.HasIndex("InitiatorId");
-
-                    b.HasIndex("RecordId");
-
-                    b.ToTable("LogbookRequests");
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Domain.Entities.Users.User", b =>
@@ -639,12 +310,12 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("HashedPassword")
                         .IsRequired()
@@ -660,9 +331,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Orcid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("OrganisationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Profession")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -672,317 +340,290 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
-
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("OrganisationId");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DataManagementPlans.DataManagementPlan", b =>
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate", b =>
                 {
-                    b.HasBaseType("Domain.Entities.DataManagementPlans.DataManagementPlanTemplate");
+                    b.HasBaseType("Domain.Entities.Records.Record");
 
-                    b.HasDiscriminator().HasValue("DataManagementPlan");
+                    b.Property<Guid?>("OrganisationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.ToTable("DataManagementPlanTemplates", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Actions.RecordAction<Domain.Entities.Bases.BaseActionId, Domain.Entities.Bases.BaseId>", b =>
+            modelBuilder.Entity("Domain.Entities.Records.Docs.Document", b =>
                 {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
+                    b.HasBaseType("Domain.Entities.Records.Record");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("LogbookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasIndex("LogbookId");
+
+                    b.ToTable("Documents", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Logbooks.Logbook", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Records.Record");
+
+                    b.Property<string>("CoverImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Importance")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("RepositoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("RepositoryId");
+
+                    b.ToTable("Logbooks", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Repositories.Repository", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Records.Record");
+
+                    b.Property<Guid>("DataManagementPlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("OrganisationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("DataManagementPlanId")
+                        .IsUnique()
+                        .HasFilter("[DataManagementPlanId] IS NOT NULL");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.ToTable("Repositories", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate");
+
+                    b.Property<Guid>("RepositoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ToTable("DataManagementPlans", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Behaviours.Actions.RecordAction", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", "Initiator")
+                        .WithMany("RecordActions")
                         .HasForeignKey("InitiatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Bases.Base", null)
+                    b.HasOne("Domain.Entities.Records.Record", "Record")
                         .WithMany("Actions")
-                        .HasForeignKey("RecordId");
+                        .HasForeignKey("RecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Initiator");
+
+                    b.Navigation("Record");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Actions.RecordAction<Domain.Entities.Docs.DocActionId, Domain.Entities.Docs.DocumentId>", b =>
+            modelBuilder.Entity("Domain.Entities.Behaviours.Requests.RecordRequest", b =>
                 {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
+                    b.HasOne("Domain.Entities.Users.User", "Handler")
+                        .WithMany("RequestToHandle")
+                        .HasForeignKey("HandlerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Users.User", "Initiator")
+                        .WithMany("RequestToInitiate")
                         .HasForeignKey("InitiatorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Records.Record", "Record")
+                        .WithMany("Requests")
+                        .HasForeignKey("RecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Docs.Document", null)
-                        .WithMany("Actions")
-                        .HasForeignKey("RecordId");
+                    b.Navigation("Handler");
+
+                    b.Navigation("Initiator");
+
+                    b.Navigation("Record");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Actions.RecordAction<Domain.Entities.Logbooks.LogbookActionId, Domain.Entities.Logbooks.LogbookId>", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.DocEditor", b =>
                 {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Logbooks.Logbook", null)
-                        .WithMany("Actions")
-                        .HasForeignKey("RecordId");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Bases.Base", b =>
-                {
-                    b.HasOne("Domain.Entities.Organisations.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("Domain.Entities.DataManagementPlans.DataManagementPlan", null)
-                        .WithMany()
-                        .HasForeignKey("DmpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Organisations.Organisation", null)
-                        .WithMany()
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Bases.Label", b =>
-                {
-                    b.HasOne("Domain.Entities.Bases.Base", null)
-                        .WithMany("Labels")
-                        .HasForeignKey("BaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", b =>
-                {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
-
-                    b.HasOne("Domain.Entities.Organisations.Organisation", null)
-                        .WithMany("DataManagementPlanTemplates")
-                        .HasForeignKey("OrganisationId");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DataManagementPlans.Question", b =>
-                {
-                    b.HasOne("Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("DataManagementPlanTemplateId");
-
-                    b.HasOne("Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", null)
-                        .WithMany()
-                        .HasForeignKey("DmpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Docs.DocEditor", b =>
-                {
-                    b.HasOne("Domain.Entities.Docs.Document", null)
+                    b.HasOne("Domain.Entities.Records.Docs.Document", "Doc")
                         .WithMany("Editors")
                         .HasForeignKey("DocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Docs.DocLabel", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.DocLabel", b =>
                 {
-                    b.HasOne("Domain.Entities.Docs.Document", null)
+                    b.HasOne("Domain.Entities.Records.Docs.Document", "Doc")
                         .WithMany("Labels")
-                        .HasForeignKey("DocumentId");
+                        .HasForeignKey("DocId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Domain.Entities.Bases.Label", null)
+                    b.HasOne("Domain.Entities.Records.Labels.Label", "Label")
                         .WithMany()
                         .HasForeignKey("LabelId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("Label");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Docs.Document", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.FavouriteDoc", b =>
                 {
-                    b.HasOne("Domain.Entities.Logbooks.Logbook", null)
-                        .WithMany()
-                        .HasForeignKey("LogbookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Docs.FavouriteDoc", b =>
-                {
-                    b.HasOne("Domain.Entities.Docs.Document", null)
+                    b.HasOne("Domain.Entities.Records.Docs.Document", "Doc")
                         .WithMany()
                         .HasForeignKey("DocId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("FavouriteDocs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Logbooks.Logbook", b =>
+            modelBuilder.Entity("Domain.Entities.Middlewares.OrganisationMembership", b =>
                 {
-                    b.HasOne("Domain.Entities.Bases.Base", null)
-                        .WithMany()
-                        .HasForeignKey("BaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Organisations.Department", b =>
-                {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Organisations.Organisation", null)
-                        .WithMany("Departments")
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "Organisation")
+                        .WithMany("Memberships")
                         .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.Users.User", "User")
+                        .WithMany("OrganisationMemberships")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Middlewares.RecordCommandHandler", b =>
+                {
+                    b.HasOne("Domain.Entities.Records.Record", "Record")
+                        .WithMany("CommandHandlers")
+                        .HasForeignKey("RecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Record");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Middlewares.RecordPermission", b =>
+                {
+                    b.HasOne("Domain.Entities.Records.Record", "Record")
+                        .WithMany("Permissions")
+                        .HasForeignKey("RecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Users.User", "User")
+                        .WithMany("RecordPermissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Record");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Organisations.Organisation", b =>
                 {
-                    b.HasOne("Domain.Entities.Users.User", null)
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "ParentOrganisation")
+                        .WithMany("SubOrganisations")
+                        .HasForeignKey("ParentOrganisationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "RootOrganisation")
                         .WithMany()
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("RootOrganisationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentOrganisation");
+
+                    b.Navigation("RootOrganisation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Permissions.RecordPermission<Domain.Entities.Bases.BasePermissionId, Domain.Entities.Bases.BaseId>", b =>
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.Question", b =>
                 {
-                    b.HasOne("Domain.Entities.Bases.Base", null)
-                        .WithMany("Permissions")
-                        .HasForeignKey("BaseId");
+                    b.HasOne("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", "DataManagementPlan")
+                        .WithMany("Questions")
+                        .HasForeignKey("DataManagementPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Domain.Entities.Bases.Base", null)
-                        .WithMany()
-                        .HasForeignKey("RecordId");
+                    b.Navigation("DataManagementPlan");
+                });
 
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+            modelBuilder.Entity("Domain.Entities.Records.Labels.Label", b =>
+                {
+                    b.HasOne("Domain.Entities.Records.Repositories.Repository", null)
+                        .WithMany("Labels")
+                        .HasForeignKey("RepositoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Permissions.RecordPermission<Domain.Entities.Docs.DocPermissionId, Domain.Entities.Docs.DocumentId>", b =>
-                {
-                    b.HasOne("Domain.Entities.Docs.Document", null)
-                        .WithMany("Permissions")
-                        .HasForeignKey("DocumentId");
-
-                    b.HasOne("Domain.Entities.Docs.Document", null)
-                        .WithMany()
-                        .HasForeignKey("RecordId");
-
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Permissions.RecordPermission<Domain.Entities.Logbooks.LogbookPermissionId, Domain.Entities.Logbooks.LogbookId>", b =>
-                {
-                    b.HasOne("Domain.Entities.Logbooks.Logbook", null)
-                        .WithMany("Permissions")
-                        .HasForeignKey("LogbookId");
-
-                    b.HasOne("Domain.Entities.Logbooks.Logbook", null)
-                        .WithMany()
-                        .HasForeignKey("RecordId");
-
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Requests.RecordRequest<Domain.Entities.Bases.BaseRequestId, Domain.Entities.Bases.BaseId>", b =>
+            modelBuilder.Entity("Domain.Entities.Records.Record", b =>
                 {
                     b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("HandlerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Bases.Base", null)
-                        .WithMany("Requests")
-                        .HasForeignKey("RecordId");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Requests.RecordRequest<Domain.Entities.Docs.DocRequestId, Domain.Entities.Docs.DocumentId>", b =>
-                {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("HandlerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Docs.Document", null)
-                        .WithMany("Requests")
-                        .HasForeignKey("RecordId");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Requests.RecordRequest<Domain.Entities.Logbooks.LogbookRequestId, Domain.Entities.Logbooks.LogbookId>", b =>
-                {
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("HandlerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Logbooks.Logbook", null)
-                        .WithMany("Requests")
-                        .HasForeignKey("RecordId");
+                        .WithMany("Records")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Domain.Entities.Users.User", b =>
                 {
-                    b.HasOne("Domain.Entities.Organisations.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("Domain.Entities.Organisations.Organisation", null)
-                        .WithMany()
-                        .HasForeignKey("OrganisationId");
-
                     b.OwnsOne("Domain.Entities.Users.UserPreference", "UserPreference", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -1012,54 +653,150 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Bases.Base", b =>
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate", b =>
                 {
-                    b.Navigation("Actions");
+                    b.HasOne("Domain.Entities.Records.Record", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Labels");
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "Organisation")
+                        .WithMany("DataManagementPlanTemplates")
+                        .HasForeignKey("OrganisationId");
 
-                    b.Navigation("Permissions");
-
-                    b.Navigation("Requests");
+                    b.Navigation("Organisation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DataManagementPlans.DataManagementPlanTemplate", b =>
+            modelBuilder.Entity("Domain.Entities.Records.Docs.Document", b =>
                 {
-                    b.Navigation("Questions");
+                    b.HasOne("Domain.Entities.Records.Record", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.Records.Docs.Document", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Records.Logbooks.Logbook", "Logbook")
+                        .WithMany("Documents")
+                        .HasForeignKey("LogbookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Logbook");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Docs.Document", b =>
+            modelBuilder.Entity("Domain.Entities.Records.Logbooks.Logbook", b =>
                 {
-                    b.Navigation("Actions");
+                    b.HasOne("Domain.Entities.Records.Record", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.Records.Logbooks.Logbook", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("Editors");
+                    b.HasOne("Domain.Entities.Records.Repositories.Repository", "Repository")
+                        .WithMany("Logbooks")
+                        .HasForeignKey("RepositoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Labels");
-
-                    b.Navigation("Permissions");
-
-                    b.Navigation("Requests");
+                    b.Navigation("Repository");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Logbooks.Logbook", b =>
+            modelBuilder.Entity("Domain.Entities.Records.Repositories.Repository", b =>
                 {
-                    b.Navigation("Actions");
+                    b.HasOne("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", "DataManagementPlan")
+                        .WithOne("Repository")
+                        .HasForeignKey("Domain.Entities.Records.Repositories.Repository", "DataManagementPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Permissions");
+                    b.HasOne("Domain.Entities.Records.Record", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.Records.Repositories.Repository", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("Requests");
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "Organisation")
+                        .WithMany("Repositories")
+                        .HasForeignKey("OrganisationId");
+
+                    b.Navigation("DataManagementPlan");
+
+                    b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", b =>
+                {
+                    b.HasOne("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Organisations.Organisation", b =>
                 {
                     b.Navigation("DataManagementPlanTemplates");
 
-                    b.Navigation("Departments");
+                    b.Navigation("Memberships");
+
+                    b.Navigation("Repositories");
+
+                    b.Navigation("SubOrganisations");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Record", b =>
+                {
+                    b.Navigation("Actions");
+
+                    b.Navigation("CommandHandlers");
+
+                    b.Navigation("Permissions");
+
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("Domain.Entities.Users.User", b =>
                 {
                     b.Navigation("FavouriteDocs");
+
+                    b.Navigation("OrganisationMemberships");
+
+                    b.Navigation("RecordActions");
+
+                    b.Navigation("RecordPermissions");
+
+                    b.Navigation("Records");
+
+                    b.Navigation("RequestToHandle");
+
+                    b.Navigation("RequestToInitiate");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Docs.Document", b =>
+                {
+                    b.Navigation("Editors");
+
+                    b.Navigation("Labels");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Logbooks.Logbook", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.Repositories.Repository", b =>
+                {
+                    b.Navigation("Labels");
+
+                    b.Navigation("Logbooks");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", b =>
+                {
+                    b.Navigation("Questions");
+
+                    b.Navigation("Repository");
                 });
 #pragma warning restore 612, 618
         }

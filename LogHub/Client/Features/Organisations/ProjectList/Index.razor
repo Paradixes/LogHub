@@ -1,5 +1,66 @@
-﻿<h3>Index</h3>
+﻿@page "/organisations/{id:guid}/project-list"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@layout FormLayout
+@attribute [Authorize(Roles = "DataManager,Administrator")]
+
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
+    <MudAvatar Size="Size.Large">
+        @if (OrganisationModel.LogoUri is not null)
+        {
+            <MudImage Src="@OrganisationModel.LogoUri.ToString()"/>
+        }
+        else if (OrganisationModel.Name.Length > 0)
+        {
+            @OrganisationModel.Name[0]
+        }
+    </MudAvatar>
+
+    <MudText Typo="Typo.h4" Class="mt-2">
+        @OrganisationModel.Name
+    </MudText>
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(OrganisationModel.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Sub-Organisation List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
+</MudTabs>
 
 @code {
-    
+
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private int _index = 2;
+
+    private OrganisationModel OrganisationModel { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        OrganisationModel = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+    }
+
+    private void OnTabClicked(MouseEventArgs me)
+    {
+        switch (_index)
+        {
+            case 0:
+                NavigationManager.NavigateTo($"/organisations/{Id}/sub-organisation-list");
+                break;
+            case 1:
+                NavigationManager.NavigateTo($"/organisations/{Id}/user-list");
+                break;
+            case 2:
+                break;
+        }
+    }
+
 }

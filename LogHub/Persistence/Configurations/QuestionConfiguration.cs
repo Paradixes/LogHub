@@ -1,4 +1,4 @@
-﻿using Domain.Entities.DataManagementPlans;
+﻿using Domain.Entities.Records.DataManagementPlans;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,9 +14,9 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
             questionId => questionId.Value,
             value => new QuestionId(value));
 
-        builder.HasOne<DataManagementPlanTemplate>()
-            .WithMany()
-            .HasForeignKey(q => q.DmpId);
+        builder.HasOne(q => q.DataManagementPlan)
+            .WithMany(dmp => dmp.Questions)
+            .HasForeignKey(q => q.DataManagementPlanId);
 
         builder.Property(q => q.Title).IsRequired();
     }

@@ -126,13 +126,8 @@ public class Organisation : Entity<OrganisationId>
         _dataManagementPlanTemplates.Remove(dataManagementPlan);
     }
 
-    public void UpdateDetails(UserId userId, string name, string? description)
+    public void UpdateDetails(string name, string? description)
     {
-        if (!_memberships.Any(x => x.UserId == userId && x.Role == OrganisationRole.Owner))
-        {
-            return;
-        }
-
         Name = name;
         Description = description;
     }
@@ -152,13 +147,29 @@ public class Organisation : Entity<OrganisationId>
         _memberships.Add(new OrganisationMembership(Id, managerId, role));
     }
 
-    public void UpdateMembership(UserId managerId, OrganisationRole role)
+    public void UpdateMembership(UserId? userId, OrganisationRole role)
     {
-        var membership = _memberships.SingleOrDefault(x => x.UserId == managerId);
+        if (userId is null)
+        {
+            return;
+        }
+
+        if (role == OrganisationRole.Owner)
+        {
+            _memberships.ForEach(x =>
+            {
+                if (x.Role == OrganisationRole.Owner)
+                {
+                    x.UpdateRole(OrganisationRole.Admin);
+                }
+            });
+        }
+
+        var membership = _memberships.SingleOrDefault(x => x.UserId == userId);
 
         if (membership is null)
         {
-            AddMembership(managerId, role);
+            AddMembership(userId, role);
             return;
         }
 

@@ -39,7 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = await AuthenticationService.GetUserIdAsync();
+        var userId = await AuthenticationService.GetLocalUserIdAsync();
 
         var response = await Client.GetAsync($"api/users/{userId}/root-organisations");
 

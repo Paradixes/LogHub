@@ -4,7 +4,7 @@ public record OrganisationModel
 {
     public Guid Id { get; set; } = Guid.Empty;
 
-    public Guid ManagerId { get; set; } = Guid.Empty;
+    public Guid OwnerId { get; set; } = Guid.Empty;
 
     public Guid ParentId { get; set; } = Guid.Empty;
 
@@ -15,4 +15,6 @@ public record OrganisationModel
     public string? Logo { get; set; }
 
     public Uri? LogoUri { get; set; }
+
+    public string InvitationCode { get; set; } = string.Empty;
 }

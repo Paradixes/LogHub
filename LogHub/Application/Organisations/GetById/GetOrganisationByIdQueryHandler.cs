@@ -27,7 +27,8 @@ public class GetOrganisationByIdQueryHandler : IRequestHandler<GetOrganisationBy
             organisation.Id.Value,
             organisation.Name,
             organisation.LogoUri,
-            organisation.Description);
+            organisation.Description,
+            organisation.InvitationCode);
 
         return response;
     }

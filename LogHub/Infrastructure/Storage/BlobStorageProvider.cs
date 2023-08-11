@@ -12,7 +12,7 @@ public class BlobStorageProvider : IBlobStorageProvider
         _connectionString = connectionString;
     }
 
-    public async Task<Uri?> UploadAsync(string containerName, string blobName, string? base64Uri)
+    public async Task<Uri?> UploadAsync(string containerName, string? base64Uri)
     {
         if (string.IsNullOrWhiteSpace(base64Uri))
         {
@@ -26,7 +26,7 @@ public class BlobStorageProvider : IBlobStorageProvider
 
         var blobServiceClient = new BlobServiceClient(_connectionString);
         var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
-        var blobClient = blobContainerClient.GetBlobClient(blobName);
+        var blobClient = blobContainerClient.GetBlobClient(Guid.NewGuid() + ".png");
 
         try
         {
@@ -42,8 +42,13 @@ public class BlobStorageProvider : IBlobStorageProvider
         return blobClient.Uri;
     }
 
-    public async Task<bool> DeleteAsync(string containerName, string blobName)
+    public async Task<bool> DeleteAsync(string containerName, string? blobName)
     {
+        if (string.IsNullOrWhiteSpace(blobName))
+        {
+            return false;
+        }
+
         if (string.IsNullOrWhiteSpace(_connectionString))
         {
             throw new ArgumentNullException(nameof(_connectionString));

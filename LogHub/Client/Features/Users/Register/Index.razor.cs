@@ -1,4 +1,5 @@
-﻿using Client.Validations;
+﻿using System.Net;
+using Client.Validations;
 using Client.ViewModel;
 using MudBlazor;
 using Shared.Enums;
@@ -29,7 +30,8 @@ public partial class Index
         }
 
         Model.UpdateRole();
-        if (!await AuthenticationService.RegisterAsync(Model))
+        var response = await AuthenticationService.RegisterAsync(Model);
+        if (response.StatusCode == HttpStatusCode.BadRequest)
         {
             _isInvalidateCredentials = true;
             return;
@@ -41,6 +43,6 @@ public partial class Index
             return;
         }
 
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/organisations/join");
     }
 }

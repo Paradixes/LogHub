@@ -1,8 +1,9 @@
 ﻿@page "/users/login"
-@using Client.Services.Authentications
+@using Client.Services.States
 @layout BackgroundLayout
 @inject ILogHubAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
+@inject IUserAccountService UserAccountService
 
 
 <MudImage Src="/img/logo.png" Width="300" Class="py-3 justify-center"/>
@@ -34,14 +35,18 @@
 
         @if (_isInvalidateCredentials)
         {
-            <MudAlert Severity="Severity.Error">Wrong Email Address or Password</MudAlert>
+            <MudAlert Severity="Severity.Error">Wrong Password</MudAlert>
+        }
+        @if (_isInvalidEmail)
+        {
+            <MudAlert Severity="Severity.Error">Invalid Email Address</MudAlert>
         }
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    OnClick="SubmitAsync"
                    Size="Size.Large"
                    FullWidth="true"
-                   Class="mt-3">
+                   Class="mt-3 mb-1">
             Login
         </MudButton>
         You don't have an account yet?,

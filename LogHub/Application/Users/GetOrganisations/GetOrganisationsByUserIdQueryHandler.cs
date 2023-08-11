@@ -21,7 +21,12 @@ public class GetOrganisationsByUserIdQueryHandler :
         var organisations = await _userRepository.GetOrganisationsAsync(new UserId(request.UserId));
 
         var response = organisations.Select(
-                o => new OrganisationResponse(o.Id.Value, o.Name, o.LogoUri, o.Description))
+                o => new OrganisationResponse(
+                    o.Id.Value,
+                    o.Name,
+                    o.LogoUri,
+                    o.Description,
+                    o.InvitationCode))
             .ToList();
 
         return response;

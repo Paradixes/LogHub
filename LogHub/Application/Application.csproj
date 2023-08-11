@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Organisations\Update\"/>
+        <Folder Include="Organisations\GetAllParentOrganisations\"/>
     </ItemGroup>
 
 </Project>

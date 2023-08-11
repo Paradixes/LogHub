@@ -1,5 +1,4 @@
 ﻿@page "/users/register"
-@using Client.Services.Authentications
 @layout BackgroundLayout
 @inject ILogHubAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
@@ -59,7 +58,6 @@
                       InputType="InputType.Password"
                       Required="true"
                       Class="pb-1"/>
-
 
         @if (_isInvalidateCredentials)
         {

@@ -47,7 +47,6 @@ public class CreateOrganisationCommandHandler :
 
         var logoUri = await _blobStorageProvider.UploadAsync(
             ContainerName.OrganisationLogos,
-            organisation.Id.Value + ".png",
             request.Logo);
 
         organisation.SetLogo(logoUri);

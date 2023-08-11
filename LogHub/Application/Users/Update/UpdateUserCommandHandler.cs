@@ -28,12 +28,15 @@ public class UpdateUserCommandHandler :
             throw new UserNotFoundException(request.UserId);
         }
 
-        var avatarUri = await _blobStorageProvider.UploadAsync(
-            ContainerName.UserAvatars,
-            request.UserId.Value + ".png",
-            request.Avatar);
+        if (request.Avatar is not null)
+        {
+            await _blobStorageProvider.DeleteAsync(ContainerName.UserAvatars, user.AvatarUri?.ToString());
+            var avatarUri = await _blobStorageProvider.UploadAsync(
+                ContainerName.UserAvatars,
+                request.Avatar);
 
-        user.UpdateAvatar(avatarUri);
+            user.UpdateAvatar(avatarUri);
+        }
 
         user.UpdateProfile(request.Name, request.Profession, request.Orcid);
     }

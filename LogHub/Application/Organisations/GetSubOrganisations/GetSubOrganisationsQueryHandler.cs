@@ -37,7 +37,8 @@ public class GetSubOrganisationsQueryHandler :
                     m.Organisation.Id.Value,
                     m.Organisation.Name,
                     m.Organisation.LogoUri,
-                    m.Organisation.Description
+                    m.Organisation.Description,
+                    m.Organisation.InvitationCode
                 ),
                 m.Role
             ))

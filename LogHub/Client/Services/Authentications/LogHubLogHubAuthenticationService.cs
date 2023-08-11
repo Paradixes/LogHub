@@ -20,12 +20,12 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         _localStorage = localStorage;
     }
 
-    public async Task<bool> LogInAsync(LoginModel model)
+    public async Task<HttpResponseMessage> LogInAsync(LoginModel model)
     {
         var response = await _client.PostAsJsonAsync("api/login", model);
         if (!response.IsSuccessStatusCode)
         {
-            return false;
+            return response;
         }
 
         var token = await response.Content.ReadAsStringAsync();
@@ -35,7 +35,7 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
-        return true;
+        return response;
     }
 
     public async Task LogOutAsync()
@@ -44,26 +44,33 @@ public sealed class LogHubLogHubAuthenticationService : AuthenticationStateProvi
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
-    public async Task<bool> RegisterAsync(RegisterModel model)
+    public async Task<HttpResponseMessage> RegisterAsync(RegisterModel model)
     {
         var response = await _client.PostAsJsonAsync("api/users", model);
         if (!response.IsSuccessStatusCode)
         {
-            return false;
+            return response;
         }
 
         return await LogInAsync(new LoginModel(model.Email, model.Password));
     }
 
-    public async Task<Guid> GetUserIdAsync()
+    public async Task<Guid?> GetLocalUserIdAsync()
     {
-        if ((await GetAuthenticationStateAsync()).User.Identity is null)
+        var token = await _localStorage.GetItemAsStringAsync("token");
+        if (string.IsNullOrWhiteSpace(token))
         {
-            return Guid.Empty;
+            return null;
         }
 
-        var claims = (await GetAuthenticationStateAsync()).User.Claims;
-        return Guid.Parse(claims.First(c => c.Type == ClaimTypes.Sid).Value);
+        var claims = GetClaimsFromToken(token);
+        var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+        if (userId is null)
+        {
+            return null;
+        }
+
+        return Guid.Parse(userId);
     }
 
     private static IEnumerable<Claim> GetClaimsFromToken(string token)

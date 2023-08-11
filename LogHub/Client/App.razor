@@ -1,5 +1,7 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using Client.Services.States
+@inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@inject IUserAccountService UserAccountService
 
 <CascadingAuthenticationState>
     <LoadingScreen>
@@ -27,3 +29,18 @@
         </Router>
     </LoadingScreen>
 </CascadingAuthenticationState>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserAccountService.UpdateCurrentUserAsync();
+        UserAccountService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserAccountService.OnChange -= StateHasChanged;
+    }
+
+}

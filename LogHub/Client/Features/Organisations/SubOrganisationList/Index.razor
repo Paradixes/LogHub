@@ -1,24 +1,24 @@
 ﻿@page "/organisations/{id:guid}/sub-organisation-list"
-@inject HttpClient Http
+@using Client.Features.Organisations.SubOrganisationList.Components
+@inject HttpClient Client
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
 @layout FormLayout
 @attribute [Authorize(Roles = "DataManager,Administrator")]
 
-<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
-    <MudAvatar Size="Size.Large">
-        @if (OrganisationModel.LogoUri is not null)
-        {
-            <MudImage Src="@OrganisationModel.LogoUri.ToString()"/>
-        }
-        else if (OrganisationModel.Name.Length > 0)
-        {
-            @OrganisationModel.Name[0]
-        }
-    </MudAvatar>
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="pb-3">
+    <Avatar ImageUri="@OrganisationModel.LogoUri"
+            Name="@OrganisationModel.Name"
+            Size="Size.Large"/>
 
-    <MudText Typo="Typo.h4" Class="mt-2">
+    <MudText Typo="Typo.h4" Class="pt-2">
         @OrganisationModel.Name
     </MudText>
+
+    <MudIconButton Size="@Size.Medium"
+                   Color="Color.Primary"
+                   Icon="@Icons.Material.Outlined.Edit"
+                   OnClick="@(() => UpdateOrganisation(OrganisationModel))"/>
 
 </MudStack>
 
@@ -34,35 +34,47 @@
     <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
 </MudTabs>
 
-<MudDataGrid T="OrganisationMembershipModel" MultiSelection="true" Items="@_subOrganisations" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@QuickFilter" Hideable="true" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged">
+<MudDataGrid T="OrganisationMembershipModel"
+             Items="@_subOrganisations"
+             SortMode="SortMode.Multiple"
+             Filterable="true"
+             QuickFilter="@QuickFilter"
+             Hideable="true"
+             ReadOnly="true">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
             Sub-Organisations
         </MudText>
         <MudSpacer/>
-        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0">
         </MudTextField>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4" Href="/organisations/create">
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Class="ml-4"
+                   Href="/organisations/create">
             Add
         </MudButton>
 
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="OrganisationMembershipModel"/>
-        <TemplateColumn Sortable="false" Filterable="false">
+        <HierarchyColumn T="OrganisationMembershipModel"/>
+        <TemplateColumn Sortable="false" Filterable="false" IsEditable="false">
             <CellTemplate>
-                <MudAvatar>
-                    @if (context.Item.Organisation.LogoUri is not null)
-                    {
-                        <MudImage Src="@context.Item.Organisation.LogoUri.ToString()"/>
-                    }
-                    else if (context.Item.Organisation.Name.Length > 0)
-                    {
-                        @context.Item.Organisation.Name[0]
-                    }
-                </MudAvatar>
+                <Avatar ImageUri="@context.Item.Organisation.LogoUri"
+                        Name="@context.Item.Organisation.Name"
+                        Size="Size.Small"/>
             </CellTemplate>
+            <EditTemplate>
+                <AvatarUploador OriginImageUri="@context.Item.Organisation.LogoUri?.ToString()"
+                                OnImageUpdated="s => context.Item.Organisation.Logo = s"/>
+            </EditTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
@@ -70,25 +82,55 @@
                     @context.Item.Organisation.Name
                 </MudLink>
             </CellTemplate>
+            <EditTemplate>
+                <MudTextField Variant="Variant.Outlined" @bind-Value="@context.Item.Organisation.Name"/>
+            </EditTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.Organisation.Description" Title="Description"/>
+        <PropertyColumn Property="x => x.Organisation.Description" Title="Description" Hidden="true"/>
+        <PropertyColumn Property="x => x.Organisation.InvitationCode"
+                        Title="InvitationCode"
+                        Sortable="false"
+                        Filterable="false"
+                        IsEditable="false"/>
         <TemplateColumn Sortable="false" Filterable="false">
             <CellTemplate>
-                <MudAvatar>
-                    @if (context.Item.User.AvatarUri is not null)
-                    {
-                        <MudImage Src="@context.Item.User.AvatarUri.ToString()"/>
-                    }
-                    else if (context.Item.User.Name.Length > 0)
-                    {
-                        @context.Item.User.Name[0]
-                    }
-                </MudAvatar>
+                <Avatar ImageUri="@context.Item.User.AvatarUri"
+                        Name="@context.Item.User.Name"
+                        Size="Size.Small"/>
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x => x.User.Name" Title="Owner Name"/>
         <PropertyColumn Property="x => x.User.Email" Title="Owner Email"/>
+        <TemplateColumn Sortable="false" Filterable="false" StickyRight="true">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Edit"
+                               Color="Color.Primary"
+                               OnClick="@(() => UpdateOrganisation(context.Item.Organisation))"/>
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Delete"
+                               Color="Color.Error"
+                               OnClick="@context.Actions.StartEditingItemAsync"/>
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
+    <ChildRowContent>
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <Avatar ImageUri="@context.Item.Organisation.LogoUri"
+                            Name="@context.Item.Organisation.Name"
+                            Size="Size.Medium"/>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@context.Item.Organisation.Name</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText>@context.Item.Organisation.Description</MudText>
+            </MudCardContent>
+        </MudCard>
+    </ChildRowContent>
     <PagerContent>
         <MudDataGridPager T="OrganisationMembershipModel"/>
     </PagerContent>
@@ -109,9 +151,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        OrganisationModel = await Http.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+        OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
 
-        _subOrganisations = await Http.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{Id}/sub-organisations") ?? new List<OrganisationMembershipModel>();
+        _subOrganisations = await Client.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{Id}/sub-organisations") ?? new List<OrganisationMembershipModel>();
     }
 
     private Func<OrganisationMembershipModel, bool> QuickFilter => x =>
@@ -125,12 +167,15 @@
         if (x.Organisation.Description != null && x.Organisation.Description.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
+        if (x.User.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
         return false;
     };
 
-    void RowClicked(DataGridRowClickEventArgs<OrganisationMembershipModel> args) { }
-
-    void SelectedItemsChanged(HashSet<OrganisationMembershipModel> items) { }
 
     private void OnTabClicked(MouseEventArgs me)
     {
@@ -144,6 +189,35 @@
             case 2:
                 NavigationManager.NavigateTo($"/organisations/{Id}/project-list");
                 break;
+        }
+    }
+
+    async Task UpdateOrganisation(OrganisationModel organisation)
+    {
+        var parameters = new DialogParameters<EditOrganisationDialog>
+        {
+            { x => x.Organisation, organisation }
+        };
+
+        var dialog = await DialogService.ShowAsync<EditOrganisationDialog>("Edit Organisation", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            if (result.Data is OrganisationModel editedOrganisation)
+            {
+                if (editedOrganisation.Id == OrganisationModel.Id)
+                {
+                    OrganisationModel = editedOrganisation;
+                }
+                else
+                {
+                    var index = _subOrganisations.FindIndex(x => x.Organisation.Id == editedOrganisation.Id);
+
+                    _subOrganisations[index].Organisation = editedOrganisation;
+                }
+                StateHasChanged();
+            }
         }
     }
 

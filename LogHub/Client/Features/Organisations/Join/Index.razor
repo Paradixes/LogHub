@@ -98,7 +98,7 @@
 
     async Task JoinOrganisation()
     {
-        var id = await AuthenticationService.GetUserIdAsync();
+        var id = await AuthenticationService.GetLocalUserIdAsync();
 
         await Http.PostAsJsonAsync($"api/organisations/{_code}/invitation", id);
 

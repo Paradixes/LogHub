@@ -1,6 +1,8 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using Client.Services.States
+@inject NavigationManager NavigationManager
 @inject ILogHubAuthenticationService AuthenticationService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserAccountService UserAccountService
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
 
@@ -36,3 +38,22 @@
                          ToggledTitle="Change to Light Mode"
                          Class="ml-4"/>
 </MudAppBar>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> DrawerOpenChanged { get; set; }
+
+    private readonly MudTheme _theme = new();
+
+    private bool _drawerOpen;
+
+    private bool _isDarkMode;
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+        DrawerOpenChanged.InvokeAsync(_drawerOpen);
+    }
+
+}

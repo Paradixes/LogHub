@@ -130,7 +130,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var id = await AuthenticationService.GetUserIdAsync();
+        var id = await AuthenticationService.GetLocalUserIdAsync();
         Model = await Client.GetFromJsonAsync<SystemSettingsModel>($"api/users/{id}/preference") ?? new SystemSettingsModel();
     }
 
@@ -141,7 +141,7 @@
         {
             return;
         }
-        var id = await AuthenticationService.GetUserIdAsync();
+        var id = await AuthenticationService.GetLocalUserIdAsync();
         await Client.PutAsJsonAsync($"api/users/{id}/preference", Model);
 
         NavigationManager.NavigateTo("/users/system");

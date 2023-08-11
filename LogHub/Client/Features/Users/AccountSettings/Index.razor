@@ -1,8 +1,9 @@
 ﻿@page "/users/account"
+@using Client.Services.States
 @layout FormLayout
 @inject HttpClient Client
 @inject ILogHubAuthenticationService AuthenticationService
-@inject NavigationManager NavigationManager
+@inject IUserAccountService UserAccountService
 @inject ISnackbar Snackbar
 @attribute [Authorize]
 
@@ -17,7 +18,7 @@
 
         <MudGrid Spacing="2">
             <MudItem xs="2">
-                <ImageUploador OnImageUpdated="@OnAvatarUploaded" OriginImageUri="@Model.AvatarUri?.ToString()"/>
+                <AvatarUploador OnImageUpdated="@OnAvatarUploaded" OriginImageUri="@Model.AvatarUri?.ToString()"/>
             </MudItem>
             <MudItem xs="10">
                 <MudTextField Label="Preferred Name"
@@ -81,9 +82,12 @@
 
     MudForm _form = new();
 
+    [CascadingParameter]
+    UserAccountModel? User { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var userId = await AuthenticationService.GetUserIdAsync();
+        var userId = await AuthenticationService.GetLocalUserIdAsync();
 
         Model = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{userId}") ?? new UserAccountModel();
 
@@ -123,9 +127,8 @@
 
         await Client.PutAsJsonAsync($"api/users/{Model.Id}", Model);
 
-        StateHasChanged();
+        await UserAccountService.UpdateCurrentUserAsync();
 
-        NavigationManager.NavigateTo("/users/account", true);
         Snackbar.Add("User account updated", Severity.Success);
     }
 

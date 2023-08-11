@@ -58,13 +58,12 @@ public class Users : ICarterModule
 
         app.MapGet("api/users/{id:guid}", async (
             Guid id,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
             try
             {
                 var query = new GetUserByIdQuery(new UserId(id));
-                return Results.Ok(await sender.Send(query, cancellationToken));
+                return Results.Ok(await sender.Send(query));
             }
             catch (UserNotFoundException e)
             {
@@ -103,9 +102,7 @@ public class Users : ICarterModule
             return Results.Ok(await sender.Send(query));
         });
 
-        app.MapGet("api/users/{id:guid}/organisations", async (
-            Guid id,
-            ISender sender) =>
+        app.MapGet("api/users/{id:guid}/organisations", async (Guid id, ISender sender) =>
         {
             var query = new GetOrganisationsByUserIdQuery(id);
 

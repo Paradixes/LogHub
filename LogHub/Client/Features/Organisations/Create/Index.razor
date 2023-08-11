@@ -16,7 +16,7 @@
 
         <MudGrid Spacing="2">
             <MudItem xs="2">
-                <ImageUploador OnImageUpdated="@OnLogoUploaded"/>
+                <AvatarUploador OnImageUpdated="@OnLogoUploaded"/>
             </MudItem>
             <MudItem xs="10">
                 <MudTextField Label="Organisation Name"
@@ -69,7 +69,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = await AuthenticationService.GetUserIdAsync();
+        var userId = await AuthenticationService.GetLocalUserIdAsync();
         _parentOrganisations = await Client.GetFromJsonAsync<List<OrganisationModel>>($"/api/users/{userId}/organisations")
                                ?? new List<OrganisationModel>();
     }
@@ -86,7 +86,7 @@
         {
             return;
         }
-        Model.ManagerId = await AuthenticationService.GetUserIdAsync();
+        Model.OwnerId = await AuthenticationService.GetLocalUserIdAsync() ?? Guid.Empty;
         await Client.PostAsJsonAsync("/api/organisations", Model);
         NavigationManager.NavigateTo("/", true);
     }

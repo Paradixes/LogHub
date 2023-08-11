@@ -25,8 +25,12 @@ public class GetOrganisationByInvitationCodeQueryHandler :
             throw new OrganisationNotFoundException(request.InvitationCode);
         }
 
-        var response = new OrganisationResponse(organisation.Id.Value, organisation.Name, organisation.LogoUri,
-            organisation.Description);
+        var response = new OrganisationResponse(
+            organisation.Id.Value,
+            organisation.Name,
+            organisation.LogoUri,
+            organisation.Description,
+            organisation.InvitationCode);
 
         return response;
     }

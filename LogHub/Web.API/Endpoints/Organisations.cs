@@ -4,6 +4,8 @@ using Application.Organisations.GetByInvitationCode;
 using Application.Organisations.GetSubOrganisations;
 using Application.Organisations.GetUsers;
 using Application.Organisations.JoinByInvitationCode;
+using Application.Organisations.Update;
+using Application.Organisations.UpdateInvitationCode;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Users;
@@ -25,7 +27,7 @@ public class Organisations : ICarterModule
             try
             {
                 var command = new CreateOrganisationCommand(
-                    new UserId(request.ManagerId),
+                    new UserId(request.OwnerId),
                     request.Logo,
                     request.Name,
                     request.Description,
@@ -93,6 +95,49 @@ public class Organisations : ICarterModule
                 await sender.Send(command);
 
                 return Results.Ok();
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
+        });
+
+        app.MapPut("api/organisations/{id:guid}", async (
+            [FromBody] UpdateOrganisationRequest request,
+            Guid id,
+            ISender sender) =>
+        {
+            try
+            {
+                var command = new UpdateOrganisationCommand(
+                    new OrganisationId(id),
+                    request.Name,
+                    request.Logo,
+                    request.Description,
+                    request.OwnerId?.Create<UserId>());
+
+                await sender.Send(command);
+
+                return Results.Ok();
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
+        });
+
+        app.MapPut("api/organisations/{id:guid}/invitation", async (
+            [FromBody] string invitationCode,
+            Guid id,
+            ISender sender) =>
+        {
+            try
+            {
+                var command = new UpdateOrganisationInvitationCodeCommand(
+                    new OrganisationId(id),
+                    invitationCode);
+
+                return Results.Ok(await sender.Send(command));
             }
             catch (OrganisationNotFoundException e)
             {

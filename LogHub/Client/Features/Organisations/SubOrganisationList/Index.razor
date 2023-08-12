@@ -5,8 +5,13 @@
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @inject IPathService PathService
+@inject ISnackbar Snackbar
 @layout FormLayout
 @attribute [Authorize(Roles = "DataManager,Administrator")]
+
+<PageTitle>
+    LogHub | @OrganisationModel.Name
+</PageTitle>
 
 <MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="pb-3">
     <Avatar ImageUri="@OrganisationModel.LogoUri"
@@ -42,7 +47,8 @@
              Filterable="true"
              QuickFilter="@QuickFilter"
              Hideable="true"
-             ReadOnly="true">
+             ReadOnly="true"
+             ShowFilterIcons="false">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
             Sub-Organisations
@@ -112,7 +118,7 @@
                 <MudIconButton Size="@Size.Small"
                                Icon="@Icons.Material.Outlined.Delete"
                                Color="Color.Error"
-                               OnClick="@context.Actions.StartEditingItemAsync"/>
+                               OnClick="@(() => DeleteOrganisation(context.Item.Organisation))"/>
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -249,6 +255,22 @@
             NavigationManager.NavigateTo(path);
             PathService.AddPath(organisation.Name, path);
         });
+    }
+
+    private async Task DeleteOrganisation(OrganisationModel organisation)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Deleting can not be undone!",
+            "Delete", cancelText: "Cancel");
+
+        if (result != null)
+        {
+            await Client.DeleteAsync($"api/organisations/{organisation.Id}");
+            Snackbar.Add($"Deleted {organisation.Name}", Severity.Success);
+            var index = _subOrganisations.FindIndex(x => x.Organisation.Id == organisation.Id);
+            _subOrganisations.RemoveAt(index);
+        }
     }
 
 }

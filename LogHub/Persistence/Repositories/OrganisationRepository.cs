@@ -75,4 +75,9 @@ public class OrganisationRepository : IOrganisationRepository
             .Include(o => o.Memberships)
             .FirstOrDefaultAsync(o => o.Id == id);
     }
+
+    public void Delete(Organisation organisation)
+    {
+        _context.Organisations.Remove(organisation);
+    }
 }

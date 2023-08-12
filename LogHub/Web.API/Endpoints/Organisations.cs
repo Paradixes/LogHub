@@ -1,4 +1,5 @@
 ﻿using Application.Organisations.Create;
+using Application.Organisations.Delete;
 using Application.Organisations.GetById;
 using Application.Organisations.GetByInvitationCode;
 using Application.Organisations.GetSubOrganisations;
@@ -138,6 +139,22 @@ public class Organisations : ICarterModule
                     invitationCode);
 
                 return Results.Ok(await sender.Send(command));
+            }
+            catch (OrganisationNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
+        });
+
+        app.MapDelete("api/organisations/{id:guid}", async (Guid id, ISender sender) =>
+        {
+            try
+            {
+                var command = new DeleteOrganisationCommand(new OrganisationId(id));
+
+                await sender.Send(command);
+
+                return Results.Ok();
             }
             catch (OrganisationNotFoundException e)
             {

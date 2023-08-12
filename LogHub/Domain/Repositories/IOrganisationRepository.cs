@@ -19,4 +19,6 @@ public interface IOrganisationRepository
     Task<User?> GetOwnerAsync(OrganisationId organisationId);
 
     Task<Organisation?> GetByInvitationCodeAsync(string requestInvitationCode);
+
+    void Delete(Organisation organisation);
 }

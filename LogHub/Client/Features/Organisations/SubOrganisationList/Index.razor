@@ -1,8 +1,10 @@
 ﻿@page "/organisations/{id:guid}/sub-organisation-list"
+@using Client.Services.Paths
 @using Client.Features.Organisations.SubOrganisationList.Components
 @inject HttpClient Client
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
+@inject IPathService PathService
 @layout FormLayout
 @attribute [Authorize(Roles = "DataManager,Administrator")]
 
@@ -78,7 +80,7 @@
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <MudLink OnClick="@(() => NavigationManager.NavigateTo("/organisations/" + context.Item.Organisation.Id + "/sub-organisation-list", true))">
+                <MudLink OnClick="@GotoNextPage(context.Item.Organisation)">
                     @context.Item.Organisation.Name
                 </MudLink>
             </CellTemplate>
@@ -153,7 +155,25 @@
     {
         OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
 
+        if (PathService.Items.Count == 0)
+        {
+            PathService.AddPath(OrganisationModel.Name, $"/organisations/{Id}/sub-organisation-list");
+        }
+
         _subOrganisations = await Client.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{Id}/sub-organisations") ?? new List<OrganisationMembershipModel>();
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (!e.Location.Contains("sub-organisation-list"))
+        {
+            return;
+        }
+        OrganisationModel = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+
+        _subOrganisations = await Client.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{Id}/sub-organisations") ?? new List<OrganisationMembershipModel>();
+        StateHasChanged();
     }
 
     private Func<OrganisationMembershipModel, bool> QuickFilter => x =>
@@ -219,6 +239,16 @@
                 StateHasChanged();
             }
         }
+    }
+
+    private EventCallback GotoNextPage(OrganisationModel organisation)
+    {
+        return EventCallback.Factory.Create(this, () =>
+        {
+            var path = $"/organisations/{organisation.Id}/sub-organisation-list";
+            NavigationManager.NavigateTo(path);
+            PathService.AddPath(organisation.Name, path);
+        });
     }
 
 }

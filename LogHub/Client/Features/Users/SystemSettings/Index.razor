@@ -1,9 +1,9 @@
 ﻿@page "/users/system"
-@using System.Reflection
-@using System.ComponentModel
+@using Client.Services.States
 @inject ILogHubAuthenticationService AuthenticationService
 @inject HttpClient Client
 @inject NavigationManager NavigationManager
+@inject IUserAccountService UserAccountService
 @inject ISnackbar Snackbar
 @layout FormLayout
 @attribute [Authorize]
@@ -13,7 +13,7 @@
         System Settings
     </MudText>
     <MudDivider Class="py-4"/>
-    <MudForm Model="@Model"
+    <MudForm UserAccountService.CurrentSystemSettings="@UserAccountService.CurrentSystemSettings"
              @ref="@_form"
              ValidationDelay="0">
         <MudGrid Spacing="2">
@@ -26,21 +26,13 @@
                         </CardHeaderContent>
                         <CardHeaderActions>
                             <MudSelect Label="Theme"
-                                       @bind-Value="Model.Theme"
-                                       For="@(() => Model.Theme)"
+                                       @bind-Value="UserAccountService.CurrentSystemSettings.Theme"
+                                       For="@(() => UserAccountService.CurrentSystemSettings.Theme)"
                                        AnchorOrigin="Origin.BottomCenter"
                                        Required="true"
                                        Style="width: 100px">
-                                @foreach (var theme in Enum.GetValues(typeof(Theme)))
-                                {
-                                    var enumValue = (Theme)theme;
-                                    var displayName = enumValue.GetType()
-                                        .GetMember(enumValue.ToString())
-                                        .FirstOrDefault()?
-                                        .GetCustomAttribute<DisplayNameAttribute>()?
-                                        .DisplayName ?? enumValue.ToString();
-                                    <MudSelectItem Value="@enumValue">@displayName</MudSelectItem>
-                                }
+                                <MudSelectItem Value="@Theme.Dark">Dark</MudSelectItem>
+                                <MudSelectItem Value="@Theme.Light">Light</MudSelectItem>
                             </MudSelect>
                         </CardHeaderActions>
                     </MudCardHeader>
@@ -56,8 +48,8 @@
                         </CardHeaderContent>
                         <CardHeaderActions>
                             <MudSelect Label="Notify"
-                                       @bind-Value="Model.EmailNotification"
-                                       For="@(() => Model.EmailNotification)"
+                                       @bind-Value="UserAccountService.CurrentSystemSettings.EmailNotification"
+                                       For="@(() => UserAccountService.CurrentSystemSettings.EmailNotification)"
                                        AnchorOrigin="Origin.BottomCenter"
                                        Required="true"
                                        Style="width: 100px">
@@ -78,8 +70,8 @@
                         </CardHeaderContent>
                         <CardHeaderActions>
                             <MudSelect Label="AutoSave"
-                                       @bind-Value="Model.AutoSave"
-                                       For="@(() => Model.AutoSave)"
+                                       @bind-Value="UserAccountService.CurrentSystemSettings.AutoSave"
+                                       For="@(() => UserAccountService.CurrentSystemSettings.AutoSave)"
                                        AnchorOrigin="Origin.BottomCenter"
                                        Required="true"
                                        Style="width: 100px">
@@ -103,8 +95,8 @@
                                              Min="8"
                                              Max="24"
                                              Variant="Variant.Outlined"
-                                             @bind-Value="@Model.FontSize"
-                                             For="() => Model.FontSize"
+                                             @bind-Value="@UserAccountService.CurrentSystemSettings.FontSize"
+                                             For="() => UserAccountService.CurrentSystemSettings.FontSize"
                                              Required="true"
                                              Style="width: 100px"/>
                         </CardHeaderActions>
@@ -124,15 +116,8 @@
 </MudContainer>
 
 @code {
-    SystemSettingsModel Model { get; set; } = new();
 
     MudForm _form = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        var id = await AuthenticationService.GetLocalUserIdAsync();
-        Model = await Client.GetFromJsonAsync<SystemSettingsModel>($"api/users/{id}/preference") ?? new SystemSettingsModel();
-    }
 
     private async Task SubmitAsync()
     {
@@ -142,7 +127,9 @@
             return;
         }
         var id = await AuthenticationService.GetLocalUserIdAsync();
-        await Client.PutAsJsonAsync($"api/users/{id}/preference", Model);
+        await Client.PutAsJsonAsync($"api/users/{id}/preference", UserAccountService.CurrentSystemSettings);
+
+        await UserAccountService.UpdateCurrentSystemSettingsAsync();
 
         NavigationManager.NavigateTo("/users/system");
         Snackbar.Add("User settings updated", Severity.Success);

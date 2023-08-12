@@ -4,6 +4,7 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Client;
 using Client.Services.Authentications;
+using Client.Services.Paths;
 using Client.Services.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -36,6 +37,7 @@ builder.Services.AddScoped<ILogHubAuthenticationService>(a =>
     a.GetRequiredService<LogHubLogHubAuthenticationService>());
 builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<LogHubLogHubAuthenticationService>());
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
+builder.Services.AddScoped<IPathService, PathService>();
 
 builder.Services
     .AddBlazorise(options => { options.Immediate = true; })

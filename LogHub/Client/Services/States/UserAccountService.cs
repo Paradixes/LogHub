@@ -18,6 +18,7 @@ public class UserAccountService : IUserAccountService
     }
 
     public UserAccountModel? CurrentUser { get; private set; }
+    public SystemSettingsModel CurrentSystemSettings { get; private set; } = new();
 
     public event Action? OnChange;
 
@@ -40,6 +41,20 @@ public class UserAccountService : IUserAccountService
         }
 
         CurrentUser = await response.Content.ReadFromJsonAsync<UserAccountModel>();
+        await UpdateCurrentSystemSettingsAsync();
+        NotifyStateChanged();
+    }
+
+    public async Task UpdateCurrentSystemSettingsAsync()
+    {
+        if (CurrentUser is null)
+        {
+            return;
+        }
+
+        CurrentSystemSettings =
+            await _client.GetFromJsonAsync<SystemSettingsModel>($"api/users/{CurrentUser.Id}/preference") ??
+            new SystemSettingsModel();
         NotifyStateChanged();
     }
 

@@ -1,10 +1,13 @@
 ﻿@using Client.Services.States
+@using Client.Services.Paths
 @inject NavigationManager NavigationManager
 @inject ILogHubAuthenticationService AuthenticationService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUserAccountService UserAccountService
+@inject IPathService PathService
+@inject HttpClient Client
 
-<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+<MudThemeProvider @bind-IsDarkMode="@UserAccountService.CurrentSystemSettings.IsDarkMode" Theme="_theme"/>
 
 <MudAppBar Elevation="0" Color="Color.Transparent">
     <AuthorizeView>
@@ -13,6 +16,11 @@
                            Color="Color.Inherit"
                            Edge="Edge.Start"
                            OnClick="@(e => DrawerToggle())"/>
+            <MudBreadcrumbs Items="PathService.Items">
+                <ItemTemplate Context="item">
+                    <MudLink OnClick="@ReturnToPath(item)">@item.Text.ToUpper()</MudLink>
+                </ItemTemplate>
+            </MudBreadcrumbs>
             <MudSpacer/>
         </Authorized>
         <NotAuthorized>
@@ -31,7 +39,8 @@
             </MudButtonGroup>
         </NotAuthorized>
     </AuthorizeView>
-    <MudToggleIconButton @bind-Toggled="@_isDarkMode"
+    <MudToggleIconButton ToggledChanged="OnThemeChanged"
+                         Toggled="@UserAccountService.CurrentSystemSettings.IsDarkMode"
                          Icon="@Icons.Material.Filled.LightMode"
                          Title="Change to Dark Mode"
                          ToggledIcon="@Icons.Material.Outlined.DarkMode"
@@ -50,10 +59,51 @@
 
     private bool _isDarkMode;
 
+    protected override void OnInitialized()
+    {
+        PathService.OnChange += StateHasChanged;
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (!e.Location.Contains("organisations") && !e.Location.Contains("list"))
+        {
+            PathService.Clear();
+        }
+    }
+
+    private void Dispose()
+    {
+        PathService.OnChange -= StateHasChanged;
+    }
+
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
         DrawerOpenChanged.InvokeAsync(_drawerOpen);
+    }
+
+    async Task OnThemeChanged(bool toggled)
+    {
+        if (UserAccountService.CurrentUser != null)
+        {
+            UserAccountService.CurrentSystemSettings.Theme = toggled ? Theme.Dark : Theme.Light;
+            await Client.PutAsJsonAsync($"api/users/{UserAccountService.CurrentUser.Id}/preference", UserAccountService.CurrentSystemSettings);
+            await UserAccountService.UpdateCurrentSystemSettingsAsync();
+        }
+    }
+
+    private EventCallback ReturnToPath(BreadcrumbItem value)
+    {
+        return EventCallback.Factory.Create(this, () =>
+        {
+            PathService.ReturnToPath(value);
+            if (value.Href != null)
+            {
+                NavigationManager.NavigateTo(value.Href);
+            }
+        });
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Memberships.Delete;
+using Application.Memberships.GetById;
 using Application.Memberships.GetSubOrganisations;
 using Application.Memberships.GetUsers;
 using Application.Memberships.JoinByInvitationCode;
@@ -18,6 +19,22 @@ public class Memberships : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
+        app.MapGet("api/organisations/{organisationId:guid}/users/{userId:guid}", async (
+            Guid organisationId,
+            Guid userId,
+            ISender sender) =>
+        {
+            try
+            {
+                var query = new GetMembershipByIdQuery(new UserId(userId), new OrganisationId(organisationId));
+                return Results.Ok(await sender.Send(query));
+            }
+            catch (MembershipNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
+        });
+
         app.MapPost("api/organisations/{code}/invitation", async (
             [FromBody] Guid userId,
             string code,

@@ -38,6 +38,7 @@ builder.Services.AddScoped<ILogHubAuthenticationService>(a =>
 builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<LogHubLogHubAuthenticationService>());
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<IPathService, PathService>();
+builder.Services.AddScoped<IOrganisationPermissionService, OrganisationPermissionService>();
 
 builder.Services
     .AddBlazorise(options => { options.Immediate = true; })

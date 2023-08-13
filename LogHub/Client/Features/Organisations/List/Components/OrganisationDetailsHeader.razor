@@ -10,10 +10,13 @@
         @CurrentOrganisation.Name
     </MudText>
 
-    <MudIconButton Size="@Size.Medium"
-                   Color="Color.Primary"
-                   Icon="@Icons.Material.Outlined.Edit"
-                   OnClick="@(() => UpdateOrganisation(CurrentOrganisation))"/>
+    @if (Role <= OrganisationPermissionService.GetRole(OrganisationOption.UpdateDetails))
+    {
+        <MudIconButton Size="@Size.Medium"
+                       Color="Color.Primary"
+                       Icon="@Icons.Material.Outlined.Edit"
+                       OnClick="@(() => UpdateOrganisation(CurrentOrganisation))"/>
+    }
 
 </MudStack>
 
@@ -37,6 +40,9 @@
 
     [Parameter]
     public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    [Parameter]
+    public OrganisationRole Role { get; set; } = OrganisationRole.Guest;
 
     async Task UpdateOrganisation(OrganisationModel organisation)
     {
@@ -67,6 +73,9 @@
                 break;
             case 2:
                 NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/repository-list");
+                break;
+            case 3:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/setting-list");
                 break;
         }
     }

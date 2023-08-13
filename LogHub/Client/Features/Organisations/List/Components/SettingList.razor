@@ -23,6 +23,7 @@
                                    For="@(() => option.Role)"
                                    ValueChanged="@(role => OnValueChanged(option.Option, role))"
                                    AnchorOrigin="Origin.BottomCenter"
+                                   Disabled="Role > OrganisationPermissionService.GetRole(OrganisationOption.UpdateOrganisationSettings)"
                                    Style="width: 100px">
                             @foreach (var role in Enum.GetValues(typeof(OrganisationRole)))
                             {
@@ -43,6 +44,9 @@
     [Parameter]
     public Guid Id { get; set; }
 
+    [Parameter]
+    public OrganisationRole Role { get; set; } = OrganisationRole.Guest;
+
     readonly Dictionary<OrganisationOption, EnumInfoAttribute> _enumInfoAttributes = new();
 
     List<OrganisationSettingsModel> _settings = new();
@@ -53,6 +57,9 @@
             return;
 
         _settings = await Client.GetFromJsonAsync<List<OrganisationSettingsModel>>($"api/organisations/{Id}/settings") ?? new List<OrganisationSettingsModel>();
+
+        if (_enumInfoAttributes.Any())
+            return;
 
         var enumType = typeof(OrganisationOption);
         foreach (var option in Enum.GetValues(enumType))
@@ -77,6 +84,7 @@
             await Client.PutAsJsonAsync($"api/organisations/{Id}/settings", setting);
             _settings.Add(setting);
         }
+        await OrganisationPermissionService.UpdateAsync(Id);
     }
 
     private async Task OnValueChanged(OrganisationOption option, OrganisationRole role)
@@ -85,6 +93,7 @@
         setting.Role = role;
         await Client.PutAsJsonAsync($"api/organisations/{Id}/settings", setting);
         Snackbar.Add("Organisation settings updated", Severity.Success);
+        await OrganisationPermissionService.UpdateAsync(Id);
     }
 
 }

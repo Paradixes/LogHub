@@ -69,11 +69,4 @@ public sealed class UserRepository : IUserRepository
     {
         _context.Users.Update(user);
     }
-
-    public Task<List<User>> GetByOrganisationIdAsync(OrganisationId organisationId)
-    {
-        return _context.Users
-            .Where(user => user.OrganisationMemberships.Any(membership => membership.OrganisationId == organisationId))
-            .ToListAsync();
-    }
 }

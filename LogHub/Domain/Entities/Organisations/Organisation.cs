@@ -16,6 +16,8 @@ public class Organisation : Entity<OrganisationId>
 
     private readonly List<Repository> _repositories = new();
 
+    private readonly List<OrganisationSetting> _settings = new();
+
     private readonly List<Organisation> _subOrganisations = new();
 
     private Organisation() { }
@@ -27,6 +29,8 @@ public class Organisation : Entity<OrganisationId>
     public IEnumerable<Repository> Repositories => _repositories.ToList();
 
     public IEnumerable<OrganisationMembership> Memberships => _memberships.ToList();
+
+    public IEnumerable<OrganisationSetting> Settings => _settings.ToList();
 
     public OrganisationId? ParentOrganisationId { get; private set; }
 
@@ -67,6 +71,11 @@ public class Organisation : Entity<OrganisationId>
         };
 
         organisation._memberships.Add(new OrganisationMembership(organisation.Id, creatorId, OrganisationRole.Owner));
+
+        foreach (var option in Enum.GetValues<OrganisationOption>())
+        {
+            organisation._settings.Add(new OrganisationSetting(organisation.Id, option, OrganisationRole.Owner));
+        }
 
         if (parentOrganisationId is null)
         {
@@ -185,5 +194,17 @@ public class Organisation : Entity<OrganisationId>
         }
 
         _memberships.Remove(membership);
+    }
+
+    public void UpdateSetting(OrganisationOption option, OrganisationRole role)
+    {
+        var setting = _settings.SingleOrDefault(x => x.Option == option);
+        if (setting is null)
+        {
+            _settings.Add(new OrganisationSetting(Id, option, role));
+            return;
+        }
+
+        setting.UpdateRole(role);
     }
 }

@@ -1,0 +1,187 @@
+﻿<MudDataGrid T="OrganisationMembershipModel"
+             Items="@_subOrganisations"
+             SortMode="SortMode.Multiple"
+             Filterable="true"
+             QuickFilter="@QuickFilter"
+             Hideable="true"
+             ReadOnly="true"
+             ShowFilterIcons="false"
+             Hover="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">
+            Sub-Organisations
+        </MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0">
+        </MudTextField>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Class="ml-4"
+                   Href="/organisations/create">
+            Add
+        </MudButton>
+
+    </ToolBarContent>
+    <Columns>
+        <HierarchyColumn T="OrganisationMembershipModel"/>
+        <TemplateColumn Sortable="false" Filterable="false" IsEditable="false">
+            <CellTemplate>
+                <Avatar ImageUri="@context.Item.Organisation.LogoUri"
+                        Name="@context.Item.Organisation.Name"
+                        Size="Size.Small"/>
+            </CellTemplate>
+            <EditTemplate>
+                <AvatarUploador OriginImageUri="@context.Item.Organisation.LogoUri?.ToString()"
+                                OnImageUpdated="s => context.Item.Organisation.Logo = s"/>
+            </EditTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Name">
+            <CellTemplate>
+                <MudLink OnClick="@GotoNextPage(context.Item.Organisation)">
+                    @context.Item.Organisation.Name
+                </MudLink>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Organisation.Description" Title="Description" Hidden="true"/>
+        <PropertyColumn Property="x => x.Organisation.InvitationCode"
+                        Title="InvitationCode"
+                        Sortable="false"
+                        Filterable="false"
+                        IsEditable="false"/>
+        <TemplateColumn Sortable="false" Filterable="false">
+            <CellTemplate>
+                <Avatar ImageUri="@context.Item.User.AvatarUri"
+                        Name="@context.Item.User.Name"
+                        Size="Size.Small"/>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.User.Name" Title="Owner Name"/>
+        <PropertyColumn Property="x => x.User.Email" Title="Owner Email"/>
+        <TemplateColumn Sortable="false" Filterable="false" StickyRight="true">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Edit"
+                               Color="Color.Primary"
+                               OnClick="@(() => UpdateOrganisation(context.Item.Organisation))"/>
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.Delete"
+                               Color="Color.Error"
+                               OnClick="@(() => DeleteOrganisation(context.Item.Organisation))"/>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <ChildRowContent>
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <Avatar ImageUri="@context.Item.Organisation.LogoUri"
+                            Name="@context.Item.Organisation.Name"
+                            Size="Size.Medium"/>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@context.Item.Organisation.Name</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText>@context.Item.Organisation.Description</MudText>
+            </MudCardContent>
+        </MudCard>
+    </ChildRowContent>
+    <PagerContent>
+        <MudDataGridPager T="OrganisationMembershipModel"/>
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+
+    private string _searchString = string.Empty;
+
+    private List<OrganisationMembershipModel> _subOrganisations = new();
+
+    [Parameter]
+    public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var id = CurrentOrganisation.Id;
+
+        _subOrganisations = await Client.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{id}/sub-organisations") ?? new List<OrganisationMembershipModel>();
+    }
+
+    private Func<OrganisationMembershipModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Organisation.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Organisation.Description != null && x.Organisation.Description.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+
+    async Task UpdateOrganisation(OrganisationModel organisation)
+    {
+        var parameters = new DialogParameters<EditOrganisationDialog>
+        {
+            { x => x.Organisation, organisation }
+        };
+
+        var dialog = await DialogService.ShowAsync<EditOrganisationDialog>("Edit Organisation", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            if (result.Data is OrganisationModel editedOrganisation)
+            {
+                var index = _subOrganisations.FindIndex(x => x.Organisation.Id == editedOrganisation.Id);
+
+                _subOrganisations[index].Organisation = editedOrganisation;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private EventCallback GotoNextPage(OrganisationModel organisation)
+    {
+        return EventCallback.Factory.Create(this, () =>
+        {
+            var path = $"/organisations/{organisation.Id}/sub-organisation-list";
+            NavigationManager.NavigateTo(path);
+            PathService.AddPath(organisation.Name, path);
+        });
+    }
+
+    private async Task DeleteOrganisation(OrganisationModel organisation)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to delete {organisation.Name}? This action cannot be undone.",
+            "Delete", "Cancel");
+
+        if (result is null)
+        {
+            return;
+        }
+        await Client.DeleteAsync($"api/organisations/{organisation.Id}");
+        Snackbar.Add($"Deleted {organisation.Name}", Severity.Success);
+        var index = _subOrganisations.FindIndex(x => x.Organisation.Id == organisation.Id);
+        _subOrganisations.RemoveAt(index);
+    }
+
+}

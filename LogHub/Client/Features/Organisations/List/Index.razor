@@ -1,0 +1,66 @@
+﻿@page "/organisations/{id:guid}/{listType}"
+@layout FormLayout
+@attribute [Authorize(Roles = "DataManager,Administrator")]
+
+
+<PageTitle>
+    LogHub | @CurrentOrganisation.Name
+</PageTitle>
+
+<OrganisationDetailsHeader Index="_index" CurrentOrganisation="CurrentOrganisation"/>
+
+@switch (ListType)
+{
+    case "sub-organisation-list":
+        _index = 0;
+        <SubOrganisationList CurrentOrganisation="@CurrentOrganisation"/>
+        break;
+    case "user-list":
+        _index = 1;
+        <UserList CurrentOrganisation="@CurrentOrganisation"/>
+        break;
+    case "role-list":
+        _index = 2;
+        break;
+}
+
+@code {
+
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    [Parameter]
+    public string ListType { get; set; } = "sub-organisation-list";
+
+    int _index;
+
+    private OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentOrganisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+
+        if (PathService.Items.Count == 0)
+        {
+            PathService.AddPath(CurrentOrganisation.Name, $"/organisations/{Id}/sub-organisation-list");
+        }
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (!e.Location.Contains("organisation") || !e.Location.Contains("list"))
+        {
+            return;
+        }
+        CurrentOrganisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+
+        StateHasChanged();
+    }
+
+}

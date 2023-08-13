@@ -37,13 +37,12 @@
         <_ContentIncludedByDefault Remove="Shared\Layouts\MainLayout.razor"/>
         <_ContentIncludedByDefault Remove="Features\Components\Components\OrganisationNavMenu.razor"/>
         <_ContentIncludedByDefault Remove="Features\Components\Components\ProjectNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Features\Organisations\List\ProjectList\Index.razor"/>
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="Features\Components\LoadingScreen.razor"/>
-        <AdditionalFiles Include="Features\Organisations\SubOrganisationList\Index.razor"/>
-        <AdditionalFiles Include="Features\Organisations\ProjectList\Index.razor"/>
-        <AdditionalFiles Include="Features\Organisations\UserList\Index.razor"/>
+        <AdditionalFiles Include="Features\Organisations\List\Components\EditOrganisationDialog.razor"/>
         <AdditionalFiles Include="Layouts\BackgroundLayout.razor"/>
         <AdditionalFiles Include="Layouts\Components\AppBar.razor"/>
         <AdditionalFiles Include="Layouts\Components\NavMenu.razor"/>

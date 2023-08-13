@@ -18,6 +18,4 @@ public interface IUserRepository
     void Add(User user);
 
     void Update(User user);
-
-    Task<List<User>> GetByOrganisationIdAsync(OrganisationId organisationId);
 }

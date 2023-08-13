@@ -1,0 +1,73 @@
+﻿@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="pb-3">
+    <Avatar ImageUri="@CurrentOrganisation.LogoUri"
+            Name="@CurrentOrganisation.Name"
+            Size="Size.Large"/>
+
+    <MudText Typo="Typo.h4" Class="pt-2">
+        @CurrentOrganisation.Name
+    </MudText>
+
+    <MudIconButton Size="@Size.Medium"
+                   Color="Color.Primary"
+                   Icon="@Icons.Material.Outlined.Edit"
+                   OnClick="@(() => UpdateOrganisation(CurrentOrganisation))"/>
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(CurrentOrganisation.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="Index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Sub-Organisation List" Icon="@Icons.Material.Filled.Apartment"/>
+    <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Project List" Icon="@Icons.Material.Filled.Science"/>
+</MudTabs>
+
+@code {
+
+    [Parameter]
+    public int Index { get; set; }
+
+    [Parameter]
+    public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    async Task UpdateOrganisation(OrganisationModel organisation)
+    {
+        var parameters = new DialogParameters<EditOrganisationDialog>
+        {
+            { x => x.Organisation, organisation }
+        };
+
+        var dialog = await DialogService.ShowAsync<EditOrganisationDialog>("Edit Organisation", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is OrganisationModel editedOrganisation)
+        {
+            CurrentOrganisation = editedOrganisation;
+            StateHasChanged();
+        }
+    }
+
+    void OnTabClicked(MouseEventArgs me)
+    {
+        switch (Index)
+        {
+            case 0:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/sub-organisation-list");
+                break;
+            case 1:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/user-list");
+                break;
+            case 2:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/repository-list");
+                break;
+        }
+    }
+
+}

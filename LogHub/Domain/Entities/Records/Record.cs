@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Behaviours.Actions;
-using Domain.Entities.Behaviours.Requests;
+﻿using Domain.Entities.Events.Actions;
+using Domain.Entities.Events.Requests;
 using Domain.Entities.Middlewares;
 using Domain.Entities.Users;
 using Domain.Primitives;

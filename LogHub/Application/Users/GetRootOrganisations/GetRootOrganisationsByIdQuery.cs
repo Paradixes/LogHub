@@ -1,6 +1,6 @@
-﻿using Application.Abstracts.Messaging;
-using Application.Organisations.GetById;
+﻿using Application.Organisations.GetById;
+using MediatR;
 
 namespace Application.Users.GetRootOrganisations;
 
-public record GetRootOrganisationsByIdQuery(Guid UserId) : IQuery<List<OrganisationResponse>>;
+public record GetRootOrganisationsByIdQuery(Guid UserId) : IRequest<List<OrganisationResponse>>;

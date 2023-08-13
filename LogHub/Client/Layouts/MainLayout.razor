@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <AppBar DrawerOpenChanged="DrawerToggle"/>
+    <NavMenu DrawerOpen="_drawerOpen"/>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+
+    private bool _drawerOpen;
+
+    private void DrawerToggle(bool isDrawerOpen)
+    {
+        _drawerOpen = isDrawerOpen;
+    }
+
+}

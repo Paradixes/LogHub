@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Behaviours.Actions;
-using Domain.Entities.Behaviours.Requests;
+﻿using Domain.Entities.Events.Actions;
+using Domain.Entities.Events.Requests;
 using Domain.Entities.Middlewares;
 using Domain.Entities.Organisations;
 using Domain.Entities.Records;
@@ -110,7 +110,7 @@ public class User : Entity<UserId>, IAuditableEntity
         UserPreference.Update(theme, emailNotification, autoSave, fontSize);
     }
 
-    public void UpdateAvatar(Uri avatarUri)
+    public void UpdateAvatar(Uri? avatarUri)
     {
         AvatarUri = avatarUri;
     }

@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Entities\Behaviours\"/>
+        <Folder Include="Entities\Events\"/>
     </ItemGroup>
 
 </Project>

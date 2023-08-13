@@ -1,6 +1,6 @@
-﻿using Application.Abstracts.Messaging;
-using Application.Organisations.GetById;
+﻿using Application.Organisations.GetById;
+using MediatR;
 
 namespace Application.Organisations.GetByInvitationCode;
 
-public record GetOrganisationByInvitationCodeQuery(string InvitationCode) : IQuery<OrganisationResponse>;
+public record GetOrganisationByInvitationCodeQuery(string InvitationCode) : IRequest<OrganisationResponse>;

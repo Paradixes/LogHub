@@ -1,0 +1,150 @@
+﻿<MudDataGrid T="OrganisationMembershipModel"
+             MultiSelection="true"
+             Items="@_users"
+             SortMode="SortMode.Multiple"
+             Filterable="true"
+             QuickFilter="@QuickFilter"
+             Hideable="true"
+             ReadOnly="false"
+             ShowFilterIcons="false"
+             EditMode="DataGridEditMode.Form"
+             EditTrigger="DataGridEditTrigger.OnRowClick"
+             Hover="true"
+             CommittedItemChanges="OnCommittedItemChanges">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">
+            Users
+        </MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0">
+        </MudTextField>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4">
+            Add
+        </MudButton>
+
+    </ToolBarContent>
+    <Columns>
+        <TemplateColumn Sortable="false" Filterable="false" IsEditable="false">
+            <CellTemplate>
+                <Avatar ImageUri="@context.Item.User.AvatarUri"
+                        Name="@context.Item.User.Name"
+                        Color="Color.Tertiary"
+                        Size="Size.Small"/>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.User.Name" Title="Name" IsEditable="false"/>
+        <PropertyColumn Property="x => x.User.Email" Title="Email" IsEditable="false"/>
+        <PropertyColumn Property="x => x.User.Profession" Title="Profession" IsEditable="false"/>
+        <PropertyColumn Property="x => x.User.Orcid" Title="ORCID" IsEditable="false"/>
+        <PropertyColumn Property="x => x.Role">
+            <EditTemplate>
+                <MudSelect @bind-Value="context.Item.Role"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary">
+                    @foreach (var role in Enum.GetValues(typeof(OrganisationRole)))
+                    {
+                        <MudSelectItem Value="@((OrganisationRole)role)">
+                            @role.ToString()
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        <TemplateColumn Sortable="false" Filterable="false" StickyRight="true">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.RemoveCircleOutline"
+                               Color="Color.Primary"
+                               OnClick="@(() => OnDelete(context.Item))"/>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="OrganisationMembershipModel"/>
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+
+    string _searchString = string.Empty;
+
+    List<OrganisationMembershipModel> _users = new();
+
+    [Parameter]
+    public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var id = CurrentOrganisation.Id;
+
+        _users = await Client.GetFromJsonAsync<List<OrganisationMembershipModel>>($"api/organisations/{id}/users") ?? new List<OrganisationMembershipModel>();
+    }
+
+    Func<OrganisationMembershipModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.User.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Profession.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Orcid != null && x.User.Orcid.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.User.Name} {x.User.Email} {x.User.Profession} {x.User.Orcid}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+
+    async Task OnCommittedItemChanges(OrganisationMembershipModel item)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to update {item.User.Name}'s role to {item.Role}?",
+            "Yes", "No");
+
+        if (result is null or false)
+        {
+            return;
+        }
+        var organisationId = item.Organisation.Id;
+        var userId = item.User.Id;
+        var role = item.Role;
+
+        await Client.PutAsJsonAsync($"api/organisations/{organisationId}/users/{userId}", role);
+        Snackbar.Add($"Updated {item.User.Name}'s role to {role}", Severity.Success);
+    }
+
+    async Task OnDelete(OrganisationMembershipModel item)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to remove {item.User.Name} from {item.Organisation.Name}?",
+            "Yes", "No");
+
+        if (result is null or false)
+        {
+            return;
+        }
+
+        var organisationId = item.Organisation.Id;
+        var userId = item.User.Id;
+
+        await Client.DeleteAsync($"api/organisations/{organisationId}/users/{userId}");
+        Snackbar.Add($"Removed {item.User.Name} from {item.Organisation.Name}", Severity.Success);
+    }
+
+}

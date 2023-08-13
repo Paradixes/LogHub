@@ -2,7 +2,7 @@
 
 public interface IBlobStorageProvider
 {
-    Task<Uri> UploadAsync(string containerName, string blobName, string base64Uri);
+    Task<Uri?> UploadAsync(string containerName, string? base64Uri);
 
-    Task<bool> DeleteAsync(string containerName, string blobName);
+    Task<bool> DeleteAsync(string containerName, string? blobName);
 }

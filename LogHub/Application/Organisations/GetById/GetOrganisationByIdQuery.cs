@@ -1,6 +1,6 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Organisations;
+﻿using Domain.Entities.Organisations;
+using MediatR;
 
 namespace Application.Organisations.GetById;
 
-public sealed record GetOrganisationByIdQuery(OrganisationId OrganisationId) : IQuery<OrganisationResponse>;
+public sealed record GetOrganisationByIdQuery(OrganisationId OrganisationId) : IRequest<OrganisationResponse>;

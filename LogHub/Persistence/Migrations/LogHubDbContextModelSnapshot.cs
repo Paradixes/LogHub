@@ -22,7 +22,7 @@ namespace Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Behaviours.Actions.RecordAction", b =>
+            modelBuilder.Entity("Domain.Entities.Events.Actions.RecordAction", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -33,7 +33,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("InitiatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Message")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -52,7 +52,7 @@ namespace Persistence.Migrations
                     b.ToTable("RecordActions");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Behaviours.Requests.RecordRequest", b =>
+            modelBuilder.Entity("Domain.Entities.Events.Requests.RecordRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -66,7 +66,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("InitiatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Message")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -148,6 +148,22 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("OrganisationMemberships");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Middlewares.OrganisationSetting", b =>
+                {
+                    b.Property<Guid>("OrganisationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Option")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrganisationId", "Option");
+
+                    b.ToTable("OrganisationSetting");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.RecordCommandHandler", b =>
@@ -426,7 +442,7 @@ namespace Persistence.Migrations
                     b.ToTable("DataManagementPlans", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Behaviours.Actions.RecordAction", b =>
+            modelBuilder.Entity("Domain.Entities.Events.Actions.RecordAction", b =>
                 {
                     b.HasOne("Domain.Entities.Users.User", "Initiator")
                         .WithMany("RecordActions")
@@ -445,7 +461,7 @@ namespace Persistence.Migrations
                     b.Navigation("Record");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Behaviours.Requests.RecordRequest", b =>
+            modelBuilder.Entity("Domain.Entities.Events.Requests.RecordRequest", b =>
                 {
                     b.HasOne("Domain.Entities.Users.User", "Handler")
                         .WithMany("RequestToHandle")
@@ -546,6 +562,17 @@ namespace Persistence.Migrations
                     b.Navigation("Organisation");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Middlewares.OrganisationSetting", b =>
+                {
+                    b.HasOne("Domain.Entities.Organisations.Organisation", "Organisation")
+                        .WithMany("Settings")
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("Domain.Entities.Middlewares.RecordCommandHandler", b =>
@@ -741,6 +768,8 @@ namespace Persistence.Migrations
                     b.Navigation("Memberships");
 
                     b.Navigation("Repositories");
+
+                    b.Navigation("Settings");
 
                     b.Navigation("SubOrganisations");
                 });

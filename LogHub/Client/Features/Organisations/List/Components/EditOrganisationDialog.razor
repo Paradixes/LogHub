@@ -1,0 +1,90 @@
+﻿@inject ISnackbar Snackbar
+@inject HttpClient Client
+
+<MudDialog Style="width: 500px">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1"/>
+            Edit Organisation
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <AvatarUploador OriginImageUri="@Organisation.LogoUri?.ToString()"
+                        OnImageUpdated="s => Organisation.Logo = s"/>
+
+        <MudTextField @bind-Value="@Organisation.Name"
+                      For="() => Organisation.Name"
+                      Label="Organisation Name"
+                      ReadOnly="false"/>
+
+        <MudTextField @bind-Value="@Organisation.Description"
+                      For="() => Organisation.Description"
+                      Label="Description"
+                      ReadOnly="false" Lines="10"/>
+
+        <MudTextField Value="@Organisation.InvitationCode"
+                      Label="Invitation Code"
+                      ReadOnly="true"
+                      AdornmentIcon="@Icons.Material.Filled.Refresh"
+                      Adornment="Adornment.End"
+                      OnAdornmentClick="RefreshCode"/>
+
+        <MudAutocomplete T="UserAccountModel"
+                         Label="Change Organisation Owner"
+                         @bind-Value="SelectedUser"
+                         SearchFunc="SearchUsers"
+                         ToStringFunc="@(u => $"{u.Name} ({u.Email})")"
+                         AdornmentIcon="@Icons.Material.Filled.Search"
+                         Adornment="Adornment.End">
+
+        </MudAutocomplete>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="UpdateOrganisation">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public OrganisationModel Organisation { get; set; } = new();
+
+
+    UserAccountModel? SelectedUser { get; set; }
+
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    async Task UpdateOrganisation()
+    {
+        Organisation.OwnerId = SelectedUser?.Id ?? Organisation.OwnerId;
+        await Client.PutAsJsonAsync($"api/organisations/{Organisation.Id}", Organisation);
+        Organisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Organisation.Id}") ?? new OrganisationModel();
+        MudDialog.Close(DialogResult.Ok(Organisation));
+        Snackbar.Add("Organisation Updated", Severity.Success);
+    }
+
+    async Task RefreshCode()
+    {
+        var response = await Client.PutAsJsonAsync($"api/organisations/{Organisation.Id}/invitation", Organisation.InvitationCode);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Organisation.InvitationCode = await response.Content.ReadAsStringAsync();
+            Organisation.InvitationCode = Organisation.InvitationCode.Trim('"');
+            Snackbar.Add("Invitation Code Refreshed", Severity.Success);
+        }
+    }
+
+    private async Task<IEnumerable<UserAccountModel>> SearchUsers(string value)
+    {
+        return await Client.GetFromJsonAsync<IEnumerable<UserAccountModel>>($"api/users?search={value}");
+    }
+
+}

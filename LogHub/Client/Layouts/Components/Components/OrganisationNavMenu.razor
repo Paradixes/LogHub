@@ -1,0 +1,63 @@
+﻿@inject HttpClient Client
+@inject ILogHubAuthenticationService AuthenticationService
+
+<AuthorizeView>
+    <Authorized>
+        @if (OrganisationModels.Count == 0)
+        {
+            <MudNavLink Href="organisations/join" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DomainAdd">
+                Join organisation
+            </MudNavLink>
+        }
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="@UserRole.DataManager.ToString()">
+    <Authorized>
+        <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
+            New organisation
+        </MudNavLink>
+        <MudDivider Class="my-2"/>
+        <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
+            @foreach (var organisationModel in OrganisationModels)
+            {
+                <MudNavGroup Title="@organisationModel.Name">
+                    <MudNavLink Href="@GetUrl("sub-organisation", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Apartment">
+                        Sub-Organisation List
+                    </MudNavLink>
+                    <MudNavLink Href="@GetUrl("user", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
+                        User List
+                    </MudNavLink>
+                    <MudNavLink Href="@GetUrl("project", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
+                        Repository List
+                    </MudNavLink>
+                    <MudNavLink Href="@GetUrl("setting", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">
+                        Settings
+                    </MudNavLink>
+                </MudNavGroup>
+            }
+
+        </MudNavGroup>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    List<OrganisationModel> OrganisationModels { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await AuthenticationService.GetLocalUserIdAsync();
+
+        var response = await Client.GetAsync($"api/users/{userId}/root-organisations");
+
+        if (response.IsSuccessStatusCode)
+        {
+            OrganisationModels = await response.Content.ReadFromJsonAsync<List<OrganisationModel>>() ?? new List<OrganisationModel>();
+        }
+    }
+
+    private string GetUrl(string objName, Guid id)
+    {
+        return $"/organisations/{id}/{objName}-list";
+    }
+
+}

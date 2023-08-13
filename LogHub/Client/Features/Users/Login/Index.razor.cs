@@ -1,4 +1,5 @@
-﻿using Client.Validations;
+﻿using System.Net;
+using Client.Validations;
 using Client.ViewModel;
 using MudBlazor;
 
@@ -11,6 +12,8 @@ public partial class Index
     private MudForm _form = new();
 
     private bool _isInvalidateCredentials;
+
+    private bool _isInvalidEmail;
 
     private bool _isShow;
 
@@ -28,13 +31,22 @@ public partial class Index
             return;
         }
 
-        if (!await AuthenticationService.LogInAsync(Model))
+        var response = await AuthenticationService.LogInAsync(Model);
+        switch (response.StatusCode)
         {
-            _isInvalidateCredentials = true;
-            return;
+            case HttpStatusCode.NotFound:
+                _isInvalidEmail = true;
+                _isInvalidateCredentials = false;
+                return;
+            case HttpStatusCode.BadRequest:
+                _isInvalidateCredentials = true;
+                _isInvalidEmail = false;
+                return;
+            case HttpStatusCode.OK:
+                await UserAccountService.UpdateCurrentUserAsync();
+                NavigationManager.NavigateTo("/");
+                break;
         }
-
-        NavigationManager.NavigateTo("/");
     }
 
     private void PasswordStatusChanged()

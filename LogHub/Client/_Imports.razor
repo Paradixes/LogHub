@@ -12,6 +12,14 @@
 @using Blazorise.Markdown
 @using Client.Services.Authentications
 @using Client.ViewModel
-@using Client.Features.Layouts
+@using Client.Layouts
 @using Client.Features.Components
+@using Client.Services.States
+@using Shared
 @using Shared.Enums
+@inject HttpClient Client
+@inject NavigationManager NavigationManager
+@inject IUserAccountService UserAccountService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject ILogHubAuthenticationService AuthenticationService

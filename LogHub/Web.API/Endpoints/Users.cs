@@ -6,6 +6,7 @@ using Application.Users.Register;
 using Application.Users.Update;
 using Carter;
 using Domain.Entities.Users;
+using Domain.Exceptions.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,90 +18,95 @@ public class Users : ICarterModule
     {
         app.MapPost("api/users", async (
             [FromBody] RegisterUserRequest request,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
-            var command = new RegisterUserCommand(
-                request.Email,
-                request.Name,
-                request.Profession,
-                request.Orcid,
-                request.Role,
-                request.Password);
-
-            var tokenResult = await sender.Send(
-                command,
-                cancellationToken);
-
-            return tokenResult.IsFailure ? Results.BadRequest(tokenResult.Error) : Results.Ok(tokenResult.Value);
+            try
+            {
+                var command = new RegisterUserCommand(
+                    request.Email,
+                    request.Name,
+                    request.Profession,
+                    request.Orcid,
+                    request.Role,
+                    request.Password);
+                return Results.Ok(await sender.Send(command));
+            }
+            catch (UserEmailNotUniqueException e)
+            {
+                return Results.BadRequest(e.Message);
+            }
         });
 
         app.MapPost("api/login", async (
             [FromBody] LoginUserRequest request,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
-            var command = new LoginUserCommand(request.Email, request.Password);
-
-            var tokenResult = await sender.Send(
-                command,
-                cancellationToken);
-
-            return tokenResult.IsFailure ? Results.BadRequest(tokenResult.Error) : Results.Ok(tokenResult.Value);
+            try
+            {
+                var command = new LoginUserCommand(request.Email, request.Password);
+                return Results.Ok(await sender.Send(command));
+            }
+            catch (UserNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
+            catch (InvalidCredentialsException e)
+            {
+                return Results.BadRequest(e.Message);
+            }
         });
 
         app.MapGet("api/users/{id:guid}", async (
             Guid id,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
-            var query = new GetUserByIdQuery(id);
-
-            var response = await sender.Send(query, cancellationToken);
-
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+            try
+            {
+                var query = new GetUserByIdQuery(new UserId(id));
+                return Results.Ok(await sender.Send(query));
+            }
+            catch (UserNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
 
         app.MapPut("api/users/{id:guid}", async (
             Guid id,
             [FromBody] UpdateUserRequest request,
-            CancellationToken cancellationToken,
             ISender sender) =>
         {
-            var command = new UpdateUserCommand(
-                new UserId(id),
-                request.Name,
-                request.Avatar,
-                request.Profession,
-                request.Orcid);
+            try
+            {
+                var command = new UpdateUserCommand(
+                    new UserId(id),
+                    request.Name,
+                    request.Avatar,
+                    request.Profession,
+                    request.Orcid);
 
-            var result = await sender.Send(command, cancellationToken);
+                await sender.Send(command);
 
-            return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok();
+                return Results.Ok();
+            }
+            catch (UserNotFoundException e)
+            {
+                return Results.NotFound(e.Message);
+            }
         });
 
-        app.MapGet("api/users/{id:guid}/root-organisations", async (
-            Guid id,
-            CancellationToken cancellationToken,
-            ISender sender) =>
+        app.MapGet("api/users/{id:guid}/root-organisations", async (Guid id, ISender sender) =>
         {
             var query = new GetRootOrganisationsByIdQuery(id);
 
-            var response = await sender.Send(query, cancellationToken);
-
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+            return Results.Ok(await sender.Send(query));
         });
 
-        app.MapGet("api/users/{id:guid}/organisations", async (
-            Guid id,
-            CancellationToken cancellationToken,
-            ISender sender) =>
+        app.MapGet("api/users/{id:guid}/organisations", async (Guid id, ISender sender) =>
         {
             var query = new GetOrganisationsByUserIdQuery(id);
 
-            var response = await sender.Send(query, cancellationToken);
-
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+            return Results.Ok(await sender.Send(query));
         });
     }
 }

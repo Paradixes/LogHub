@@ -1,7 +1,7 @@
 ﻿namespace Application.Organisations.Create;
 
 public record CreateOrganisationRequest(
-    Guid ManagerId,
+    Guid OwnerId,
     string? Logo,
     string Name,
     string Description,

@@ -1,15 +1,14 @@
 ﻿using Application.Abstracts;
-using Application.Abstracts.Messaging;
 using Domain.Entities.Users;
-using Domain.Errors;
+using Domain.Exceptions.Users;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Users.Login;
 
 internal sealed class LoginUserCommandHandler
-    : ICommandHandler<LoginUserCommand, string>
+    : IRequestHandler<LoginUserCommand, string>
 {
     private readonly IJwtProvider _jwtProvider;
     private readonly IPasswordHasher<User> _passwordHasher;
@@ -25,15 +24,14 @@ internal sealed class LoginUserCommandHandler
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<Result<string>> Handle(
+    public async Task<string> Handle(
         LoginUserCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByEmailAsync(request.Email);
         if (user is null)
         {
-            return Result.Failure<string>(
-                DomainErrors.User.InvalidCredentials);
+            throw new UserNotFoundException(request.Email);
         }
 
         var result = _passwordHasher.VerifyHashedPassword(
@@ -42,8 +40,7 @@ internal sealed class LoginUserCommandHandler
             request.Password);
         if (result == PasswordVerificationResult.Failed)
         {
-            return Result.Failure<string>(
-                DomainErrors.User.InvalidCredentials);
+            throw new InvalidCredentialsException();
         }
 
         var token = await _jwtProvider.GenerateAsync(user);

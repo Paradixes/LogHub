@@ -18,7 +18,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.9"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.9"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.9" PrivateAssets="all"/>
-        <PackageReference Include="MudBlazor" Version="6.6.0"/>
+        <PackageReference Include="MudBlazor" Version="6.8.0"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0"/>
     </ItemGroup>
 
@@ -35,14 +35,25 @@
         <_ContentIncludedByDefault Remove="Features\Layouts\MainLayout.razor"/>
         <_ContentIncludedByDefault Remove="Shared\Layouts\EmptyLayout.razor"/>
         <_ContentIncludedByDefault Remove="Shared\Layouts\MainLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Features\Components\Components\OrganisationNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Features\Components\Components\ProjectNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Features\Organisations\List\ProjectList\Index.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\BackgroundLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\AppBar.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\Components\OrganisationNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\Components\ProjectNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\NavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\FormLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\MainLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\_imports.razor"/>
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="Features\Components\LoadingScreen.razor"/>
-        <AdditionalFiles Include="Features\Components\NavMenu.razor"/>
-        <AdditionalFiles Include="Features\Organisations\SubOrganisationList\Index.razor"/>
-        <AdditionalFiles Include="Features\Organisations\ProjectList\Index.razor"/>
-        <AdditionalFiles Include="Features\Organisations\UserList\Index.razor"/>
+        <AdditionalFiles Include="Features\Organisations\List\Components\EditOrganisationDialog.razor"/>
+        <AdditionalFiles Include="Layouts\Components\Components\OrganisationNavMenu.razor"/>
+        <AdditionalFiles Include="Layouts\Components\Components\ProjectNavMenu.razor"/>
+        <AdditionalFiles Include="Layouts\_imports.razor"/>
     </ItemGroup>
 
 

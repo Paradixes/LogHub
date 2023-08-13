@@ -4,11 +4,11 @@ namespace Client.Services.Authentications;
 
 public interface ILogHubAuthenticationService
 {
-    Task<bool> LogInAsync(LoginModel model);
+    Task<HttpResponseMessage> LogInAsync(LoginModel model);
 
     Task LogOutAsync();
 
-    Task<bool> RegisterAsync(RegisterModel model);
+    Task<HttpResponseMessage> RegisterAsync(RegisterModel model);
 
-    Task<Guid> GetUserIdAsync();
+    Task<Guid?> GetLocalUserIdAsync();
 }

@@ -1,13 +1,12 @@
-﻿using Application.Abstracts.Messaging;
-using Application.Organisations.GetById;
+﻿using Application.Organisations.GetById;
+using Domain.Exceptions.Organisations;
 using Domain.Repositories;
-using Domain.Shared;
+using MediatR;
 
 namespace Application.Organisations.GetByInvitationCode;
 
-public class
-    GetOrganisationByInvitationCodeQueryHandler : IQueryHandler<GetOrganisationByInvitationCodeQuery,
-        OrganisationResponse>
+public class GetOrganisationByInvitationCodeQueryHandler :
+    IRequestHandler<GetOrganisationByInvitationCodeQuery, OrganisationResponse>
 {
     private readonly IOrganisationRepository _organisationRepository;
 
@@ -16,20 +15,22 @@ public class
         _organisationRepository = organisationRepository;
     }
 
-    public async Task<Result<OrganisationResponse>> Handle(GetOrganisationByInvitationCodeQuery request,
+    public async Task<OrganisationResponse> Handle(GetOrganisationByInvitationCodeQuery request,
         CancellationToken cancellationToken)
     {
         var organisation = await _organisationRepository.GetByInvitationCodeAsync(request.InvitationCode);
 
         if (organisation is null)
         {
-            return Result.Failure<OrganisationResponse>(new Error(
-                "Organisation.NotFound",
-                $"The organisation with invitation code {request.InvitationCode} was not found"));
+            throw new OrganisationNotFoundException(request.InvitationCode);
         }
 
-        var response = new OrganisationResponse(organisation.Id.Value, organisation.Name, organisation.LogoUri,
-            organisation.Description);
+        var response = new OrganisationResponse(
+            organisation.Id.Value,
+            organisation.Name,
+            organisation.LogoUri,
+            organisation.Description,
+            organisation.InvitationCode);
 
         return response;
     }

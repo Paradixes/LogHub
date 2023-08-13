@@ -1,5 +1,5 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Users;
+using MediatR;
 using Shared.Enums;
 
 namespace Application.UserPreference.Update;
@@ -9,4 +9,4 @@ public record UpdateUserPreferenceCommand(
     Theme Theme,
     bool EmailNotification,
     bool AutoSave,
-    int FontSize) : ICommand;
+    int FontSize) : IRequest;

@@ -1,0 +1,108 @@
+﻿@using Client.Services.Paths
+@inject NavigationManager NavigationManager
+@inject ILogHubAuthenticationService AuthenticationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserAccountService UserAccountService
+@inject IPathService PathService
+@inject HttpClient Client
+
+<MudThemeProvider @bind-IsDarkMode="@UserAccountService.CurrentSystemSettings.IsDarkMode" Theme="_theme"/>
+
+<MudAppBar Elevation="0" Color="Color.Primary">
+    <AuthorizeView>
+        <Authorized>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit"
+                           Edge="Edge.Start"
+                           OnClick="@(e => DrawerToggle())"/>
+            <MudBreadcrumbs Items="PathService.Items">
+                <ItemTemplate Context="item">
+                    <MudLink OnClick="@ReturnToPath(item)">@item.Text.ToUpper()</MudLink>
+                </ItemTemplate>
+            </MudBreadcrumbs>
+            <MudSpacer/>
+        </Authorized>
+        <NotAuthorized>
+            <MudSpacer/>
+            <MudButtonGroup DisableElevation="true" Variant="Variant.Outlined" Color="Color.Primary">
+                <MudButton Href="/users/login">
+                    <MudText>
+                        Sign In
+                    </MudText>
+                </MudButton>
+                <MudButton Href="/users/register">
+                    <MudText>
+                        Sign Up
+                    </MudText>
+                </MudButton>
+            </MudButtonGroup>
+        </NotAuthorized>
+    </AuthorizeView>
+    <MudToggleIconButton ToggledChanged="OnThemeChanged"
+                         Toggled="@UserAccountService.CurrentSystemSettings.IsDarkMode"
+                         Icon="@Icons.Material.Filled.LightMode"
+                         Title="Change to Dark Mode"
+                         ToggledIcon="@Icons.Material.Outlined.DarkMode"
+                         ToggledTitle="Change to Light Mode"
+                         Class="ml-4"/>
+</MudAppBar>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> DrawerOpenChanged { get; set; }
+
+    private readonly MudTheme _theme = new();
+
+    private bool _drawerOpen;
+
+    private bool _isDarkMode;
+
+    protected override void OnInitialized()
+    {
+        PathService.OnChange += StateHasChanged;
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (!e.Location.Contains("organisations") && !e.Location.Contains("list"))
+        {
+            PathService.Clear();
+        }
+    }
+
+    private void Dispose()
+    {
+        PathService.OnChange -= StateHasChanged;
+    }
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+        DrawerOpenChanged.InvokeAsync(_drawerOpen);
+    }
+
+    async Task OnThemeChanged(bool toggled)
+    {
+        if (UserAccountService.CurrentUser != null)
+        {
+            UserAccountService.CurrentSystemSettings.Theme = toggled ? Theme.Dark : Theme.Light;
+            await Client.PutAsJsonAsync($"api/users/{UserAccountService.CurrentUser.Id}/preference", UserAccountService.CurrentSystemSettings);
+            await UserAccountService.UpdateCurrentSystemSettingsAsync();
+        }
+    }
+
+    private EventCallback ReturnToPath(BreadcrumbItem value)
+    {
+        return EventCallback.Factory.Create(this, () =>
+        {
+            PathService.ReturnToPath(value);
+            if (value.Href != null)
+            {
+                NavigationManager.NavigateTo(value.Href);
+            }
+        });
+    }
+
+}

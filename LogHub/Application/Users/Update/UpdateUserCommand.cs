@@ -1,5 +1,5 @@
-﻿using Application.Abstracts.Messaging;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Users;
+using MediatR;
 
 namespace Application.Users.Update;
 
@@ -8,4 +8,4 @@ public record UpdateUserCommand(
     string Name,
     string? Avatar,
     string Profession,
-    string? Orcid) : ICommand;
+    string? Orcid) : IRequest;

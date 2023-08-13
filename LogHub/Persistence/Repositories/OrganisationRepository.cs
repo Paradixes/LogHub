@@ -1,5 +1,4 @@
-﻿using Domain.Entities.Middlewares;
-using Domain.Entities.Organisations;
+﻿using Domain.Entities.Organisations;
 using Domain.Entities.Users;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,31 +24,9 @@ public class OrganisationRepository : IOrganisationRepository
         return organisation?.RootOrganisation;
     }
 
-    public async Task<List<OrganisationMembership>> GetSubOrganisationOwnerMembershipsAsync(
-        OrganisationId organisationId)
-    {
-        return await _context.Organisations
-            .Include(o => o.SubOrganisations)
-            .ThenInclude(o => o.Memberships)
-            .ThenInclude(m => m.User)
-            .Include(o => o.SubOrganisations)
-            .ThenInclude(o => o.Memberships)
-            .ThenInclude(m => m.Organisation)
-            .Where(o => o.Id == organisationId)
-            .SelectMany(o => o.SubOrganisations)
-            .SelectMany(o => o.Memberships)
-            .Where(m => m.Role == OrganisationRole.Owner)
-            .ToListAsync();
-    }
-
     public void Add(Organisation organisation)
     {
         _context.Organisations.Add(organisation);
-    }
-
-    public void Update(Organisation organisation)
-    {
-        _context.Organisations.Update(organisation);
     }
 
     public async Task<User?> GetOwnerAsync(OrganisationId organisationId)
@@ -72,6 +49,13 @@ public class OrganisationRepository : IOrganisationRepository
     {
         return await _context.Organisations
             .Include(o => o.SubOrganisations)
+            .Include(o => o.Memberships)
+            .Include(o => o.Settings)
             .FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public void Delete(Organisation organisation)
+    {
+        _context.Organisations.Remove(organisation);
     }
 }

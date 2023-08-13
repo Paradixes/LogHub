@@ -1,5 +1,6 @@
-﻿using Application.Abstracts.Messaging;
+﻿using Domain.Entities.Users;
+using MediatR;
 
 namespace Application.UserPreference.GetById;
 
-public sealed record GetUserPreferenceByIdQuery(Guid UserId) : IQuery<UserPreferenceResponse>;
+public sealed record GetUserPreferenceByIdQuery(UserId UserId) : IRequest<UserPreferenceResponse>;

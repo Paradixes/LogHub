@@ -1,7 +1,9 @@
 ﻿@page "/organisations/join"
+@using System.Net
 @layout MainLayout
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject ILogHubAuthenticationService AuthenticationService
 
 <MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
     <MudText Align="Align.Left" Typo="Typo.h4">
@@ -24,7 +26,9 @@
                           Required="true"/>
             @if (_notFound)
             {
-                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mt-4">
+                <MudAlert Severity="Severity.Error"
+                          Variant="Variant.Outlined"
+                          Class="mt-4">
                     Organisation not found
                 </MudAlert>
             }
@@ -39,23 +43,39 @@
         </MudCardActions>
     </MudCard>
 
-    @if (_organisation is not null)
+    @if (_organisation != null && _organisation.Id != Guid.Empty)
     {
-        <MudText Typo="Typo.h6">
-            @(_organisation.Name)
-        </MudText>
-        <MudText Typo="Typo.body1">
-            @(_organisation.Description)
-        </MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinOrganisation">
-            Join
-        </MudButton>
+        <MudCard Class="pt-2">
+            <MudCardHeader>
+                <MudAvatar>
+                    @if (_organisation.LogoUri is not null)
+                    {
+                        <MudImage Src="@_organisation.LogoUri.ToString()"/>
+                    }
+                    else if (_organisation.Name.Length > 0)
+                    {
+                        @_organisation.Name[0]
+                    }
+                </MudAvatar>
+                <MudText Typo="Typo.h6" Class="px-2">
+                    @(_organisation.Name)
+                </MudText>
+            </MudCardHeader>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           FullWidth="true"
+                           OnClick="JoinOrganisation">
+                    Join
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
     }
 </MudContainer>
 
 
 @code {
-    OrganisationModel? _organisation;
+    OrganisationModel? _organisation = new();
 
     string _code = "";
 
@@ -63,8 +83,14 @@
 
     async Task SearchOrganisation()
     {
-        _organisation = await Http.GetFromJsonAsync<OrganisationModel?>($"api/organisations/{_code}/invitation");
-        if (_organisation is null)
+        var response = await Http.GetAsync($"api/organisations/{_code}/invitation");
+
+        if (response.IsSuccessStatusCode)
+        {
+            _organisation = await response.Content.ReadFromJsonAsync<OrganisationModel>();
+            _notFound = false;
+        }
+        else if (response.StatusCode == HttpStatusCode.NotFound)
         {
             _notFound = true;
         }
@@ -72,12 +98,11 @@
 
     async Task JoinOrganisation()
     {
-        var user = await Http.GetFromJsonAsync<UserAccountModel>("api/users");
+        var id = await AuthenticationService.GetLocalUserIdAsync();
 
-        await Http.PostAsJsonAsync($"api/organisations/{_code}/invitation", user);
+        await Http.PostAsJsonAsync($"api/organisations/{_code}/invitation", id);
 
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/", true);
     }
-
 
 }

@@ -26,16 +26,16 @@ public sealed class UserRepository : IUserRepository
             .FirstOrDefaultAsync(user => user.Email == email);
     }
 
-    public async Task<List<Organisation?>> GetOrganisationsAsync(UserId userId)
+    public async Task<List<Organisation>> GetOrganisationsAsync(UserId userId)
     {
         return await _context.Users
             .Where(user => user.Id == userId)
             .SelectMany(user => user.OrganisationMemberships)
-            .Select(membership => membership.Organisation)
+            .Select(membership => membership.Organisation!)
             .ToListAsync();
     }
 
-    public async Task<List<Organisation?>> GetRootOrganisationsAsync(UserId userId)
+    public async Task<List<Organisation>> GetRootOrganisationsAsync(UserId userId)
     {
         var organisations = await _context.Users
             .Include(user => user.OrganisationMemberships)
@@ -47,7 +47,7 @@ public sealed class UserRepository : IUserRepository
             .ToListAsync();
 
         var rootOrganisations = organisations
-            .Select(o => o.RootOrganisation)
+            .Select(organisation => organisation?.RootOrganisation!)
             .Distinct()
             .ToList();
 
@@ -68,12 +68,5 @@ public sealed class UserRepository : IUserRepository
     public void Update(User user)
     {
         _context.Users.Update(user);
-    }
-
-    public Task<List<User>> GetByOrganisationIdAsync(OrganisationId organisationId)
-    {
-        return _context.Users
-            .Where(user => user.OrganisationMemberships.Any(membership => membership.OrganisationId == organisationId))
-            .ToListAsync();
     }
 }

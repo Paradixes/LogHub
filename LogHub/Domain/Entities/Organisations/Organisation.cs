@@ -16,6 +16,8 @@ public class Organisation : Entity<OrganisationId>
 
     private readonly List<Repository> _repositories = new();
 
+    private readonly List<OrganisationSetting> _settings = new();
+
     private readonly List<Organisation> _subOrganisations = new();
 
     private Organisation() { }
@@ -27,6 +29,8 @@ public class Organisation : Entity<OrganisationId>
     public IEnumerable<Repository> Repositories => _repositories.ToList();
 
     public IEnumerable<OrganisationMembership> Memberships => _memberships.ToList();
+
+    public IEnumerable<OrganisationSetting> Settings => _settings.ToList();
 
     public OrganisationId? ParentOrganisationId { get; private set; }
 
@@ -67,6 +71,11 @@ public class Organisation : Entity<OrganisationId>
         };
 
         organisation._memberships.Add(new OrganisationMembership(organisation.Id, creatorId, OrganisationRole.Owner));
+
+        foreach (var option in Enum.GetValues<OrganisationOption>())
+        {
+            organisation._settings.Add(new OrganisationSetting(organisation.Id, option, OrganisationRole.Owner));
+        }
 
         if (parentOrganisationId is null)
         {
@@ -126,18 +135,13 @@ public class Organisation : Entity<OrganisationId>
         _dataManagementPlanTemplates.Remove(dataManagementPlan);
     }
 
-    public void UpdateDetails(UserId userId, string name, string? description)
+    public void UpdateDetails(string name, string? description)
     {
-        if (!_memberships.Any(x => x.UserId == userId && x.Role == OrganisationRole.Owner))
-        {
-            return;
-        }
-
         Name = name;
         Description = description;
     }
 
-    public void SetLogo(Uri logoUri)
+    public void SetLogo(Uri? logoUri)
     {
         LogoUri = logoUri;
     }
@@ -152,13 +156,29 @@ public class Organisation : Entity<OrganisationId>
         _memberships.Add(new OrganisationMembership(Id, managerId, role));
     }
 
-    public void UpdateMembership(UserId managerId, OrganisationRole role)
+    public void UpdateMembership(UserId? userId, OrganisationRole role)
     {
-        var membership = _memberships.SingleOrDefault(x => x.UserId == managerId);
+        if (userId is null)
+        {
+            return;
+        }
+
+        if (role == OrganisationRole.Owner)
+        {
+            _memberships.ForEach(x =>
+            {
+                if (x.Role == OrganisationRole.Owner)
+                {
+                    x.UpdateRole(OrganisationRole.Admin);
+                }
+            });
+        }
+
+        var membership = _memberships.SingleOrDefault(x => x.UserId == userId);
 
         if (membership is null)
         {
-            AddMembership(managerId, role);
+            AddMembership(userId, role);
             return;
         }
 
@@ -174,5 +194,17 @@ public class Organisation : Entity<OrganisationId>
         }
 
         _memberships.Remove(membership);
+    }
+
+    public void UpdateSetting(OrganisationOption option, OrganisationRole role)
+    {
+        var setting = _settings.SingleOrDefault(x => x.Option == option);
+        if (setting is null)
+        {
+            _settings.Add(new OrganisationSetting(Id, option, role));
+            return;
+        }
+
+        setting.UpdateRole(role);
     }
 }

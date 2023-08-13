@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Endpoints;
 
-public class UserPreference : ICarterModule
+public class UserPreferences : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {

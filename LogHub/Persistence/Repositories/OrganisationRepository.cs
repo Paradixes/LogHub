@@ -50,6 +50,7 @@ public class OrganisationRepository : IOrganisationRepository
         return await _context.Organisations
             .Include(o => o.SubOrganisations)
             .Include(o => o.Memberships)
+            .Include(o => o.Settings)
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 

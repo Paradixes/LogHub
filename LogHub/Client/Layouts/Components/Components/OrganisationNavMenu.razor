@@ -28,7 +28,10 @@
                         User List
                     </MudNavLink>
                     <MudNavLink Href="@GetUrl("project", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
-                        Project List
+                        Repository List
+                    </MudNavLink>
+                    <MudNavLink Href="@GetUrl("setting", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">
+                        Settings
                     </MudNavLink>
                 </MudNavGroup>
             }

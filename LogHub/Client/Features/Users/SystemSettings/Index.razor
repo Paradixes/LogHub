@@ -1,10 +1,4 @@
 ﻿@page "/users/system"
-@using Client.Services.States
-@inject ILogHubAuthenticationService AuthenticationService
-@inject HttpClient Client
-@inject NavigationManager NavigationManager
-@inject IUserAccountService UserAccountService
-@inject ISnackbar Snackbar
 @layout FormLayout
 @attribute [Authorize]
 
@@ -13,7 +7,7 @@
         System Settings
     </MudText>
     <MudDivider Class="py-4"/>
-    <MudForm UserAccountService.CurrentSystemSettings="@UserAccountService.CurrentSystemSettings"
+    <MudForm Model="@UserAccountService.CurrentSystemSettings"
              @ref="@_form"
              ValidationDelay="0">
         <MudGrid Spacing="2">

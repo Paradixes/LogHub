@@ -19,8 +19,12 @@
         _index = 1;
         <UserList CurrentOrganisation="@CurrentOrganisation"/>
         break;
-    case "role-list":
+    case "repository-list":
         _index = 2;
+        break;
+    case "setting-list":
+        _index = 3;
+        <SettingList Id="@CurrentOrganisation.Id"/>
         break;
 }
 

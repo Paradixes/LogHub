@@ -2,9 +2,6 @@
 using Application.Organisations.Delete;
 using Application.Organisations.GetById;
 using Application.Organisations.GetByInvitationCode;
-using Application.Organisations.GetSubOrganisations;
-using Application.Organisations.GetUsers;
-using Application.Organisations.JoinByInvitationCode;
 using Application.Organisations.Update;
 using Application.Organisations.UpdateInvitationCode;
 using Carter;
@@ -57,20 +54,6 @@ public class Organisations : ICarterModule
             }
         });
 
-        app.MapGet("api/organisations/{id:guid}/sub-organisations", async (Guid id, ISender sender) =>
-        {
-            var query = new GetSubOrganisationsQuery(new OrganisationId(id));
-
-            return Results.Ok(await sender.Send(query));
-        });
-
-        app.MapGet("api/organisations/{id:guid}/users", async (Guid id, ISender sender) =>
-        {
-            var query = new GetUsersByOrganisationQuery(new OrganisationId(id));
-
-            return Results.Ok(await sender.Send(query));
-        });
-
         app.MapGet("api/organisations/{code}/invitation", async (string code, ISender sender) =>
         {
             try
@@ -78,24 +61,6 @@ public class Organisations : ICarterModule
                 var query = new GetOrganisationByInvitationCodeQuery(code);
 
                 return Results.Ok(await sender.Send(query));
-            }
-            catch (OrganisationNotFoundException e)
-            {
-                return Results.NotFound(e.Message);
-            }
-        });
-
-        app.MapPost("api/organisations/{code}/invitation", async (
-            [FromBody] Guid userId,
-            string code,
-            ISender sender) =>
-        {
-            try
-            {
-                var command = new JoinOrganisationByInvitationCodeCommand(new UserId(userId), code);
-                await sender.Send(command);
-
-                return Results.Ok();
             }
             catch (OrganisationNotFoundException e)
             {

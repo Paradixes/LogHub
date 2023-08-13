@@ -38,16 +38,22 @@
         <_ContentIncludedByDefault Remove="Features\Components\Components\OrganisationNavMenu.razor"/>
         <_ContentIncludedByDefault Remove="Features\Components\Components\ProjectNavMenu.razor"/>
         <_ContentIncludedByDefault Remove="Features\Organisations\List\ProjectList\Index.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\BackgroundLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\AppBar.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\Components\OrganisationNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\Components\ProjectNavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\Components\NavMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\FormLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\MainLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Layouts\_imports.razor"/>
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="Features\Components\LoadingScreen.razor"/>
         <AdditionalFiles Include="Features\Organisations\List\Components\EditOrganisationDialog.razor"/>
-        <AdditionalFiles Include="Layouts\BackgroundLayout.razor"/>
-        <AdditionalFiles Include="Layouts\Components\AppBar.razor"/>
-        <AdditionalFiles Include="Layouts\Components\NavMenu.razor"/>
-        <AdditionalFiles Include="Layouts\FormLayout.razor"/>
-        <AdditionalFiles Include="Layouts\MainLayout.razor"/>
+        <AdditionalFiles Include="Layouts\Components\Components\OrganisationNavMenu.razor"/>
+        <AdditionalFiles Include="Layouts\Components\Components\ProjectNavMenu.razor"/>
+        <AdditionalFiles Include="Layouts\_imports.razor"/>
     </ItemGroup>
 
 

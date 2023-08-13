@@ -1,0 +1,90 @@
+﻿@using System.Reflection
+@layout FormLayout
+@attribute [Authorize]
+
+<MudGrid Spacing="2" Justify="Justify.Center">
+    <MudItem xs="12">
+        @foreach (var option in _settings)
+        {
+            <MudCard Elevation="4" Outlined="true">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">
+                            @_enumInfoAttributes[option.Option].Title
+                        </MudText>
+                        <MudText Typo="Typo.body2">
+                            @_enumInfoAttributes[option.Option].Description
+                        </MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudSelect T="OrganisationRole"
+                                   Label="Permission"
+                                   Value="option.Role"
+                                   For="@(() => option.Role)"
+                                   ValueChanged="@(role => OnValueChanged(option.Option, role))"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   Style="width: 100px">
+                            @foreach (var role in Enum.GetValues(typeof(OrganisationRole)))
+                            {
+                                <MudSelectItem Value="@((OrganisationRole)role)">
+                                    @role.ToString()
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </CardHeaderActions>
+                </MudCardHeader>
+            </MudCard>
+        }
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    readonly Dictionary<OrganisationOption, EnumInfoAttribute> _enumInfoAttributes = new();
+
+    List<OrganisationSettingsModel> _settings = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == Guid.Empty)
+            return;
+
+        _settings = await Client.GetFromJsonAsync<List<OrganisationSettingsModel>>($"api/organisations/{Id}/settings") ?? new List<OrganisationSettingsModel>();
+
+        var enumType = typeof(OrganisationOption);
+        foreach (var option in Enum.GetValues(enumType))
+        {
+            if (option == null)
+                continue;
+
+            var optionInfo = enumType.GetMember(option.ToString()!).FirstOrDefault();
+
+            if (optionInfo == null)
+                continue;
+
+            var attribute = optionInfo.GetCustomAttribute<EnumInfoAttribute>();
+            if (attribute == null)
+                continue;
+
+            _enumInfoAttributes.Add((OrganisationOption)option, attribute);
+            if (_settings.Any(x => x.Option == (OrganisationOption)option))
+                continue;
+
+            var setting = new OrganisationSettingsModel(Id, (OrganisationOption)option, OrganisationRole.Owner);
+            await Client.PutAsJsonAsync($"api/organisations/{Id}/settings", setting);
+            _settings.Add(setting);
+        }
+    }
+
+    private async Task OnValueChanged(OrganisationOption option, OrganisationRole role)
+    {
+        var setting = _settings.First(settings => settings.Option == option);
+        setting.Role = role;
+        await Client.PutAsJsonAsync($"api/organisations/{Id}/settings", setting);
+        Snackbar.Add("Organisation settings updated", Severity.Success);
+    }
+
+}

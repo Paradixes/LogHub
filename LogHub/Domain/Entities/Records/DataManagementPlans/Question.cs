@@ -8,16 +8,16 @@ public class Question : Entity<QuestionId>
 
     public RecordId DataManagementPlanId { get; private init; } = null!;
 
-    public DataManagementPlan DataManagementPlan { get; private set; } = null!;
+    public DataManagementPlanTemplate DataManagementPlanTemplate { get; private set; } = null!;
 
-    public string Title { get; private init; } = null!;
+    public string Title { get; private set; } = null!;
 
-    public string? Description { get; private init; }
+    public string? Description { get; private set; }
 
     public string? Answer { get; private set; }
 
     public static Question Create(
-        DataManagementPlanId dataManagementPlanId,
+        RecordId dataManagementPlanId,
         string title,
         string? description)
     {
@@ -34,5 +34,11 @@ public class Question : Entity<QuestionId>
     public void UpdateAnswer(string answer)
     {
         Answer = answer;
+    }
+
+    public void UpdateDetails(string title, string? description)
+    {
+        Title = title;
+        Description = description;
     }
 }

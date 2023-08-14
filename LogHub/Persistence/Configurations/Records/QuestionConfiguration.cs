@@ -14,7 +14,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
             questionId => questionId.Value,
             value => new QuestionId(value));
 
-        builder.HasOne(q => q.DataManagementPlan)
+        builder.HasOne(q => q.DataManagementPlanTemplate)
             .WithMany(dmp => dmp.Questions)
             .HasForeignKey(q => q.DataManagementPlanId);
 

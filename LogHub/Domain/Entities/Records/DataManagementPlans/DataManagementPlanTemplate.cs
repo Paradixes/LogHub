@@ -49,7 +49,7 @@ public class DataManagementPlanTemplate : Record
 
     public void AddQuestion(string title, string? description)
     {
-        var question = Question.Create((Id as DataManagementPlanId)!, title, description);
+        var question = Question.Create(Id, title, description);
 
         _questions.Add(question);
     }
@@ -64,5 +64,19 @@ public class DataManagementPlanTemplate : Record
         }
 
         _questions.Remove(question);
+    }
+
+    public void UpdateQuestion(QuestionId questionId, string title, string? description)
+    {
+        var question = _questions.FirstOrDefault(q => q.Id == questionId);
+
+        if (question is null)
+        {
+            AddQuestion(title, description);
+        }
+        else
+        {
+            question.UpdateDetails(title, description);
+        }
     }
 }

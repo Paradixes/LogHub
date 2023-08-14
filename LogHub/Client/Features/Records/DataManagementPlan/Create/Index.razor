@@ -1,0 +1,128 @@
+﻿@page "/dmp-templates/create"
+
+<MudContainer MaxWidth="MaxWidth.Medium" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        Create Data Management Plan Template
+    </MudText>
+    <MudDivider Class="py-3"/>
+    <MudForm Model="@Model"
+             @ref="@_form"
+             ValidationDelay="0">
+
+        <MudGrid Spacing="2">
+            <MudText Typo="Typo.h6" Align="Align.Center">
+                General Information
+            </MudText>
+
+            <MudItem xs="12">
+                <MudTextField Label="Data Management Plan Template Title"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Title"
+                              For="@(() => Model.Title)"
+                              OnlyValidateIfDirty="true"
+                              Required="true"/>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudSelect Label="Organisation"
+                           @bind-Value="@Model.OrganisationId"
+                           For="@(() => Model.OrganisationId)"
+                           AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@Guid.Empty">None</MudSelectItem>
+                    @foreach (var organisation in _parentOrganisations)
+                    {
+                        <MudSelectItem Value="@organisation.Id">@organisation.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Description"
+                              For="@(() => Model.Description)"
+                              Lines="10"/>
+            </MudItem>
+
+            <MudDivider Class="my-3"/>
+
+            <MudText Typo="Typo.h6" Align="Align.Center">
+                Add Questions
+            </MudText>
+
+            @foreach (var question in Model.Questions)
+            {
+                <MudItem xs="12">
+                    <MudTextField Label="Question"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@question.Title"
+                                  For="@(() => question.Title)"
+                                  OnlyValidateIfDirty="true"
+                                  Required="true"/>
+                </MudItem>
+
+                <MudItem xs="12" Class="mb-3">
+                    <MudTextField Label="Description"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@question.Description"
+                                  For="@(() => question.Description)"
+                                  Lines="5"/>
+                </MudItem>
+            }
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Class="mt-4"
+                           OnClick="@(() => Model.Questions.Add(new QuestionModel()))">
+                    Add Question
+                </MudButton>
+            </MudItem>
+
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   OnClick="SubmitAsync"
+                   Disabled="@(!_form.IsValid)">
+            Create
+        </MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+    private MudForm _form = new();
+
+    private DataManagementPlanModel Model { get; } = new();
+
+    private List<OrganisationModel> _parentOrganisations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = UserAccountService.CurrentUser?.Id ?? Guid.Empty;
+        _parentOrganisations = await Client.GetFromJsonAsync<List<OrganisationModel>>($"/api/users/{userId}/organisations") ?? new List<OrganisationModel>();
+        Model.Questions.Add(new QuestionModel());
+        Model.CreatorId = userId;
+    }
+
+    private async Task SubmitAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        var response = await Client.PostAsJsonAsync("/api/dmp-templates/", Model);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Data Management Plan Template '{Model.Title}' created.", Severity.Success);
+
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            NavigationManager.NavigateTo($"/dmp-templates/{id}");
+        }
+    }
+
+}

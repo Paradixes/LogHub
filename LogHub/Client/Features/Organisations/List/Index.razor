@@ -23,8 +23,12 @@
     case "repository-list":
         _index = 2;
         break;
-    case "setting-list":
+    case "dmp-template-list":
         _index = 3;
+        <DataManagementPlanTemplateList Id="@CurrentOrganisation.Id" Role="@Role"/>
+        break;
+    case "setting-list":
+        _index = 4;
         <SettingList Id="@CurrentOrganisation.Id" Role="@Role"/>
         break;
 }

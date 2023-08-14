@@ -30,6 +30,7 @@
     <MudTabPanel Text="Sub-Organisation List" Icon="@Icons.Material.Filled.Apartment"/>
     <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
     <MudTabPanel Text="Repository List" Icon="@Icons.Material.Filled.Science"/>
+    <MudTabPanel Text="DMP Template List" Icon="@Icons.Material.Filled.LibraryBooks"/>
     <MudTabPanel Text="Settings" Icon="@Icons.Material.Filled.Settings"/>
 </MudTabs>
 
@@ -75,6 +76,9 @@
                 NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/repository-list");
                 break;
             case 3:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/dmp-template-list");
+                break;
+            case 4:
                 NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/setting-list");
                 break;
         }

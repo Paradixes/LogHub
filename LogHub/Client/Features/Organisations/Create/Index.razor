@@ -1,9 +1,6 @@
 ﻿@page "/organisations/create"
 @layout FormLayout
 @attribute [Authorize(Roles = "DataManager")]
-@inject ILogHubAuthenticationService AuthenticationService
-@inject NavigationManager NavigationManager
-@inject HttpClient Client
 
 <MudContainer MaxWidth="MaxWidth.Small" Elevation="5">
     <MudText Align="Align.Left" Typo="Typo.h4">
@@ -69,7 +66,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = await AuthenticationService.GetLocalUserIdAsync();
+        var userId = UserAccountService.CurrentUser?.Id ?? Guid.Empty;
         _parentOrganisations = await Client.GetFromJsonAsync<List<OrganisationModel>>($"/api/users/{userId}/organisations")
                                ?? new List<OrganisationModel>();
     }
@@ -86,7 +83,7 @@
         {
             return;
         }
-        Model.OwnerId = await AuthenticationService.GetLocalUserIdAsync() ?? Guid.Empty;
+        Model.OwnerId = UserAccountService.CurrentUser?.Id ?? Guid.Empty;
         await Client.PostAsJsonAsync("/api/organisations", Model);
         NavigationManager.NavigateTo("/", true);
     }

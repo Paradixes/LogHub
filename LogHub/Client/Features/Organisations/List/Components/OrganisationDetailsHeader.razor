@@ -10,10 +10,13 @@
         @CurrentOrganisation.Name
     </MudText>
 
-    <MudIconButton Size="@Size.Medium"
-                   Color="Color.Primary"
-                   Icon="@Icons.Material.Outlined.Edit"
-                   OnClick="@(() => UpdateOrganisation(CurrentOrganisation))"/>
+    @if (Role <= OrganisationPermissionService.GetRole(OrganisationOption.UpdateDetails))
+    {
+        <MudIconButton Size="@Size.Medium"
+                       Color="Color.Primary"
+                       Icon="@Icons.Material.Outlined.Edit"
+                       OnClick="@(() => UpdateOrganisation(CurrentOrganisation))"/>
+    }
 
 </MudStack>
 
@@ -27,6 +30,7 @@
     <MudTabPanel Text="Sub-Organisation List" Icon="@Icons.Material.Filled.Apartment"/>
     <MudTabPanel Text="User List" Icon="@Icons.Material.Filled.People"/>
     <MudTabPanel Text="Repository List" Icon="@Icons.Material.Filled.Science"/>
+    <MudTabPanel Text="DMP Template List" Icon="@Icons.Material.Filled.LibraryBooks"/>
     <MudTabPanel Text="Settings" Icon="@Icons.Material.Filled.Settings"/>
 </MudTabs>
 
@@ -37,6 +41,9 @@
 
     [Parameter]
     public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    [Parameter]
+    public OrganisationRole Role { get; set; } = OrganisationRole.Guest;
 
     async Task UpdateOrganisation(OrganisationModel organisation)
     {
@@ -67,6 +74,12 @@
                 break;
             case 2:
                 NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/repository-list");
+                break;
+            case 3:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/dmp-template-list");
+                break;
+            case 4:
+                NavigationManager.NavigateTo($"/organisations/{CurrentOrganisation.Id}/setting-list");
                 break;
         }
     }

@@ -37,10 +37,6 @@
                         Name="@context.Item.Organisation.Name"
                         Size="Size.Small"/>
             </CellTemplate>
-            <EditTemplate>
-                <AvatarUploador OriginImageUri="@context.Item.Organisation.LogoUri?.ToString()"
-                                OnImageUpdated="s => context.Item.Organisation.Logo = s"/>
-            </EditTemplate>
         </TemplateColumn>
         <TemplateColumn Title="Name">
             <CellTemplate>
@@ -66,14 +62,20 @@
         <PropertyColumn Property="x => x.User.Email" Title="Owner Email"/>
         <TemplateColumn Sortable="false" Filterable="false" StickyRight="true">
             <CellTemplate>
-                <MudIconButton Size="@Size.Small"
-                               Icon="@Icons.Material.Outlined.Edit"
-                               Color="Color.Primary"
-                               OnClick="@(() => UpdateOrganisation(context.Item.Organisation))"/>
-                <MudIconButton Size="@Size.Small"
-                               Icon="@Icons.Material.Outlined.Delete"
-                               Color="Color.Error"
-                               OnClick="@(() => DeleteOrganisation(context.Item.Organisation))"/>
+                @if (Role <= OrganisationPermissionService.GetRole(OrganisationOption.UpdateSubOrganisations))
+                {
+                    <MudIconButton Size="@Size.Small"
+                                   Icon="@Icons.Material.Outlined.Edit"
+                                   Color="Color.Primary"
+                                   OnClick="@(() => UpdateOrganisation(context.Item.Organisation))"/>
+                }
+                @if (Role <= OrganisationPermissionService.GetRole(OrganisationOption.RemoveSubOrganisations))
+                {
+                    <MudIconButton Size="@Size.Small"
+                                   Icon="@Icons.Material.Outlined.Delete"
+                                   Color="Color.Error"
+                                   OnClick="@(() => DeleteOrganisation(context.Item.Organisation))"/>
+                }
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -107,6 +109,9 @@
 
     [Parameter]
     public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    [Parameter]
+    public OrganisationRole Role { get; set; } = OrganisationRole.Guest;
 
     protected override async Task OnParametersSetAsync()
     {

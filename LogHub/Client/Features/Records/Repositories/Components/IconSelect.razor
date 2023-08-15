@@ -1,0 +1,50 @@
+﻿@using System.Reflection
+<MudMenu Icon="@InitialIcon"
+         Color="@Color"
+         Size="@Size"
+         MaxHeight="200"
+         FullWidth="false"
+         AnchorOrigin="Origin.BottomLeft"
+         TransformOrigin="Origin.TopLeft">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        @foreach (var icon in _iconList)
+        {
+            <MudIconButton Icon="@icon"
+                           OnClick="() => IconSelected.InvokeAsync(icon)"
+                           Size="Size.Medium"
+                           Color="@Color"/>
+        }
+    </MudContainer>
+</MudMenu>
+
+@code {
+
+    [Parameter]
+    public string InitialIcon { get; set; } = Icons.Material.Filled.Dataset;
+
+    [Parameter]
+    public EventCallback<string> IconSelected { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Default;
+
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    readonly List<string> _iconList = new();
+
+    protected override void OnInitialized()
+    {
+        var type = typeof(Icons.Material.Outlined);
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
+        {
+            if (!field.IsLiteral || field.FieldType != typeof(string))
+            {
+                continue;
+            }
+            var icon = field.GetValue(null);
+            _iconList.Add(icon?.ToString() ?? "");
+        }
+    }
+
+}

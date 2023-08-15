@@ -1,0 +1,109 @@
+﻿@layout FormLayout
+@attribute [Authorize]
+
+<MudToolBar>
+    <MudText Typo="Typo.h6">
+        Data Management Plan Templates
+    </MudText>
+    <MudSpacer/>
+    <MudTextField T="string"
+                  Placeholder="Search"
+                  Adornment="Adornment.Start"
+                  Immediate="true"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
+                  IconSize="Size.Medium"
+                  Class="mt-0"
+                  TextChanged="SearchTextChanged">
+    </MudTextField>
+    <MudButton Variant="Variant.Outlined"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               Class="ml-4"
+               Href="/dmp-templates/create">
+        Add
+    </MudButton>
+
+</MudToolBar>
+
+<MudList Clickable="true">
+    @foreach (var dmp in FilteredDataManagementPlans)
+    {
+        <MudDivider/>
+        <MudListItem OnClick="() => OnItemClicked(dmp)">
+            <MudGrid Spacing="0">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h6">@dmp.Title</MudText>
+                </MudItem>
+                <MudItem xs="10">
+                    <MudText Typo="Typo.body2">@dmp.Questions.Count Questions</MudText>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudStack Justify="Justify.FlexEnd" Row="true" Spacing="1">
+                        <Avatar ImageUri="@dmp.Creator.AvatarUri"
+                                Name="@dmp.Creator.Name"
+                                Size="Size.Small"/>
+                        <MudText Typo="Typo.body1">@dmp.Creator.Name</MudText>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudListItem>
+        <MudDivider/>
+    }
+</MudList>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public OrganisationRole Role { get; set; }
+
+    List<DataManagementPlanModel> DataManagementPlans { get; set; } = new();
+
+    List<DataManagementPlanModel> FilteredDataManagementPlans { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        DataManagementPlans = await Client.GetFromJsonAsync<List<DataManagementPlanModel>>($"api/organisations/{Id}/dmp-templates") ?? new List<DataManagementPlanModel>();
+
+        foreach (var dataManagementPlan in DataManagementPlans)
+        {
+            var user = await Client.GetFromJsonAsync<UserAccountModel>($"api/users/{dataManagementPlan.CreatorId}") ?? new UserAccountModel();
+            dataManagementPlan.Creator = user;
+        }
+
+        FilteredDataManagementPlans = DataManagementPlans;
+    }
+
+    private void SearchTextChanged(string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            FilteredDataManagementPlans = DataManagementPlans;
+            return;
+        }
+
+        var dataManagementPlans = DataManagementPlans.Where(
+            dmp =>
+            {
+                var title = dmp.Title.ToLower();
+                var description = dmp.Description != null ? dmp.Description.ToLower() : "";
+                var creator = dmp.Creator.Name.ToLower();
+                var search = searchString.ToLower();
+                return title.Contains(search) || description.Contains(search) || creator.Contains(search);
+            }).ToList();
+
+        FilteredDataManagementPlans = dataManagementPlans;
+    }
+
+    private void OnItemClicked(DataManagementPlanModel dmp)
+    {
+        PathService.AddPath(
+            dmp.Title,
+            $"/dmp-templates/{dmp.Id}"
+            );
+        NavigationManager.NavigateTo($"/dmp-templates/{dmp.Id}");
+    }
+
+}

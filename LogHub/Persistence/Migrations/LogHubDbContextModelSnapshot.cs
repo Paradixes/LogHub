@@ -33,7 +33,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("InitiatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -66,7 +66,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("InitiatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -624,13 +624,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.Question", b =>
                 {
-                    b.HasOne("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", "DataManagementPlan")
+                    b.HasOne("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate", "DataManagementPlanTemplate")
                         .WithMany("Questions")
                         .HasForeignKey("DataManagementPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DataManagementPlan");
+                    b.Navigation("DataManagementPlanTemplate");
                 });
 
             modelBuilder.Entity("Domain.Entities.Records.Labels.Label", b =>
@@ -802,6 +802,11 @@ namespace Persistence.Migrations
                     b.Navigation("RequestToInitiate");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlanTemplate", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
             modelBuilder.Entity("Domain.Entities.Records.Docs.Document", b =>
                 {
                     b.Navigation("Editors");
@@ -823,8 +828,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Records.DataManagementPlans.DataManagementPlan", b =>
                 {
-                    b.Navigation("Questions");
-
                     b.Navigation("Repository");
                 });
 #pragma warning restore 612, 618

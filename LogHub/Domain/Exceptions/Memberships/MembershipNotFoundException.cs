@@ -6,5 +6,5 @@ namespace Domain.Exceptions.Memberships;
 public class MembershipNotFoundException : Exception
 {
     public MembershipNotFoundException(UserId userId, OrganisationId organisationId)
-        : base($"Membership for user {userId} in organisation {organisationId} was not found.") { }
+        : base($"Membership for user {userId.Value} in organisation {organisationId.Value} was not found.") { }
 }

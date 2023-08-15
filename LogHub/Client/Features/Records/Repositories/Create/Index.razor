@@ -1,0 +1,194 @@
+﻿@page "/repositories/create"
+@layout FormLayout
+
+<MudContainer MaxWidth="MaxWidth.Medium" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        Create Repository
+    </MudText>
+    <MudDivider Class="py-3"/>
+    <MudForm Model="@Repository"
+             @ref="@_form"
+             ValidationDelay="0">
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12">
+                <MudText Typo="Typo.h6">
+                    General Information
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="1">
+                <IconSelect InitialIcon="@Repository.Icon"
+                            IconSelected="s => Repository.Icon = s"
+                            Color="Color.Primary"
+                            Size="Size.Large"/>
+            </MudItem>
+
+            <MudItem xs="11">
+                <MudTextField Label="Repository Name"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Repository.Title"
+                              For="@(() => Repository.Title)"
+                              OnlyValidateIfDirty="true"
+                              Required="true"/>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Repository.Description"
+                              For="@(() => Repository.Description)"
+                              Lines="10"/>
+            </MudItem>
+
+            <MudDivider Class="my-3"/>
+
+            <MudText Typo="Typo.h6">
+                Complete your Data Management Plan
+            </MudText>
+
+            <MudItem xs="12">
+                <MudSelect Label="Data Management Plan Template"
+                           Variant="Variant.Outlined"
+                           T="DataManagementPlanModel"
+                           @bind-Value="@Repository.DataManagementPlan"
+                           For="@(() => Repository.DataManagementPlan)"
+                           Required="true"
+                           Class="mb-3">
+                    @* <MudSelectItem Value="@null" Disabled="true"> *@
+                    @*     Select a Data Management Plan Template *@
+                    @* </MudSelectItem> *@
+                    @foreach (var dmpTemplate in DmpTemplates)
+                    {
+                        <MudSelectItem Value="@dmpTemplate">
+                            @dmpTemplate.Title
+                        </MudSelectItem>
+                    }
+
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Repository.DataManagementPlan.Description"
+                              For="@(() => Repository.DataManagementPlan.Description)"
+                              Lines="10"
+                              Disabled="true"/>
+            </MudItem>
+
+            @foreach (var question in Repository.DataManagementPlan.Questions)
+            {
+                <MudItem xs="1">
+                    <MudIcon Color="Color.Tertiary"
+                             Icon="@Icons.Material.Outlined.QuestionAnswer"
+                             Size="Size.Large"/>
+                </MudItem>
+
+                <MudItem xs="11">
+                    <MudText Typo="Typo.h6">
+                        @question.Title
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.body1">
+                        @question.Description
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="12" Class="mb-3">
+                    <MudTextField Label="Answer"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@question.Answer"
+                                  For="@(() => question.Answer)"
+                                  Lines="5"
+                                  Required="true"/>
+                </MudItem>
+
+                <MudDivider Class="my-1"/>
+            }
+
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="my-3"
+                   OnClick="SubmitAsync"
+                   Disabled="@(!_form.IsValid)">
+            Create
+        </MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+    private MudForm _form = new();
+
+    private OrganisationModel Organisation { get; set; } = new();
+
+    private List<DataManagementPlanModel> DmpTemplates { get; set; } = new();
+
+    private RepositoryModel Repository { get; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var id = UserAccountService.CurrentUser?.Id;
+        if (id == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+        var response = await Client.GetAsync($"/api/users/{id}/organisations");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/organisations/join");
+            Snackbar.Add("You are not a member of any organisation.", Severity.Error);
+            return;
+        }
+        var list = await response.Content.ReadFromJsonAsync<List<OrganisationModel>>() ?? new List<OrganisationModel>();
+
+        Organisation = list.FirstOrDefault() ?? new OrganisationModel();
+
+        response = await Client.GetAsync($"/api/organisations/{Organisation.Id}/dmp-templates");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("No Data Management Plan Templates found.", Severity.Error);
+            return;
+        }
+
+        DmpTemplates = await response.Content.ReadFromJsonAsync<List<DataManagementPlanModel>>() ?? new List<DataManagementPlanModel>();
+
+        Repository.DataManagementPlan = DmpTemplates.FirstOrDefault() ?? new DataManagementPlanModel();
+        Repository.Icon = Icons.Material.Outlined.Dataset;
+        Repository.CreatorId = id.Value;
+        Repository.OrganisationId = Organisation.Id;
+        StateHasChanged();
+    }
+
+    private async Task SubmitAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        if (UserAccountService.CurrentUser == null)
+        {
+            return;
+        }
+        Repository.DataManagementPlan.CreatorId = UserAccountService.CurrentUser.Id;
+
+        var response = await Client.PostAsJsonAsync("/api/repositories", Repository);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            NavigationManager.NavigateTo($"/repositories/{id}");
+            Snackbar.Add("Repository created.", Severity.Success);
+        }
+    }
+
+}

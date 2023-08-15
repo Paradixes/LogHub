@@ -1,0 +1,150 @@
+﻿@page "/dmp-templates/{id:guid}"
+
+<MudContainer MaxWidth="MaxWidth.Medium" Elevation="5" Class="pb-5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        Create Data Management Plan Template
+    </MudText>
+    <MudDivider Class="my-3"/>
+    <MudForm Model="@Model"
+             @ref="@_form"
+             ValidationDelay="0">
+
+        <MudGrid Spacing="2">
+            <MudText Typo="Typo.h6" Align="Align.Center">
+                General Information
+            </MudText>
+
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Name"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Title"
+                              For="@(() => Model.Title)"
+                              OnlyValidateIfDirty="true"
+                              Required="true"
+                              Disabled="@(!_isEnable)"/>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudSelect Label="Parent Organisation"
+                           @bind-Value="@Model.OrganisationId"
+                           For="@(() => Model.OrganisationId)"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Disabled="@(!_isEnable)">
+                    <MudSelectItem Value="@Guid.Empty">None</MudSelectItem>
+                    @foreach (var organisation in _parentOrganisations)
+                    {
+                        <MudSelectItem Value="@organisation.Id">@organisation.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Model.Description"
+                              For="@(() => Model.Description)"
+                              Lines="10"
+                              Disabled="@(!_isEnable)"/>
+            </MudItem>
+
+            <MudDivider Class="my-3"/>
+
+            <MudText Typo="Typo.h6" Align="Align.Center">
+                Add Questions
+            </MudText>
+
+            @foreach (var question in Model.Questions)
+            {
+                <MudItem xs="12">
+                    <MudTextField Label="Question"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@question.Title"
+                                  For="@(() => question.Title)"
+                                  OnlyValidateIfDirty="true"
+                                  Required="true"
+                                  Disabled="@(!_isEnable)"/>
+                </MudItem>
+
+                <MudItem xs="12" Class="mb-3">
+                    <MudTextField Label="Description"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@question.Description"
+                                  For="@(() => question.Description)"
+                                  Lines="5"
+                                  Disabled="@(!_isEnable)"/>
+                </MudItem>
+            }
+
+            @if (_isEnable)
+            {
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Class="mt-4"
+                               OnClick="@(() => Model.Questions.Add(new QuestionModel()))">
+                        Add Question
+                    </MudButton>
+                </MudItem>
+            }
+
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   OnClick="SubmitAsync"
+                   Disabled="@(_isEnable && !_form.IsValid)">
+            @if (_isEnable)
+            {
+                <MudText>Update</MudText>
+            }
+            else
+            {
+                <MudText>Edit</MudText>
+            }
+        </MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    bool _isEnable;
+
+    private MudForm _form = new();
+
+    private DataManagementPlanModel Model { get; set; } = new();
+
+    private List<OrganisationModel> _parentOrganisations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = UserAccountService.CurrentUser?.Id ?? Guid.Empty;
+        _parentOrganisations = await Client.GetFromJsonAsync<List<OrganisationModel>>($"/api/users/{userId}/organisations") ?? new List<OrganisationModel>();
+        Model = await Client.GetFromJsonAsync<DataManagementPlanModel>($"/api/dmp-templates/{Id}")
+                ?? new DataManagementPlanModel();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (!_isEnable)
+        {
+            _isEnable = true;
+            return;
+        }
+
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        await Client.PutAsJsonAsync($"/api/dmp-templates/{Id}", Model);
+
+        Snackbar.Add($"Data Management Plan Template '{Model.Title}' created.", Severity.Success);
+        _isEnable = false;
+    }
+
+}

@@ -25,6 +25,6 @@ public class
             throw new OrganisationNotFoundException(request.InvitationCode);
         }
 
-        organisation.AddMembership(request.UserId, OrganisationRole.Guest);
+        organisation.AddMembership(request.UserId, OrganisationRole.Member);
     }
 }

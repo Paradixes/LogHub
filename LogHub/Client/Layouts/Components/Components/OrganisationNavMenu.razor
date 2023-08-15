@@ -16,6 +16,9 @@
         <MudNavLink Href="organisations/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
             New organisation
         </MudNavLink>
+        <MudNavLink Href="dmp-templates/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
+            New DMP Template
+        </MudNavLink>
         <MudDivider Class="my-2"/>
         <MudNavGroup Title="Organisations" Icon="@Icons.Material.Filled.Business">
             @foreach (var organisationModel in OrganisationModels)
@@ -27,8 +30,11 @@
                     <MudNavLink Href="@GetUrl("user", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
                         User List
                     </MudNavLink>
-                    <MudNavLink Href="@GetUrl("project", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
+                    <MudNavLink Href="@GetUrl("repository", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Science">
                         Repository List
+                    </MudNavLink>
+                    <MudNavLink Href="@GetUrl("dmp-template", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.LibraryBooks">
+                        DMP Template List
                     </MudNavLink>
                     <MudNavLink Href="@GetUrl("setting", organisationModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">
                         Settings

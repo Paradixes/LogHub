@@ -5,7 +5,7 @@
              Filterable="true"
              QuickFilter="@QuickFilter"
              Hideable="true"
-             ReadOnly="false"
+             ReadOnly="@(Role > OrganisationPermissionService.GetRole(OrganisationOption.UpdateUserRoles))"
              ShowFilterIcons="false"
              EditMode="DataGridEditMode.Form"
              EditTrigger="DataGridEditTrigger.OnRowClick"
@@ -24,9 +24,16 @@
                       IconSize="Size.Medium"
                       Class="mt-0">
         </MudTextField>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="ml-4">
-            Add
-        </MudButton>
+        @if (Role <= OrganisationPermissionService.GetRole(OrganisationOption.AddUsers))
+        {
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Class="ml-4"
+                       OnClick="ShowInvitationMessage">
+                Add
+            </MudButton>
+        }
 
     </ToolBarContent>
     <Columns>
@@ -58,10 +65,13 @@
         </PropertyColumn>
         <TemplateColumn Sortable="false" Filterable="false" StickyRight="true">
             <CellTemplate>
-                <MudIconButton Size="@Size.Small"
-                               Icon="@Icons.Material.Outlined.RemoveCircleOutline"
-                               Color="Color.Primary"
-                               OnClick="@(() => OnDelete(context.Item))"/>
+                @if (Role <= OrganisationPermissionService.GetRole(OrganisationOption.RemoveUsers))
+                {
+                    <MudIconButton Size="@Size.Small"
+                                   Icon="@Icons.Material.Outlined.RemoveCircleOutline"
+                                   Color="Color.Primary"
+                                   OnClick="@(() => OnDelete(context.Item))"/>
+                }
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -78,6 +88,9 @@
 
     [Parameter]
     public OrganisationModel CurrentOrganisation { get; set; } = new();
+
+    [Parameter]
+    public OrganisationRole Role { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -145,6 +158,14 @@
 
         await Client.DeleteAsync($"api/organisations/{organisationId}/users/{userId}");
         Snackbar.Add($"Removed {item.User.Name} from {item.Organisation.Name}", Severity.Success);
+    }
+
+    private void ShowInvitationMessage()
+    {
+        DialogService.ShowMessageBox(
+            "Invite a user",
+            $"To invite a user to your organisation, please send them the following Code: {CurrentOrganisation.InvitationCode}",
+            "Ok");
     }
 
 }

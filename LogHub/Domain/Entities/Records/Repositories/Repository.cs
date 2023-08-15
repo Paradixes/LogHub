@@ -14,7 +14,7 @@ public class Repository : Record
 
     private Repository() { }
 
-    internal Repository(
+    public Repository(
         string title,
         string? icon,
         string? description,
@@ -38,6 +38,12 @@ public class Repository : Record
     public RecordId DataManagementPlanId { get; private set; } = null!;
 
     public DataManagementPlan? DataManagementPlan { get; private set; }
+
+    public void UpdateDataManagementPlan(DataManagementPlan dataManagementPlan)
+    {
+        DataManagementPlanId = dataManagementPlan.Id;
+        DataManagementPlan = dataManagementPlan;
+    }
 
     public void AddLabel(string name, string color)
     {

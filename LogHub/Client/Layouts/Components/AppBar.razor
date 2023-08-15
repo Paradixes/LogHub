@@ -8,7 +8,7 @@
 
 <MudThemeProvider @bind-IsDarkMode="@UserAccountService.CurrentSystemSettings.IsDarkMode" Theme="_theme"/>
 
-<MudAppBar Elevation="0" Color="Color.Primary">
+<MudAppBar Elevation="0" Color="Color.Transparent">
     <AuthorizeView>
         <Authorized>
             <MudIconButton Icon="@Icons.Material.Filled.Menu"
@@ -66,10 +66,15 @@
 
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        if (!e.Location.Contains("organisations") && !e.Location.Contains("list"))
+        if (e.Location.Contains("organisations") && e.Location.Contains("list"))
         {
-            PathService.Clear();
+            return;
         }
+        if (e.Location.Contains("dmp-templates") && !e.Location.Contains("create"))
+        {
+            return;
+        }
+        PathService.Clear();
     }
 
     private void Dispose()

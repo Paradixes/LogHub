@@ -29,15 +29,15 @@
                       Adornment="Adornment.End"
                       OnAdornmentClick="RefreshCode"/>
 
-        <MudAutocomplete T="UserAccountModel"
-                         Label="Change Organisation Owner"
-                         @bind-Value="SelectedUser"
-                         SearchFunc="SearchUsers"
-                         ToStringFunc="@(u => $"{u.Name} ({u.Email})")"
-                         AdornmentIcon="@Icons.Material.Filled.Search"
-                         Adornment="Adornment.End">
-
-        </MudAutocomplete>
+        @* <MudAutocomplete T="UserAccountModel" *@
+        @*                  Label="Change Organisation Owner" *@
+        @*                  @bind-Value="SelectedUser" *@
+        @*                  SearchFunc="SearchUsers" *@
+        @*                  ToStringFunc="@(u => $"{u.Name} ({u.Email})")" *@
+        @*                  AdornmentIcon="@Icons.Material.Filled.Search" *@
+        @*                  Adornment="Adornment.End"> *@
+        @* *@
+        @* </MudAutocomplete> *@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>

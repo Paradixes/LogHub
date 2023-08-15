@@ -1,9 +1,9 @@
-﻿using Application.DataManagementPlanTemplates.GetById;
+﻿using Application.Records.DataManagementPlanTemplates.GetById;
 using Domain.Entities.Organisations;
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Application.DataManagementPlanTemplates.Create;
+namespace Application.Records.DataManagementPlanTemplates.Create;
 
 public record CreateDataManagementPlanTemplateCommand(
     OrganisationId OrganisationId,

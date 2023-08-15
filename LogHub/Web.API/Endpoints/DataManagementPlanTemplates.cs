@@ -1,7 +1,7 @@
-﻿using Application.DataManagementPlanTemplates.Create;
-using Application.DataManagementPlanTemplates.GetById;
-using Application.DataManagementPlanTemplates.GetByOrganisationId;
-using Application.DataManagementPlanTemplates.Update;
+﻿using Application.Records.DataManagementPlanTemplates.Create;
+using Application.Records.DataManagementPlanTemplates.GetById;
+using Application.Records.DataManagementPlanTemplates.GetByOrganisationId;
+using Application.Records.DataManagementPlanTemplates.Update;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Records.DataManagementPlans;
@@ -69,7 +69,7 @@ public class DataManagementPlanTemplates : ICarterModule
             }
         });
 
-        app.MapGet("/api/dmp-templates/organisation/{id:guid}", async (
+        app.MapGet("/api/organisations/{id:guid}/dmp-templates", async (
             Guid id,
             ISender sender) =>
         {

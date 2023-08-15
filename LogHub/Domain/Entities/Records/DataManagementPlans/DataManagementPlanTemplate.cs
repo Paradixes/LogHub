@@ -5,7 +5,7 @@ namespace Domain.Entities.Records.DataManagementPlans;
 
 public class DataManagementPlanTemplate : Record
 {
-    private readonly List<Question> _questions = new();
+    protected readonly List<Question> _questions = new();
 
     protected DataManagementPlanTemplate() { }
 
@@ -20,7 +20,10 @@ public class DataManagementPlanTemplate : Record
         OrganisationId = organisationId;
     }
 
-    protected DataManagementPlanTemplate(DataManagementPlanTemplate template)
+    protected DataManagementPlanTemplate(
+        DataManagementPlanTemplate template,
+        UserId creatorId)
+        : base(creatorId, template.Title, template.Icon, template.Description)
     {
         OrganisationId = template.OrganisationId;
 

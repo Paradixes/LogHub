@@ -1,8 +1,8 @@
-﻿using Application.DataManagementPlanTemplates.GetById;
+﻿using Application.Records.DataManagementPlanTemplates.GetById;
 using Domain.Entities.Records.DataManagementPlans;
 using MediatR;
 
-namespace Application.DataManagementPlanTemplates.Update;
+namespace Application.Records.DataManagementPlanTemplates.Update;
 
 public record UpdateDataManagementPlanTemplateCommand(
     DataManagementPlanId Id,

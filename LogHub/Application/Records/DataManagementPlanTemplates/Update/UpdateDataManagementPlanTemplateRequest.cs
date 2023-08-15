@@ -1,6 +1,6 @@
-﻿using Application.DataManagementPlanTemplates.GetById;
+﻿using Application.Records.DataManagementPlanTemplates.GetById;
 
-namespace Application.DataManagementPlanTemplates.Update;
+namespace Application.Records.DataManagementPlanTemplates.Update;
 
 public record UpdateDataManagementPlanTemplateRequest(
     Guid Id,

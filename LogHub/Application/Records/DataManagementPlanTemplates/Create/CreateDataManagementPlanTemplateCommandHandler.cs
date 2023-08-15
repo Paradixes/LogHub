@@ -2,7 +2,7 @@
 using Domain.Repositories;
 using MediatR;
 
-namespace Application.DataManagementPlanTemplates.Create;
+namespace Application.Records.DataManagementPlanTemplates.Create;
 
 public class
     CreateDataManagementPlanTemplateCommandHandler : IRequestHandler<CreateDataManagementPlanTemplateCommand, Guid>

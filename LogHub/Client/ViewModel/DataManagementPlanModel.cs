@@ -2,6 +2,20 @@
 
 public class DataManagementPlanModel
 {
+    public DataManagementPlanModel(DataManagementPlanModel dataManagementPlan)
+    {
+        Id = dataManagementPlan.Id;
+        Title = dataManagementPlan.Title;
+        Icon = dataManagementPlan.Icon;
+        OrganisationId = dataManagementPlan.OrganisationId;
+        CreatorId = dataManagementPlan.CreatorId;
+        Creator = dataManagementPlan.Creator;
+        Description = dataManagementPlan.Description;
+        Questions = dataManagementPlan.Questions;
+    }
+
+    public DataManagementPlanModel() { }
+
     public Guid Id { get; set; }
 
     public string Title { get; set; } = string.Empty;

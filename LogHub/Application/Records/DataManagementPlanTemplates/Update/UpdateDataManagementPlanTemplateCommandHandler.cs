@@ -3,7 +3,7 @@ using Domain.Exceptions.Records;
 using Domain.Repositories;
 using MediatR;
 
-namespace Application.DataManagementPlanTemplates.Update;
+namespace Application.Records.DataManagementPlanTemplates.Update;
 
 public class UpdateDataManagementPlanTemplateCommandHandler : IRequestHandler<UpdateDataManagementPlanTemplateCommand>
 {

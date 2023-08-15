@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Records.Repositories;
+using Domain.Entities.Users;
 
 namespace Domain.Entities.Records.DataManagementPlans;
 
@@ -6,8 +7,11 @@ public class DataManagementPlan : DataManagementPlanTemplate
 {
     private DataManagementPlan() { }
 
-    public DataManagementPlan(DataManagementPlanTemplate template, RecordId repositoryId)
-        : base(template)
+    public DataManagementPlan(
+        DataManagementPlanTemplate template,
+        RecordId repositoryId,
+        UserId creatorId)
+        : base(template, creatorId)
     {
         RepositoryId = repositoryId;
     }
@@ -16,10 +20,15 @@ public class DataManagementPlan : DataManagementPlanTemplate
 
     public Repository? Repository { get; private set; }
 
-    public void UpdateAnswerById(QuestionId questionId, string answer)
+    public void UpdateAnswerByIndex(int i, string answer)
     {
-        var question = Questions.FirstOrDefault(q => q.Id == questionId);
+        if (i < 0 || i >= _questions.Count)
+        {
+            throw new IndexOutOfRangeException();
+        }
 
-        question?.UpdateAnswer(answer);
+        var question = _questions[i];
+
+        question.UpdateAnswer(answer);
     }
 }

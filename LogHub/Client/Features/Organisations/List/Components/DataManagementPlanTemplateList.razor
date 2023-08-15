@@ -65,7 +65,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        DataManagementPlans = await Client.GetFromJsonAsync<List<DataManagementPlanModel>>($"api/dmp-templates/organisation/{Id}") ?? new List<DataManagementPlanModel>();
+        DataManagementPlans = await Client.GetFromJsonAsync<List<DataManagementPlanModel>>($"api/organisations/{Id}/dmp-templates") ?? new List<DataManagementPlanModel>();
 
         foreach (var dataManagementPlan in DataManagementPlans)
         {

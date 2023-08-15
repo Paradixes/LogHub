@@ -1,11 +1,11 @@
-﻿using Application.DataManagementPlanTemplates.GetById;
+﻿using Application.Records.DataManagementPlanTemplates.GetById;
 using Domain.Repositories;
 using MediatR;
 
-namespace Application.DataManagementPlanTemplates.GetByOrganisationId;
+namespace Application.Records.DataManagementPlanTemplates.GetByOrganisationId;
 
 public class GetDataManagementPlanTemplateByOrganisationIdQueryHandler :
-    IRequestHandler<GetDataManagementPlanTemplateByOrganisationIdQuery, List<DataManagementPlanTemplateResponse>>
+    IRequestHandler<GetDataManagementPlanTemplateByOrganisationIdQuery, List<DataManagementPlanResponse>>
 {
     private readonly IDataManagementPlanTemplateRepository _dataManagementPlanTemplateRepository;
 
@@ -15,14 +15,14 @@ public class GetDataManagementPlanTemplateByOrganisationIdQueryHandler :
         _dataManagementPlanTemplateRepository = dataManagementPlanTemplateRepository;
     }
 
-    public async Task<List<DataManagementPlanTemplateResponse>> Handle(
+    public async Task<List<DataManagementPlanResponse>> Handle(
         GetDataManagementPlanTemplateByOrganisationIdQuery request,
         CancellationToken cancellationToken)
     {
         var dataManagementPlanTemplates = await
             _dataManagementPlanTemplateRepository.GetByOrganisationIdAsync(request.OrganisationId);
 
-        return dataManagementPlanTemplates.Select(x => new DataManagementPlanTemplateResponse(
+        return dataManagementPlanTemplates.Select(x => new DataManagementPlanResponse(
             x.Id.Value,
             x.OrganisationId?.Value,
             x.GetOwnerId().Value,

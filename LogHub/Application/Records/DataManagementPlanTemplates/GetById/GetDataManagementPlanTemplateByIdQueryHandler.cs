@@ -2,10 +2,10 @@
 using Domain.Repositories;
 using MediatR;
 
-namespace Application.DataManagementPlanTemplates.GetById;
+namespace Application.Records.DataManagementPlanTemplates.GetById;
 
 public class GetDataManagementPlanTemplateByIdQueryHandler :
-    IRequestHandler<GetDataManagementPlanTemplateByIdQuery, DataManagementPlanTemplateResponse>
+    IRequestHandler<GetDataManagementPlanTemplateByIdQuery, DataManagementPlanResponse>
 {
     private readonly IDataManagementPlanTemplateRepository _dataManagementPlanTemplateRepository;
 
@@ -15,7 +15,7 @@ public class GetDataManagementPlanTemplateByIdQueryHandler :
         _dataManagementPlanTemplateRepository = dataManagementPlanTemplateRepository;
     }
 
-    public async Task<DataManagementPlanTemplateResponse> Handle(
+    public async Task<DataManagementPlanResponse> Handle(
         GetDataManagementPlanTemplateByIdQuery request,
         CancellationToken cancellationToken)
     {
@@ -26,7 +26,7 @@ public class GetDataManagementPlanTemplateByIdQueryHandler :
             throw new DataManagementPlanTemplateNotFoundException(request.Id);
         }
 
-        return new DataManagementPlanTemplateResponse(
+        return new DataManagementPlanResponse(
             dataManagementPlanTemplate.Id.Value,
             dataManagementPlanTemplate.OrganisationId?.Value,
             dataManagementPlanTemplate.GetOwnerId().Value,

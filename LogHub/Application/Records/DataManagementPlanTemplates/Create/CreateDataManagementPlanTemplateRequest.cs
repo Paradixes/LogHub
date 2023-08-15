@@ -1,6 +1,6 @@
-﻿using Application.DataManagementPlanTemplates.GetById;
+﻿using Application.Records.DataManagementPlanTemplates.GetById;
 
-namespace Application.DataManagementPlanTemplates.Create;
+namespace Application.Records.DataManagementPlanTemplates.Create;
 
 public record CreateDataManagementPlanTemplateRequest(
     Guid OrganisationId,

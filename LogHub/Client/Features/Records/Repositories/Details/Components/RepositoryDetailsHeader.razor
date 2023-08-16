@@ -5,18 +5,14 @@
         @CurrentRepository.Title
     </MudText>
 
-    <MudIconButton Size="@Size.Medium"
-                   Color="Color.Primary"
-                   Icon="@Icons.Material.Outlined.Edit"
-                   Href=@($"/repositories/{CurrentRepository.Id}")/>
-
-    @if (Role >= PermissionLevel.ReadWrite)
+    @if (Role >= PermissionLevel.FullControl)
     {
         <MudIconButton Size="@Size.Medium"
                        Color="Color.Primary"
-                       Icon="@Icons.Material.Outlined.Delete"
-                       Href="@($"/repositories/{CurrentRepository.Id}")"/>
+                       Icon="@Icons.Material.Outlined.Edit"
+                       Href=@($"/repositories/{CurrentRepository.Id}")/>
     }
+
 
 </MudStack>
 
@@ -43,7 +39,7 @@
     public RepositoryModel CurrentRepository { get; set; } = new();
 
     [Parameter]
-    public PermissionLevel Role { get; set; }
+    public PermissionLevel Role { get; set; } = PermissionLevel.Owner;
 
     void OnTabClicked(MouseEventArgs me)
     {

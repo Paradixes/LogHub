@@ -1,6 +1,6 @@
 ﻿using Application.Memberships.GetSubOrganisations;
 using Application.Organisations.GetById;
-using Application.Users.GetById;
+using Application.Users.Users.GetById;
 using Domain.Repositories;
 using MediatR;
 

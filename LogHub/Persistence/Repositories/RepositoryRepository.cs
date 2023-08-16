@@ -29,8 +29,12 @@ public class RepositoryRepository : IRepositoryRepository
     {
         return await _context.Repositories
             .Include(r => r.DataManagementPlan)
+            .ThenInclude(dmp => dmp!.Questions)
+            .Include(r => r.DataManagementPlan)
+            .ThenInclude(dmp => dmp!.Permissions)
             .Include(r => r.Organisation)
             .Include(r => r.Permissions)
+            .Include(r => r.Labels)
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 

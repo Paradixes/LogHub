@@ -1,9 +1,10 @@
-﻿using Application.Users.GetById;
-using Application.Users.GetOrganisations;
-using Application.Users.GetRootOrganisations;
-using Application.Users.Login;
-using Application.Users.Register;
-using Application.Users.Update;
+﻿using Application.Users.Users.GetById;
+using Application.Users.Users.GetOrganisations;
+using Application.Users.Users.GetRepositories;
+using Application.Users.Users.GetRootOrganisations;
+using Application.Users.Users.Login;
+using Application.Users.Users.Register;
+using Application.Users.Users.Update;
 using Carter;
 using Domain.Entities.Users;
 using Domain.Exceptions.Users;
@@ -105,6 +106,13 @@ public class Users : ICarterModule
         app.MapGet("api/users/{id:guid}/organisations", async (Guid id, ISender sender) =>
         {
             var query = new GetOrganisationsByUserIdQuery(id);
+
+            return Results.Ok(await sender.Send(query));
+        });
+
+        app.MapGet("api/users/{id:guid}/repositories", async (Guid id, ISender sender) =>
+        {
+            var query = new GetRepositoriesByUserIdQuery(new UserId(id));
 
             return Results.Ok(await sender.Send(query));
         });

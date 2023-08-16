@@ -3,6 +3,7 @@ using Domain.Entities.Records.DataManagementPlans;
 using Domain.Entities.Records.Labels;
 using Domain.Entities.Records.Logbooks;
 using Domain.Entities.Users;
+using Domain.Exceptions.Records;
 
 namespace Domain.Entities.Records.Repositories;
 
@@ -45,10 +46,11 @@ public class Repository : Record
         DataManagementPlan = dataManagementPlan;
     }
 
-    public void AddLabel(string name, string color)
+    public LabelId AddLabel(string name, string color)
     {
         var label = new Label((Id as RepositoryId)!, name, color);
         _labels.Add(label);
+        return label.Id;
     }
 
     public void UpdateLabel(LabelId labelId, string name, string color)
@@ -56,7 +58,7 @@ public class Repository : Record
         var label = _labels.FirstOrDefault(l => l.Id == labelId);
         if (label is null)
         {
-            throw new InvalidOperationException($"Label with id {labelId} does not exist");
+            throw new LabelNotFoundException(labelId);
         }
 
         label.Update(name, color);

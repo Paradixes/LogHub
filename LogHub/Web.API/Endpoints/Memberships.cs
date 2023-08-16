@@ -60,7 +60,9 @@ public class Memberships : ICarterModule
             return Results.Ok(await sender.Send(query));
         });
 
-        app.MapGet("api/organisations/{id:guid}/users", async (Guid id, ISender sender) =>
+        app.MapGet("api/organisations/{id:guid}/users", async (
+            Guid id,
+            ISender sender) =>
         {
             var query = new GetUsersByOrganisationQuery(new OrganisationId(id));
 

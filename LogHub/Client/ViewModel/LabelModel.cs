@@ -2,7 +2,11 @@
 
 public class LabelModel
 {
-    public string Name { get; set; } = null!;
+    public Guid Id { get; set; }
 
-    public string Color { get; set; } = null!;
+    public Guid RepositoryId { get; set; }
+
+    public string Name { get; set; } = "Report";
+
+    public string Color { get; set; } = "#000000";
 }

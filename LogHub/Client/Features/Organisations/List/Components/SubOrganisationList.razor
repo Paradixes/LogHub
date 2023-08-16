@@ -8,10 +8,6 @@
              ShowFilterIcons="false"
              Hover="true">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">
-            Sub-Organisations
-        </MudText>
-        <MudSpacer/>
         <MudTextField @bind-Value="_searchString"
                       Placeholder="Search"
                       Adornment="Adornment.Start"
@@ -20,6 +16,7 @@
                       IconSize="Size.Medium"
                       Class="mt-0">
         </MudTextField>
+        <MudSpacer/>
         <MudButton Variant="Variant.Outlined"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Add"

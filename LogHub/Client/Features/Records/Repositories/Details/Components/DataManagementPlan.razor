@@ -1,0 +1,66 @@
+﻿<MudGrid Spacing="2" Class="mx-7 my-1">
+
+    <MudItem xs="12">
+        <MudStack Row="true" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Outlined.Assignment"
+                     Size="Size.Large"
+                     Class="mt-2"/>
+            <MudText Typo="Typo.h5"
+                     Class="mt-2">
+                @Repository.DataManagementPlan.Title
+            </MudText>
+            @if (Role >= PermissionLevel.FullControl)
+            {
+                <MudIconButton Size="@Size.Medium"
+                               Color="Color.Primary"
+                               Icon="@Icons.Material.Outlined.Edit"
+                               Href="@($"/repositories/{Repository.Id}")"/>
+            }
+        </MudStack>
+    </MudItem>
+
+    <MudItem xs="12" Class="mb-2">
+        <MudText Typo="Typo.body1">
+            <b>Description: </b>@Repository.DataManagementPlan.Description
+        </MudText>
+    </MudItem>
+
+    @foreach (var question in Repository.DataManagementPlan.Questions)
+    {
+        <MudItem xs="12">
+            <MudStack Row="true" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Outlined.QuestionAnswer"
+                         Size="Size.Medium"
+                         Class="mt-1"/>
+                <MudText Typo="Typo.h6">
+                    @question.Title
+                </MudText>
+            </MudStack>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body1">
+                <b>Description: </b>@question.Description
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="12" Class="mb-3">
+            <MudText Typo="Typo.body1">
+                <b>Answer: </b>@question.Answer
+            </MudText>
+        </MudItem>
+
+        <MudDivider Class="my-1"/>
+    }
+
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public RepositoryModel Repository { get; set; } = new();
+
+    [Parameter]
+    public PermissionLevel Role { get; set; } = PermissionLevel.Owner;
+
+}

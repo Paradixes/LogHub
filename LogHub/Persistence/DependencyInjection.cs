@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IMembershipRepository, MembershipRepository>();
         services.AddScoped<IDataManagementPlanTemplateRepository, DataManagementPlanTemplateRepository>();
         services.AddScoped<IRepositoryRepository, RepositoryRepository>();
+        services.AddScoped<IRecordRepository, RecordRepository>();
 
         return services;
     }

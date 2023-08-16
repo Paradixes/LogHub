@@ -1,0 +1,157 @@
+﻿@page "/repositories/{id:guid}"
+@layout FormLayout
+
+<MudContainer MaxWidth="MaxWidth.Medium" Elevation="5">
+    <MudText Align="Align.Left" Typo="Typo.h4">
+        Repository Details
+    </MudText>
+    <MudDivider Class="py-3"/>
+    <MudForm Model="@Repository"
+             @ref="@_form"
+             ValidationDelay="0">
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12">
+                <MudText Typo="Typo.h6">
+                    General Information
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="1">
+                <IconSelect InitialIcon="@Repository.Icon"
+                            IconSelected="s => Repository.Icon = s"
+                            Size="Size.Large"/>
+            </MudItem>
+
+            <MudItem xs="11">
+                <MudTextField Label="Repository Name"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Repository.Title"
+                              For="@(() => Repository.Title)"
+                              OnlyValidateIfDirty="true"
+                              Required="true"
+                              Disabled="@(!_isEditing)"/>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTextField Label="Organisation Description"
+                              Variant="Variant.Outlined"
+                              @bind-Value="@Repository.Description"
+                              For="@(() => Repository.Description)"
+                              Lines="10"
+                              Disabled="@(!_isEditing)"/>
+            </MudItem>
+
+            <MudDivider Class="my-3"/>
+
+            <MudItem xs="12">
+                <MudText Typo="Typo.h6">
+                    Data Management Plan
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="1">
+                <MudIcon Icon="@Icons.Material.Outlined.Assignment"
+                         Size="Size.Large"/>
+            </MudItem>
+
+            <MudItem xs="11">
+                <MudText Typo="Typo.h6">
+                    @Repository.DataManagementPlan.Title
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="12" Class="mb-2">
+                <MudText Typo="Typo.body1">
+                    <b>Description: </b>@Repository.DataManagementPlan.Description
+                </MudText>
+            </MudItem>
+
+            @foreach (var question in Repository.DataManagementPlan.Questions)
+            {
+                <MudItem xs="1">
+                    <MudIcon Icon="@Icons.Material.Outlined.QuestionAnswer"
+                             Size="Size.Large"/>
+                </MudItem>
+
+                <MudItem xs="11">
+                    <MudText Typo="Typo.h6">
+                        @question.Title
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.body1">
+                        <b>Description: </b>@question.Description
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="12" Class="mb-3">
+                    <MudTextField Label="Answer"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@question.Answer"
+                                  For="@(() => question.Answer)"
+                                  Lines="5"
+                                  Required="true"
+                                  Disabled="@(!_isEditing)"/>
+                </MudItem>
+
+                <MudDivider Class="my-1"/>
+            }
+
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="my-3"
+                   OnClick="SubmitAsync"
+                   Disabled="@(_isEditing && !_form.IsValid)">
+            @if (_isEditing)
+            {
+                <MudText>
+                    Save
+                </MudText>
+            }
+            else
+            {
+                <MudText>
+                    Edit
+                </MudText>
+            }
+        </MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    bool _isEditing;
+
+    private MudForm _form = new();
+
+    private RepositoryModel Repository { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Repository = await Client.GetFromJsonAsync<RepositoryModel>($"/api/repositories/{Id}") ?? new RepositoryModel();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (!_isEditing)
+        {
+            _isEditing = true;
+        }
+
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        await Client.PutAsJsonAsync($"/api/repositories/{Id}", Repository);
+    }
+
+}

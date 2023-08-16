@@ -2,6 +2,7 @@
 using Domain.Entities.Events.Requests;
 using Domain.Entities.Middlewares;
 using Domain.Entities.Users;
+using Domain.Exceptions.Records;
 using Domain.Primitives;
 using Shared.Enums;
 
@@ -70,7 +71,7 @@ public abstract class Record : Entity<RecordId>, IAuditableEntity
         var permission = _permissions.FirstOrDefault(p => p.UserId == userId);
         if (permission is null)
         {
-            throw new InvalidOperationException($"RecordPermission for user {userId} does not exist");
+            throw new RecordPermissionNotFoundException(Id, userId);
         }
 
         permission.UpdateLevel(level);
@@ -81,7 +82,7 @@ public abstract class Record : Entity<RecordId>, IAuditableEntity
         var permission = _permissions.FirstOrDefault(p => p.UserId == userId);
         if (permission is null)
         {
-            throw new InvalidOperationException($"RecordPermission for user {userId} does not exist");
+            throw new RecordPermissionNotFoundException(Id, userId);
         }
 
         _permissions.Remove(permission);
@@ -137,7 +138,7 @@ public abstract class Record : Entity<RecordId>, IAuditableEntity
         var ownerPermission = _permissions.FirstOrDefault(p => p.Level == PermissionLevel.Owner);
         if (ownerPermission is null)
         {
-            throw new InvalidOperationException("Owner permission does not exist");
+            throw new RecordPermissionNotFoundException(Id, PermissionLevel.Owner);
         }
 
         return ownerPermission.UserId;

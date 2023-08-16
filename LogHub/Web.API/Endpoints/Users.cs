@@ -1,5 +1,6 @@
 ﻿using Application.Users.GetById;
 using Application.Users.GetOrganisations;
+using Application.Users.GetRepositories;
 using Application.Users.GetRootOrganisations;
 using Application.Users.Login;
 using Application.Users.Register;
@@ -105,6 +106,13 @@ public class Users : ICarterModule
         app.MapGet("api/users/{id:guid}/organisations", async (Guid id, ISender sender) =>
         {
             var query = new GetOrganisationsByUserIdQuery(id);
+
+            return Results.Ok(await sender.Send(query));
+        });
+
+        app.MapGet("api/users/{id:guid}/repositories", async (Guid id, ISender sender) =>
+        {
+            var query = new GetRepositoriesByUserIdQuery(new UserId(id));
 
             return Results.Ok(await sender.Send(query));
         });

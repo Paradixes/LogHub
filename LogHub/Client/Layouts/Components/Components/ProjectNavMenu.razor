@@ -1,12 +1,57 @@
 ﻿<AuthorizeView Roles="@UserRole.Recorder.ToString()">
     <Authorized>
-        <MudNavLink Href="repositories/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">New repository</MudNavLink>
+        <MudNavLink Href="repositories/create" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
+            New repository
+        </MudNavLink>
 
+        <MudDivider Class="my-2"/>
+        @if (RepositoryModels.Count > 0)
+        {
+            <MudNavGroup Title="Repositories" Icon="@Icons.Material.Filled.LibraryBooks">
+                @foreach (var repositoryModel in RepositoryModels)
+                {
+                    <MudNavGroup Title="@repositoryModel.Title">
+                        <MudNavLink Href="@GetUrl("logbooks", repositoryModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">
+                            Logbooks
+                        </MudNavLink>
+                        <MudNavLink Href="@GetUrl("members", repositoryModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
+                            Members
+                        </MudNavLink>
+                        <MudNavLink Href="@GetUrl("dmp", repositoryModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Assignment">
+                            Data Management Plan
+                        </MudNavLink>
+                        <MudNavLink Href="@GetUrl("labels", repositoryModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Label">
+                            Labels
+                        </MudNavLink>
+                        <MudNavLink Href="@GetUrl("settings", repositoryModel.Id)" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">
+                            Settings
+                        </MudNavLink>
+                    </MudNavGroup>
+                }
+
+            </MudNavGroup>
+        }
     </Authorized>
 </AuthorizeView>
 
 @code {
+    List<RepositoryModel> RepositoryModels { get; set; } = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await AuthenticationService.GetLocalUserIdAsync();
 
+        var response = await Client.GetAsync($"api/users/{userId}/repositories");
+
+        if (response.IsSuccessStatusCode)
+        {
+            RepositoryModels = await response.Content.ReadFromJsonAsync<List<RepositoryModel>>() ?? new List<RepositoryModel>();
+        }
+    }
+
+    private string GetUrl(string objName, Guid id)
+    {
+        return $"/repositories/details/{id}/{objName}";
+    }
 
 }

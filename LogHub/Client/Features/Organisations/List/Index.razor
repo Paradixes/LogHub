@@ -4,32 +4,32 @@
 
 
 <PageTitle>
-    LogHub | @CurrentOrganisation.Name
+    LogHub | @Organisation.Name
 </PageTitle>
 
 
-<OrganisationDetailsHeader Index="_index" CurrentOrganisation="CurrentOrganisation" Role="@Role"/>
+<OrganisationDetailsHeader Index="_index" CurrentOrganisation="Organisation" Role="@Role"/>
 
 @switch (ListType)
 {
     case "sub-organisation-list":
         _index = 0;
-        <SubOrganisationList CurrentOrganisation="@CurrentOrganisation" Role="@Role"/>
+        <SubOrganisationList CurrentOrganisation="@Organisation" Role="@Role"/>
         break;
     case "user-list":
         _index = 1;
-        <UserList CurrentOrganisation="@CurrentOrganisation" Role="@Role"/>
+        <UserList CurrentOrganisation="@Organisation" Role="@Role"/>
         break;
     case "repository-list":
         _index = 2;
         break;
     case "dmp-template-list":
         _index = 3;
-        <DataManagementPlanTemplateList Id="@CurrentOrganisation.Id" Role="@Role"/>
+        <DataManagementPlanTemplateList Id="@Organisation.Id" Role="@Role"/>
         break;
     case "setting-list":
         _index = 4;
-        <SettingList Id="@CurrentOrganisation.Id" Role="@Role"/>
+        <SettingList Id="@Organisation.Id" Role="@Role"/>
         break;
 }
 
@@ -45,17 +45,17 @@
 
     int _index;
 
-    private OrganisationModel CurrentOrganisation { get; set; } = new();
+    private OrganisationModel Organisation { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        CurrentOrganisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
-        if (CurrentOrganisation.Id == Guid.Empty)
+        Organisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+        if (Organisation.Id == Guid.Empty)
         {
             return;
         }
 
-        await OrganisationPermissionService.UpdateAsync(CurrentOrganisation.Id);
+        await OrganisationPermissionService.UpdateAsync(Organisation.Id);
 
         if (UserAccountService.CurrentUser != null)
         {
@@ -72,7 +72,7 @@
 
         if (PathService.Items.Count == 0)
         {
-            PathService.AddPath(CurrentOrganisation.Name, $"/organisations/{Id}/sub-organisation-list");
+            PathService.AddPath(Organisation.Name, $"/organisations/{Id}/sub-organisation-list");
         }
         NavigationManager.LocationChanged += OnLocationChanged;
         OrganisationPermissionService.OnChange += StateHasChanged;
@@ -91,13 +91,14 @@
             return;
         }
 
-        CurrentOrganisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
-        if (CurrentOrganisation.Id == Guid.Empty)
+        Organisation = await Client.GetFromJsonAsync<OrganisationModel>($"api/organisations/{Id}") ?? new OrganisationModel();
+        if (Organisation.Id == Guid.Empty)
         {
+            Dispose();
             return;
         }
 
-        await OrganisationPermissionService.UpdateAsync(CurrentOrganisation.Id);
+        await OrganisationPermissionService.UpdateAsync(Organisation.Id);
         if (UserAccountService.CurrentUser != null)
         {
             var response = await Client.GetAsync($"api/organisations/{Id}/users/{UserAccountService.CurrentUser.Id}");

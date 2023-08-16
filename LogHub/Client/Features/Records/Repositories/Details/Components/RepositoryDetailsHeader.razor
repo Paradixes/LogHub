@@ -1,0 +1,75 @@
+﻿<MudStack Row="true" Justify="Justify.FlexStart" Spacing="2" Class="mb-3">
+    <MudIcon Icon="@CurrentRepository.Icon" Size="Size.Large" Class="mt-2"/>
+
+    <MudText Typo="Typo.h4" Class="mt-2">
+        @CurrentRepository.Title
+    </MudText>
+
+    <MudIconButton Size="@Size.Medium"
+                   Color="Color.Primary"
+                   Icon="@Icons.Material.Outlined.Edit"
+                   Href=@($"/repositories/{CurrentRepository.Id}")/>
+
+    @if (Role >= PermissionLevel.ReadWrite)
+    {
+        <MudIconButton Size="@Size.Medium"
+                       Color="Color.Primary"
+                       Icon="@Icons.Material.Outlined.Delete"
+                       Href="@($"/repositories/{CurrentRepository.Id}")"/>
+    }
+
+</MudStack>
+
+<MudText Typo="Typo.body1" Class="mb-3">
+    @(CurrentRepository.Description ?? "")
+</MudText>
+
+<MudDivider/>
+
+<MudTabs Elevation="2" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="Index" @onclick="OnTabClicked">
+    <MudTabPanel Text="Logbooks" Icon="@Icons.Material.Filled.Book"/>
+    <MudTabPanel Text="Members" Icon="@Icons.Material.Filled.People"/>
+    <MudTabPanel Text="Data Management Plan" Icon="@Icons.Material.Filled.Assignment"/>
+    <MudTabPanel Text="Labels" Icon="@Icons.Material.Filled.Label"/>
+    <MudTabPanel Text="Settings" Icon="@Icons.Material.Filled.Settings"/>
+</MudTabs>
+
+@code {
+
+    [Parameter]
+    public int Index { get; set; }
+
+    [Parameter]
+    public RepositoryModel CurrentRepository { get; set; } = new();
+
+    [Parameter]
+    public PermissionLevel Role { get; set; }
+
+    void OnTabClicked(MouseEventArgs me)
+    {
+        switch (Index)
+        {
+            case 0:
+                NavigationManager.NavigateTo(GetUrl("logbooks", CurrentRepository.Id));
+                break;
+            case 1:
+                NavigationManager.NavigateTo(GetUrl("members", CurrentRepository.Id));
+                break;
+            case 2:
+                NavigationManager.NavigateTo(GetUrl("dmp", CurrentRepository.Id));
+                break;
+            case 3:
+                NavigationManager.NavigateTo(GetUrl("labels", CurrentRepository.Id));
+                break;
+            case 4:
+                NavigationManager.NavigateTo(GetUrl("settings", CurrentRepository.Id));
+                break;
+        }
+    }
+
+    private string GetUrl(string objName, Guid id)
+    {
+        return $"/repositories/details/{id}/{objName}";
+    }
+
+}

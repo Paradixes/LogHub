@@ -20,7 +20,6 @@
             <MudItem xs="1">
                 <IconSelect InitialIcon="@Repository.Icon"
                             IconSelected="s => Repository.Icon = s"
-                            Color="Color.Primary"
                             Size="Size.Large"/>
             </MudItem>
 
@@ -55,9 +54,6 @@
                            For="@(() => Repository.DataManagementPlan)"
                            Required="true"
                            Class="mb-3">
-                    @* <MudSelectItem Value="@null" Disabled="true"> *@
-                    @*     Select a Data Management Plan Template *@
-                    @* </MudSelectItem> *@
                     @foreach (var dmpTemplate in DmpTemplates)
                     {
                         <MudSelectItem Value="@dmpTemplate">
@@ -68,20 +64,16 @@
                 </MudSelect>
             </MudItem>
 
-            <MudItem xs="12">
-                <MudTextField Label="Organisation Description"
-                              Variant="Variant.Outlined"
-                              @bind-Value="@Repository.DataManagementPlan.Description"
-                              For="@(() => Repository.DataManagementPlan.Description)"
-                              Lines="10"
-                              Disabled="true"/>
+            <MudItem xs="12" Class="mb-2">
+                <MudText Typo="Typo.body1">
+                    <b>Description: </b>@Repository.DataManagementPlan.Description
+                </MudText>
             </MudItem>
 
             @foreach (var question in Repository.DataManagementPlan.Questions)
             {
                 <MudItem xs="1">
-                    <MudIcon Color="Color.Tertiary"
-                             Icon="@Icons.Material.Outlined.QuestionAnswer"
+                    <MudIcon Icon="@Icons.Material.Outlined.QuestionAnswer"
                              Size="Size.Large"/>
                 </MudItem>
 
@@ -93,7 +85,7 @@
 
                 <MudItem xs="12">
                     <MudText Typo="Typo.body1">
-                        @question.Description
+                        <b>Description: </b>@question.Description
                     </MudText>
                 </MudItem>
 

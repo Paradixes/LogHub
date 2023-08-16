@@ -1,5 +1,4 @@
-﻿@using Client.Services.States
-@using Client.Layouts.Components.Components
+﻿@using Client.Layouts.Components.Components
 @inject ILogHubAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 @inject HttpClient Client
@@ -59,9 +58,9 @@
 
     private async Task LogOutAsync()
     {
+        NavigationManager.NavigateTo("/");
         await AuthenticationService.LogOutAsync();
         await UserAccountService.UpdateCurrentUserAsync();
-        NavigationManager.NavigateTo("/");
         DrawerOpen = false;
     }
 

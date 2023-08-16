@@ -1,0 +1,73 @@
+﻿@page "/repositories/details/{id:guid}/{type}"
+@using Client.Features.Records.Repositories.Details.Components
+@layout FormLayout
+
+<PageTitle>
+    LogHub | @Repository.Title
+</PageTitle>
+
+<RepositoryDetailsHeader Index="_index" CurrentRepository="@Repository"/>
+
+@switch (Type)
+{
+    case "logbooks":
+        _index = 0;
+        break;
+    case "members":
+        _index = 1;
+        break;
+    case "dmp":
+        _index = 2;
+        break;
+    case "labels":
+        _index = 3;
+        <LabelGrid RepositoryId="@Repository.Id"/>
+        break;
+    case "settings":
+        _index = 4;
+
+        break;
+}
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public string Type { get; set; } = "sub-organisation-list";
+
+    private RepositoryModel Repository { get; set; } = new();
+
+    private int _index;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Repository = await Client.GetFromJsonAsync<RepositoryModel>($"api/repositories/{Id}") ?? new RepositoryModel();
+        if (Repository.Id == Guid.Empty)
+        {
+            return;
+        }
+
+        PathService.AddPath(Repository.Title, $"/repositories/details/{Repository.Id}/logbooks");
+
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (!e.Location.Contains("repositories/details"))
+        {
+            Dispose();
+            return;
+        }
+
+        StateHasChanged();
+    }
+
+}

@@ -1,10 +1,10 @@
-﻿using Application.Users.GetById;
-using Application.Users.GetOrganisations;
-using Application.Users.GetRepositories;
-using Application.Users.GetRootOrganisations;
-using Application.Users.Login;
-using Application.Users.Register;
-using Application.Users.Update;
+﻿using Application.Users.Users.GetById;
+using Application.Users.Users.GetOrganisations;
+using Application.Users.Users.GetRepositories;
+using Application.Users.Users.GetRootOrganisations;
+using Application.Users.Users.Login;
+using Application.Users.Users.Register;
+using Application.Users.Users.Update;
 using Carter;
 using Domain.Entities.Users;
 using Domain.Exceptions.Users;

@@ -1,0 +1,275 @@
+﻿<MudDataGrid T="RecordPermissionModel"
+             MultiSelection="true"
+             Items="@Permissions"
+             SortMode="SortMode.Multiple"
+             Filterable="true"
+             QuickFilter="@QuickFilter"
+             Hideable="true"
+             ReadOnly="false"
+             ShowFilterIcons="false"
+             EditMode="DataGridEditMode.Form"
+             EditTrigger="DataGridEditTrigger.OnRowClick"
+             Hover="true"
+             CommittedItemChanges="OnCommittedItemChanges">
+    <ToolBarContent>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0">
+        </MudTextField>
+        <MudSpacer/>
+
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Class="ml-4"
+                   OnClick="@(() => _isAddDialogOpen = true)">
+            Add
+        </MudButton>
+
+    </ToolBarContent>
+    <Columns>
+        <TemplateColumn Sortable="false" Filterable="false" IsEditable="false">
+            <CellTemplate>
+                <Avatar ImageUri="@context.Item.User.AvatarUri"
+                        Name="@context.Item.User.Name"
+                        Color="Color.Tertiary"
+                        Size="Size.Small"/>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.User.Name" Title="Name" IsEditable="false"/>
+        <PropertyColumn Property="x => x.User.Email" Title="Email" IsEditable="false"/>
+        <PropertyColumn Property="x => x.User.Profession" Title="Profession" IsEditable="false"/>
+        <PropertyColumn Property="x => x.User.Orcid" Title="ORCID" IsEditable="false"/>
+        <PropertyColumn Property="x => x.Level">
+            <EditTemplate>
+                <MudSelect @bind-Value="context.Item.Level"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary">
+                    @foreach (var level in Enum.GetValues(typeof(PermissionLevel)))
+                    {
+                        <MudSelectItem Value="@((PermissionLevel)level)">
+                            @level.ToString()
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        <TemplateColumn Sortable="false" Filterable="false" StickyRight="true">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small"
+                               Icon="@Icons.Material.Outlined.RemoveCircleOutline"
+                               Color="Color.Primary"
+                               OnClick="@(() => OnDelete(context.Item))"/>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="RecordPermissionModel"/>
+    </PagerContent>
+</MudDataGrid>
+
+<MudDialog @bind-IsVisible="_isAddDialogOpen" Options="_dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3"/> Add Label
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>
+            Search for a user to add to this record:
+        </MudText>
+        <MudAutocomplete T="UserAccountModel"
+                         Label="User"
+                         @bind-Value="NewPermission.User"
+                         SearchFunc="@SearchForUser"
+                         ToStringFunc="@(model => model.Name + "(" + model.Email + ")")"
+                         Required="true"
+                         Class="mb-4">
+            <ItemTemplate Context="user">
+                <MudStack Row="true" Spacing="2">
+                    <Avatar ImageUri="@user.AvatarUri"
+                            Name="@user.Name"
+                            Color="Color.Tertiary"
+                            Size="Size.Small"/>
+                    <MudText Typo="Typo.body2">
+                        @user.Name (@user.Email)
+                    </MudText>
+                </MudStack>
+            </ItemTemplate>
+        </MudAutocomplete>
+
+        <MudSelect Label="Permission Level"
+                   Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   @bind-Value="NewPermission.Level"
+                   Required="true">
+            @foreach (var level in Enum.GetValues(typeof(PermissionLevel)))
+            {
+                <MudSelectItem Value="@((PermissionLevel)level)">
+                    @level.ToString()
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => _isAddDialogOpen = false" Class="px-10">
+            Close
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnAdd" Class="px-10">
+            Add
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    string _searchString = string.Empty;
+
+    List<RecordPermissionModel> Permissions { get; set; } = new();
+
+    bool _isAddDialogOpen;
+
+    RecordPermissionModel NewPermission { get; set; } = new();
+
+    [Parameter]
+    public Guid RecordId { get; set; }
+
+    [Parameter]
+    public PermissionLevel Level { get; set; } = PermissionLevel.Owner;
+
+    [Parameter]
+    public Guid OrganisationId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (RecordId == Guid.Empty)
+        {
+            return;
+        }
+
+        Permissions = await Client.GetFromJsonAsync<List<RecordPermissionModel>>($"api/records/{RecordId}/users") ?? new List<RecordPermissionModel>();
+    }
+
+    Func<RecordPermissionModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.User.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Profession.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.User.Orcid != null && x.User.Orcid.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Level.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.User.Name} {x.User.Email} {x.User.Profession} {x.User.Orcid}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+
+    async Task OnCommittedItemChanges(RecordPermissionModel item)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to update {item.User.Name}'s permission level to {item.Level}?",
+            "Yes", "No");
+
+        if (result is null or false)
+        {
+            return;
+        }
+        var recordId = item.RecordId;
+        var userId = item.User.Id;
+        var level = item.Level;
+
+        await Client.PutAsJsonAsync($"api/records/{recordId}/users/{userId}", level);
+        Snackbar.Add($"Updated {item.User.Name}'s permission level to {item.Level}", Severity.Success);
+    }
+
+    async Task OnDelete(RecordPermissionModel item)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to remove {item.User.Name} from this record?",
+            "Yes", "No");
+
+        if (result is null or false)
+        {
+            return;
+        }
+
+        var recordId = item.RecordId;
+        var userId = item.User.Id;
+
+        var response = await Client.DeleteAsync($"api/records/{recordId}/users/{userId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Removed {item.User.Name} from this record", Severity.Success);
+            await OnParametersSetAsync();
+        }
+        else
+        {
+            Snackbar.Add($"Failed to remove {item.User.Name} from this record", Severity.Error);
+        }
+    }
+
+    async Task OnAdd()
+    {
+        _isAddDialogOpen = false;
+
+        var userId = NewPermission.User.Id;
+
+        var response = await Client.PostAsJsonAsync($"api/records/{RecordId}/users/{userId}", NewPermission.Level);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Added {NewPermission.User.Name} to this record", Severity.Success);
+            NewPermission = new RecordPermissionModel();
+            await OnParametersSetAsync();
+        }
+        else
+        {
+            Snackbar.Add($"Failed to add {NewPermission.User.Name} to this record", Severity.Error);
+        }
+    }
+
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+
+    private async Task<IEnumerable<UserAccountModel>> SearchForUser(string searchText)
+    {
+        var response = await Client.GetAsync($"api/organisations/{OrganisationId}/users?search");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new List<UserAccountModel>();
+        }
+        var memberships = await response.Content.ReadFromJsonAsync<IEnumerable<OrganisationMembershipModel>>();
+        if (memberships is null)
+        {
+            return new List<UserAccountModel>();
+        }
+
+        var users = memberships.Select(x => x.User).ToList();
+
+        return users.Where(
+            x =>
+                x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                x.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                (x.Orcid != null && x.Orcid.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+    }
+
+}

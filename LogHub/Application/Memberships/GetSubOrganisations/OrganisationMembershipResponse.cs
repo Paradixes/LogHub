@@ -1,5 +1,5 @@
 ﻿using Application.Organisations.GetById;
-using Application.Users.GetById;
+using Application.Users.Users.GetById;
 using Shared.Enums;
 
 namespace Application.Memberships.GetSubOrganisations;

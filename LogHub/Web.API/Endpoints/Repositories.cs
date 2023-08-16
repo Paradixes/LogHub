@@ -1,9 +1,9 @@
-﻿using Application.Records.Repositories.AddLabel;
-using Application.Records.Repositories.Create;
-using Application.Records.Repositories.DeleteLabel;
+﻿using Application.Records.Repositories.Create;
 using Application.Records.Repositories.GetById;
-using Application.Records.Repositories.GetLabels;
-using Application.Records.Repositories.UpdateLabel;
+using Application.Records.Repositories.Labels.AddLabel;
+using Application.Records.Repositories.Labels.DeleteLabel;
+using Application.Records.Repositories.Labels.GetLabels;
+using Application.Records.Repositories.Labels.UpdateLabel;
 using Carter;
 using Domain.Entities.Organisations;
 using Domain.Entities.Records.Labels;

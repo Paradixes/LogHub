@@ -1,4 +1,5 @@
 ﻿using Application.Records.DataManagementPlanTemplates.GetById;
+using Application.Users.Users.GetById;
 
 namespace Application.Records.Repositories.GetById;
 
@@ -11,4 +12,5 @@ public record RepositoryResponse(
     Guid DataManagementPlanId,
     Guid CreatorId,
     bool IsFinished,
+    UserResponse Creator,
     DataManagementPlanResponse DataManagementPlan);

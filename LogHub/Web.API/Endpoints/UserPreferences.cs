@@ -1,5 +1,5 @@
-﻿using Application.UserPreference.GetById;
-using Application.UserPreference.Update;
+﻿using Application.Users.UserPreference.GetById;
+using Application.Users.UserPreference.Update;
 using Carter;
 using Domain.Entities.Users;
 using Domain.Exceptions.Users;

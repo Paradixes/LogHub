@@ -59,7 +59,7 @@ public abstract class Record : Entity<RecordId>, IAuditableEntity
     {
         if (_permissions.Any(p => p.UserId == userId))
         {
-            return;
+            throw new RecordPermissionAlreadyExistsException(Id, userId);
         }
 
         var permission = new RecordPermission(userId, Id, level);

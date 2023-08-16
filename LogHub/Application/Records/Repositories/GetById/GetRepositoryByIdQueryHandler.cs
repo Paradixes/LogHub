@@ -1,5 +1,7 @@
 ﻿using Application.Records.DataManagementPlanTemplates.GetById;
+using Application.Users.Users.GetById;
 using Domain.Exceptions;
+using Domain.Exceptions.Users;
 using Domain.Repositories;
 using MediatR;
 
@@ -27,6 +29,13 @@ public class GetRepositoryByIdQueryHandler : IRequestHandler<GetRepositoryByIdQu
             throw new RepositoryNotFoundException(request.RepositoryId);
         }
 
+        var owner = await _userRepository.GetByIdAsync(repository.GetOwnerId());
+
+        if (owner is null)
+        {
+            throw new UserNotFoundException(repository.GetOwnerId());
+        }
+
         var response = new RepositoryResponse(
             repository.Id.Value,
             repository.Title,
@@ -36,6 +45,15 @@ public class GetRepositoryByIdQueryHandler : IRequestHandler<GetRepositoryByIdQu
             repository.DataManagementPlanId.Value,
             repository.GetOwnerId().Value,
             repository.IsFinished,
+            new UserResponse(
+                owner.Id.Value,
+                owner.Email,
+                owner.Name,
+                owner.AvatarUri,
+                owner.Profession,
+                owner.Orcid,
+                owner.Role
+            ),
             new DataManagementPlanResponse(
                 repository.DataManagementPlan!.Id.Value,
                 repository.DataManagementPlan.OrganisationId!.Value,

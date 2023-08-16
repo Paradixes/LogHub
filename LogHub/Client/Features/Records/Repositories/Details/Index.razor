@@ -15,10 +15,11 @@
         break;
     case "members":
         _index = 1;
+        <RecordPermissionList RecordId="@Repository.Id" OrganisationId="@Repository.OrganisationId"/>
         break;
     case "dmp":
         _index = 2;
-        <DataManagementPlan Repository="Repository"/>
+        <DataManagementPlan Repository="@Repository"/>
         break;
     case "labels":
         _index = 3;

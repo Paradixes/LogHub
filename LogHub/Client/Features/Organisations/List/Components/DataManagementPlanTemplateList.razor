@@ -2,10 +2,6 @@
 @attribute [Authorize]
 
 <MudToolBar>
-    <MudText Typo="Typo.h6">
-        Data Management Plan Templates
-    </MudText>
-    <MudSpacer/>
     <MudTextField T="string"
                   Placeholder="Search"
                   Adornment="Adornment.Start"
@@ -15,6 +11,8 @@
                   Class="mt-0"
                   TextChanged="SearchTextChanged">
     </MudTextField>
+    <MudSpacer/>
+
     <MudButton Variant="Variant.Outlined"
                Color="Color.Primary"
                StartIcon="@Icons.Material.Filled.Add"

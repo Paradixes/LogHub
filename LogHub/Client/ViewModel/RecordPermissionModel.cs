@@ -8,5 +8,7 @@ public class RecordPermissionModel
 
     public Guid UserId { get; set; }
 
+    public UserAccountModel User { get; set; } = new();
+
     public PermissionLevel Level { get; set; } = PermissionLevel.NotAuthorized;
 }
